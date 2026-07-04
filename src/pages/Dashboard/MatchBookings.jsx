@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
-import { Calendar, MapPin, IndianRupee, ShieldCheck, Share2, CheckCircle2, Users, Tag, Zap, ChevronDown } from 'lucide-react';
+import { Calendar, MapPin, IndianRupee, ShieldCheck, Share2, CheckCircle2, Users, Tag, Zap, ChevronDown, AlertTriangle } from 'lucide-react';
 import { playerAPI } from '../../services/api';
 import FaqAccordionList from '../../components/FaqAccordionList';
 
@@ -36,21 +37,26 @@ const CollapsibleSection = ({ title, content }) => {
 };
 
 const MatchBookings = ({ hideHeader }) => {
+  const navigate = useNavigate();
   const [matches,   setMatches]   = useState([]);
   const [booked,    setBooked]    = useState(new Set());
   const [loading,   setLoading]   = useState(true);
   const [bookingId, setBookingId] = useState(null);
+  const [aadharUrl, setAadharUrl] = useState(null); // null = not checked yet, '' = missing
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [matchRes, bookingRes] = await Promise.all([
+      const [matchRes, bookingRes, profileRes] = await Promise.all([
         playerAPI.getAvailableMatches(),
         playerAPI.getMyBookings(),
+        playerAPI.getProfile(),
       ]);
       setMatches(matchRes.data?.matches || []);
       const bookedIds = new Set((bookingRes.data?.bookings || []).map(b => b.match_id));
       setBooked(bookedIds);
+      // Store aadhar_url — empty string means not uploaded
+      setAadharUrl(profileRes.data?.player?.aadhar_url || '');
     } catch (err) {
       console.error('Failed to load matches:', err);
     } finally {
@@ -62,6 +68,27 @@ const MatchBookings = ({ hideHeader }) => {
 
   const handleBook = async (match) => {
     if (booked.has(match.id)) return;
+
+    // ── Aadhaar gate ──────────────────────────────────────────
+    if (!aadharUrl) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Aadhaar Card Required',
+        html: `<p style="color:#cbd5e1;">You must upload your <strong>Aadhaar card</strong> before booking a trial slot.</p>
+               <p style="margin-top:0.5rem;color:#94a3b8;font-size:0.85rem;">Go to <b>My Documents</b> to upload it.</p>`,
+        background: '#0f1629',
+        color: '#fff',
+        confirmButtonColor: '#cbf905',
+        confirmButtonText: '📄 Upload Now',
+        showCancelButton: true,
+        cancelButtonText: 'Cancel',
+        cancelButtonColor: '#374151',
+      }).then((result) => {
+        if (result.isConfirmed) navigate('/dashboard/documents');
+      });
+      return;
+    }
+    // ─────────────────────────────────────────────────────────
     setBookingId(match.id);
     try {
       const res = await playerAPI.createBookingOrder({ matchId: match.id });
