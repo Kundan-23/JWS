@@ -135,7 +135,7 @@ const Landing = () => {
           initial={{ scale: 0.85, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.45, ease: 'easeOut' }}
-          style={{ height: '72px', objectFit: 'contain', marginBottom: '1.5rem', filter: 'drop-shadow(0 4px 16px rgba(203,249,5,0.35))' }}
+          style={{ height: '130px', objectFit: 'contain', marginBottom: '1rem', filter: 'drop-shadow(0 4px 16px rgba(203,249,5,0.35))', borderRadius: 'var(--radius-md)' }}
         />
         <h1 style={{
           fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em',
