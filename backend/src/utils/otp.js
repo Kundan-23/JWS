@@ -1,29 +1,6 @@
 const bcrypt = require('bcryptjs');
 const supabase = require('../config/supabase');
-
-/**
- * Send email via Resend API
- */
-async function sendEmailViaResend(to, subject, htmlContent) {
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      from: `${process.env.RESEND_FROM_NAME || 'JWS Sports'} <${process.env.RESEND_FROM_EMAIL || 'noreply@jwssports.com'}>`,
-      to: [to],
-      subject: subject,
-      html: htmlContent
-    })
-  });
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Resend email failed: ${error}`);
-  }
-  return response.json();
-}
+const { sendEmail: sendEmailViaBrevo } = require('../config/brevo');
 
 const OTP_EXPIRY_MINUTES = 10;
 const MAX_ATTEMPTS = 5;
@@ -75,12 +52,12 @@ async function sendOTP(email, purpose) {
   console.log(`  OTP for ${email}: ${code}  `);
   console.log(`================================\n`);
 
-  // Send email via Resend (catch errors so unverified domains don't crash testing)
+  // Send email via Brevo (catch errors so unverified domains don't crash testing)
   const html = getOTPEmailTemplate(code, purpose);
   try {
-    await sendEmailViaResend(email, getOTPSubject(purpose), html);
+    await sendEmailViaBrevo(email, getOTPSubject(purpose), html);
   } catch (err) {
-    console.error('⚠️ Could not send email via Resend (unverified domain). Check the console above for your OTP.');
+    console.error('⚠️ Could not send email via Brevo. Check the console above for your OTP.', err.message);
   }
 
   return { expiresIn: OTP_EXPIRY_MINUTES * 60 };

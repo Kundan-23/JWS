@@ -16,8 +16,8 @@ async function sendEmail(to, subject, html) {
     'https://api.brevo.com/v3/smtp/email',
     {
       sender: {
-        name:  process.env.BREVO_FROM_NAME  || 'GICL Sports',
-        email: process.env.BREVO_FROM_EMAIL || 'noreply@giclsports.com',
+        name:  process.env.BREVO_FROM_NAME  || 'JWS Sports',
+        email: process.env.BREVO_FROM_EMAIL || 'noreply@jwssports.com',
       },
       to: [{ email: to }],
       subject,
