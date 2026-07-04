@@ -198,17 +198,7 @@ const Login = () => {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        flex: 1, 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        padding: '2.5rem 1.5rem',
-        background: 'linear-gradient(135deg, #513b8a 0%, #cbf905 100%)',
-        borderRadius: 'var(--radius-2xl)',
-        boxShadow: 'inset 0 0 60px rgba(0, 0, 0, 0.2)'
-      }}>
+      style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center', alignItems: 'center', padding: '1rem', width: '100%' }}>
 
       <div style={{ 
         backgroundColor: '#20163b', 

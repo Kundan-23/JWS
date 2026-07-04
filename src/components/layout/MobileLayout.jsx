@@ -56,14 +56,14 @@ const MobileLayout = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-color)' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, #513b8a 0%, #cbf905 100%)' }}>
       {/* Header/Nav */}
       <header style={{ position: 'sticky', top: 0, zIndex: 40, backgroundColor: 'var(--bg-surface)', borderBottom: '1px solid var(--border-subtle)', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <img src={appLogoUrl || "/logo/logo.png"} alt="JWS Sports Logo" style={{ maxWidth: '100%', maxHeight: '80px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
       </header>
 
       {/* Main App Container */}
-      <div className="app-container" style={{ minHeight: 'auto', flex: 1, boxShadow: 'none' }}>
+      <div className="app-container" style={{ minHeight: 'auto', flex: 1, boxShadow: 'none', backgroundColor: 'transparent' }}>
         <main style={{ flex: 1, padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
           <Outlet />
         </main>
