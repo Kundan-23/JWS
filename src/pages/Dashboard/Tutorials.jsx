@@ -90,7 +90,7 @@ const Tutorials = () => {
     }
     try {
       await trainingAPI.submitAttempt(attemptLink);
-      Swal.fire({ icon: 'success', title: 'Success!', text: 'Attempt submitted! Pending coach approval.', background: 'var(--bg-surface)', color: 'var(--text-primary)' });
+      Swal.fire({ icon: 'success', title: 'Success!', text: 'Attempt submitted! Pending selector approval.', background: 'var(--bg-surface)', color: 'var(--text-primary)' });
       setAttemptStatus('Pending');
       setAttemptLink('');
     } catch (err) {
@@ -111,7 +111,7 @@ const Tutorials = () => {
         currency: data.currency,
         order_id: data.orderId,
         name: 'GICL Advance Training',
-        description: 'Unlock premium coach uploads',
+        description: 'Unlock premium selector uploads',
         handler: async function (response) {
           try {
             await paymentAPI.verifyAdvancePayment(response);
@@ -252,9 +252,9 @@ const Tutorials = () => {
             <div style={{ backgroundColor: 'rgba(255, 199, 44, 0.1)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--brand-primary)', textAlign: 'center' }}>
               <h3 style={{ color: 'var(--brand-primary)', marginBottom: '0.5rem' }}>Video Submitted for Approval</h3>
               {!allocatedCoachId ? (
-                <p style={{ color: 'var(--text-secondary)' }}>Your video is in the queue. Please wait for a coach to be allotted to review your video. Once approved, your dashboard will unlock.</p>
+                <p style={{ color: 'var(--text-secondary)' }}>Your video is in the queue. Please wait for a selector to be allotted to review your video. Once approved, your dashboard will unlock.</p>
               ) : (
-                <p style={{ color: 'var(--text-secondary)' }}>Your allotted coach is currently reviewing your video. Once approved, your dashboard will unlock.</p>
+                <p style={{ color: 'var(--text-secondary)' }}>Your allotted selector is currently reviewing your video. Once approved, your dashboard will unlock.</p>
               )}
             </div>
           ) : (
@@ -298,9 +298,9 @@ const Tutorials = () => {
       {!hasUnlockedAdvance ? (
         <div style={{ backgroundColor: 'var(--bg-surface)', padding: '2rem', borderRadius: 'var(--radius-xl)', textAlign: 'center', border: '1px solid var(--brand-accent)' }}>
           <Unlock size={48} color="var(--brand-accent)" style={{ margin: '0 auto 1rem auto' }} />
-          <h3 className="heading-3">Unlock Premium Coach Content</h3>
-          <p className="text-secondary" style={{ marginTop: '0.5rem', maxWidth: '500px', margin: '0.5rem auto 1.5rem' }}>
-            Pay a small one-time fee to unlock exclusive advanced training videos uploaded directly by expert coaches.
+          <h3 className="heading-3">Unlock Premium Selector Content</h3>
+          <p className="text-secondary" style={{ marginTop: '0.25rem', marginBottom: '1.5rem', fontSize: '0.85rem' }}>
+            Pay a small one-time fee to unlock exclusive advanced training videos uploaded directly by expert selectors.
           </p>
           <button className="btn-primary" onClick={handlePayment} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', width: 'auto', padding: '0.75rem 2rem' }}>
             <CreditCard size={20} /> Pay ₹{advanceFee} to Unlock
@@ -322,7 +322,7 @@ const Tutorials = () => {
                   light={true} // Shows thumbnail before playing
                 />
                 <span style={{ position: 'absolute', top: 10, left: 10, backgroundColor: 'var(--brand-primary)', color: 'var(--bg-color)', fontSize: '0.7rem', fontWeight: 600, padding: '0.2rem 0.5rem', borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', gap: '0.25rem', pointerEvents: 'none' }}>
-                  <Video size={12} /> Coach Video
+                  <Video size={12} /> Selector Video
                 </span>
               </div>
               <h3 className="heading-3" style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>{tutorial.title}</h3>

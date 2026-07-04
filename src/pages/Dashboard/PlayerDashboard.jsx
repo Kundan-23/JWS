@@ -295,21 +295,21 @@ const PlayerDashboard = () => {
           <p style={{ fontSize: '0.8rem', marginTop: '0.75rem', opacity: 0.9 }}>Junior World Cup Series 2026</p>
         </div>
 
-        {/* Coach Card */}
+        {/* Selector Card */}
         {dashboardState.allocatedCoach && (
           <div style={{ backgroundColor: 'var(--bg-surface)', padding: '1.5rem', borderRadius: 'var(--radius-xl)', border: '1px solid var(--brand-primary)', position: 'relative', overflow: 'hidden' }}>
-            <p style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Your Allocated Coach</p>
+            <p style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Your Allocated Selector</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <div style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: 'var(--bg-surface-elevated)', overflow: 'hidden', flexShrink: 0, border: '2px solid var(--brand-primary)' }}>
                 {dashboardState.allocatedCoach.profile_photo_url ? (
-                  <img src={dashboardState.allocatedCoach.profile_photo_url} alt="Coach Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src={dashboardState.allocatedCoach.profile_photo_url} alt="Selector Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
                   <User size={30} color="var(--text-secondary)" style={{ margin: '15px' }} />
                 )}
               </div>
               <div>
                 <h3 className="heading-3" style={{ margin: 0, fontSize: '1.25rem' }}>{dashboardState.allocatedCoach.first_name} {dashboardState.allocatedCoach.last_name}</h3>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>{dashboardState.allocatedCoach.city || 'GICL'} • {dashboardState.allocatedCoach.coaching_history ? 'Pro' : 'Official'} Coach</p>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>{dashboardState.allocatedCoach.city || 'JWS'} • JWS Official Selector</p>
                 <button onClick={() => setShowCoachModal(true)} style={{ background: 'none', border: 'none', padding: 0, marginTop: '0.5rem', color: 'var(--brand-primary)', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}>View Details</button>
               </div>
             </div>
@@ -551,14 +551,14 @@ const PlayerDashboard = () => {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '2rem' }}>
             <div style={{ width: '100px', height: '100px', borderRadius: '50%', backgroundColor: 'var(--bg-surface-elevated)', overflow: 'hidden', border: '3px solid var(--brand-primary)', marginBottom: '1rem' }}>
               {dashboardState.allocatedCoach.profile_photo_url ? (
-                <img src={dashboardState.allocatedCoach.profile_photo_url} alt="Coach Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={dashboardState.allocatedCoach.profile_photo_url} alt="Selector Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
                 <User size={50} color="var(--text-secondary)" style={{ margin: '25px' }} />
               )}
             </div>
-            <h2 className="heading-2" style={{ marginBottom: '0.25rem' }}>Coach {dashboardState.allocatedCoach.first_name} {dashboardState.allocatedCoach.last_name}</h2>
+            <h2 className="heading-2" style={{ marginBottom: '0.25rem' }}>Selector {dashboardState.allocatedCoach.first_name} {dashboardState.allocatedCoach.last_name}</h2>
             <span style={{ backgroundColor: 'rgba(203,249,5,0.1)', color: 'var(--brand-primary)', padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-full)', fontSize: '0.85rem', fontWeight: 600 }}>
-              GICL Official Coach
+              JWS Official Selector
             </span>
           </div>
 
@@ -569,10 +569,10 @@ const PlayerDashboard = () => {
               </div>
               <details style={{ backgroundColor: 'var(--bg-color)', padding: '1rem', borderRadius: 'var(--radius-md)', transition: 'all 0.2s' }}>
                 <summary style={{ cursor: 'pointer', fontWeight: 600, outline: 'none', userSelect: 'none' }} className="text-small text-secondary">
-                  Coaching History
+                  Selector Profile / Experience
                 </summary>
                 <div style={{ maxHeight: '150px', overflowY: 'auto', marginTop: '0.75rem', paddingRight: '0.5rem' }}>
-                  <p style={{ fontSize: '0.9rem', lineHeight: 1.6, color: 'var(--text-primary)', whiteSpace: 'pre-wrap' }}>{dashboardState.allocatedCoach.coaching_history || 'Professional Coaching Experience'}</p>
+                  <p style={{ fontSize: '0.9rem', lineHeight: 1.6, color: 'var(--text-primary)', whiteSpace: 'pre-wrap' }}>{dashboardState.allocatedCoach.coaching_history || 'Professional Selector Experience'}</p>
                 </div>
               </details>
 

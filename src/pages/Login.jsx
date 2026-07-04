@@ -341,14 +341,6 @@ const Login = () => {
           )}
 
         </AnimatePresence>
-
-        {/* Coach link */}
-        {mode !== 'forgot' && (
-          <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-            Are you a Coach?{' '}
-            <Link to="/coach-onboarding" style={{ color: 'var(--brand-primary)' }}>Apply here</Link>
-          </p>
-        )}
       </div>
     </motion.div>
   );
