@@ -56,7 +56,7 @@ const MobileLayout = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, #513b8a 0%, #2a1d4e 65%, #cbf905 100%)' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'radial-gradient(ellipse 60% 50% at 0% 0%, rgba(100, 60, 180, 0.4) 0%, transparent 70%), radial-gradient(ellipse 55% 45% at 100% 100%, rgba(180, 240, 0, 0.18) 0%, transparent 65%), #1a1035' }}>
       {/* Header/Nav */}
       <header style={{ position: 'sticky', top: 0, zIndex: 40, backgroundColor: 'var(--bg-surface)', borderBottom: '1px solid var(--border-subtle)', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <img src={appLogoUrl || "/logo/logonew.png"} alt="JWS Sports Logo" style={{ maxWidth: '100%', maxHeight: '120px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
