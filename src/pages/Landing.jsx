@@ -142,7 +142,7 @@ const Landing = () => {
           color: '#fff', marginBottom: '0.4rem',
           textShadow: '0 2px 12px rgba(0,0,0,0.6)',
         }}>
-          Welcome to JWS Sports
+          Welcome to JWS Sports 2026
         </h1>
         <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', fontWeight: 400 }}>
           Select your role to continue onboarding.
@@ -172,7 +172,7 @@ const Landing = () => {
         >
           <ShieldAlert size={44} color={coachHover ? '#a3b4ff' : 'rgba(163,180,255,0.85)'} strokeWidth={1.5} />
           <div>
-            <div style={{ fontSize: '1.1rem', fontWeight: 700, letterSpacing: '-0.01em' }}>I am a Coach</div>
+            <div style={{ fontSize: '1.1rem', fontWeight: 700, letterSpacing: '-0.01em' }}>I am a Selector</div>
             <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginTop: '0.2rem' }}>Access squad management & analytics</div>
           </div>
         </button>
