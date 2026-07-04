@@ -1,0 +1,46 @@
+{
+  "name": "gicl-backend",
+  "version": "1.0.0",
+  "description": "GICL Sports Platform — Enterprise Backend API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "postinstall": "npx puppeteer browsers install chrome",
+    "lint": "echo 'No linter configured'"
+  },
+  "keywords": [
+    "gicl",
+    "sports",
+    "cricket",
+    "api"
+  ],
+  "author": "GICL Sports",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "@sparticuz/chromium": "^149.0.0",
+    "@supabase/supabase-js": "^2.107.0",
+    "axios": "^1.17.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "exceljs": "^4.4.0",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "googleapis": "^173.0.0",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.11.0",
+    "multer": "^2.1.1",
+    "nodemailer": "^8.0.10",
+    "puppeteer": "^25.1.0",
+    "puppeteer-core": "^25.1.0",
+    "qrcode": "^1.5.4",
+    "razorpay": "^2.9.6",
+    "uuid": "^14.0.0",
+    "zod": "^4.4.3"
+  }
+}

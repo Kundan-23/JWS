@@ -1,0 +1,22 @@
+# GICL Sports Backend — .gitignore
+
+# Dependencies
+node_modules/
+
+# Environment secrets — NEVER commit this!
+.env
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+dist/
+build/
+
+# Puppeteer cache
+.local-chromium/
