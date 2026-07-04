@@ -201,22 +201,22 @@ const Login = () => {
       style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center', alignItems: 'center', padding: '1rem', width: '100%' }}>
 
       <div style={{ 
-        backgroundColor: '#2a1d4e', 
+        backgroundColor: '#20163b', 
         padding: '2rem', 
         borderRadius: 'var(--radius-xl)',
         width: '100%', 
         maxWidth: '400px', 
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 24px 48px rgba(0, 0, 0, 0.55)'
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        boxShadow: '0 24px 48px rgba(0, 0, 0, 0.45)'
       }}>
 
         {/* Mode Toggle: Login / Register */}
-        <div style={{ display: 'flex', backgroundColor: '#1a1035', padding: '0.25rem',
+        <div style={{ display: 'flex', backgroundColor: '#160e2b', padding: '0.25rem',
           borderRadius: 'var(--radius-lg)', marginBottom: '2rem' }}>
           {['login', 'register'].map((m) => (
             <button key={m} onClick={() => switchMode(m)}
               style={{ flex: 1, padding: '0.5rem', borderRadius: 'var(--radius-md)', fontWeight: 600, transition: 'all 0.2s',
-                backgroundColor: mode === m ? '#2a1d4e' : 'transparent',
+                backgroundColor: mode === m ? '#20163b' : 'transparent',
                 color: mode === m ? 'var(--brand-primary)' : 'var(--text-secondary)' }}>
               {m === 'login' ? 'Login' : 'Register'}
             </button>
