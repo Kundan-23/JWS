@@ -110,7 +110,7 @@ const DashboardLayout = () => {
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <div style={{ width: '100%', aspectRatio: '1/1', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: 'var(--radius-md)' }}>
-            <img src={appLogoUrl || "/logo/logo.png"} alt="JWS Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <img src={appLogoUrl || "/logo/logonew.png"} alt="JWS Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
           <button onClick={() => setIsSidebarOpen(false)} style={{ background: 'none', color: 'var(--text-secondary)', flexShrink: 0 }} className="close-btn-mobile">
             <X size={24} />

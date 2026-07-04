@@ -130,7 +130,7 @@ const Landing = () => {
       {/* Logo + headline */}
       <div style={{ textAlign: 'center', marginBottom: '2.5rem', paddingTop: '0.5rem' }}>
         <motion.img
-          src="/logo/logo.png"
+          src="/logo/logonew.png"
           alt="JWS Sports Logo"
           initial={{ scale: 0.85, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -142,7 +142,7 @@ const Landing = () => {
           color: '#fff', marginBottom: '0.4rem',
           textShadow: '0 2px 12px rgba(0,0,0,0.6)',
         }}>
-          Welcome to JWS Sports 2026
+          Welcome to JWS 2026
         </h1>
         <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', fontWeight: 400 }}>
           Select your role to continue onboarding.
