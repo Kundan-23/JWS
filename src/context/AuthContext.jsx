@@ -30,13 +30,19 @@ export function AuthProvider({ children }) {
         localStorage.setItem('jws_user', JSON.stringify(freshUser));
         setUser(freshUser);
       })
-      .catch(() => {
-        // Token invalid / deleted from Supabase → clear everything
-        localStorage.removeItem('jws_token');
-        localStorage.removeItem('jws_refresh_token');
-        localStorage.removeItem('jws_user');
-        setToken(null);
-        setUser(null);
+      .catch((err) => {
+        // Only clear session on a confirmed 401 (invalid/expired token).
+        // Do NOT clear on network errors (CORS, backend down, etc.)
+        // so the user stays logged in if we can't reach the server.
+        if (err.response?.status === 401) {
+          localStorage.removeItem('jws_token');
+          localStorage.removeItem('jws_refresh_token');
+          localStorage.removeItem('jws_user');
+          setToken(null);
+          setUser(null);
+        } else {
+          console.warn('[AuthContext] Could not validate token with server (network/CORS error). Using cached session.');
+        }
       })
       .finally(() => setLoading(false));
   }, []);

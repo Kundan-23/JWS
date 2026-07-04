@@ -1,7 +1,21 @@
 import axios from 'axios';
 
+// Determine the correct API base URL:
+// 1. Use the VITE_API_URL environment variable if explicitly set
+// 2. If running on localhost, use local backend
+// 3. Otherwise (production Vercel deploy), never fall back to localhost
+const getBaseURL = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return 'http://localhost:3000/api';
+  }
+  // Fallback for production if env var was not set — warn developer
+  console.error('[api.js] VITE_API_URL is not set! Please configure it in Vercel environment variables.');
+  return '/api'; // relative path as last resort
+};
+
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+  baseURL: getBaseURL(),
   headers: { 'Content-Type': 'application/json' },
 });
 
