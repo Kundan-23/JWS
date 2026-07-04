@@ -198,25 +198,35 @@ const Login = () => {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-      style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center', alignItems: 'center', padding: '1rem' }}>
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        padding: '2.5rem 1.5rem',
+        background: 'linear-gradient(135deg, #513b8a 0%, #cbf905 100%)',
+        borderRadius: 'var(--radius-2xl)',
+        boxShadow: 'inset 0 0 60px rgba(0, 0, 0, 0.2)'
+      }}>
 
       <div style={{ 
-        backgroundColor: 'var(--bg-surface)', 
+        backgroundColor: '#20163b', 
         padding: '2rem', 
         borderRadius: 'var(--radius-xl)',
         width: '100%', 
         maxWidth: '400px', 
-        border: '1px solid var(--bg-surface-elevated)',
-        boxShadow: 'var(--shadow-xl)'
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.45)'
       }}>
 
         {/* Mode Toggle: Login / Register */}
-        <div style={{ display: 'flex', backgroundColor: 'var(--bg-color)', padding: '0.25rem',
+        <div style={{ display: 'flex', backgroundColor: '#160e2b', padding: '0.25rem',
           borderRadius: 'var(--radius-lg)', marginBottom: '2rem' }}>
           {['login', 'register'].map((m) => (
             <button key={m} onClick={() => switchMode(m)}
               style={{ flex: 1, padding: '0.5rem', borderRadius: 'var(--radius-md)', fontWeight: 600, transition: 'all 0.2s',
-                backgroundColor: mode === m ? 'var(--bg-surface)' : 'transparent',
+                backgroundColor: mode === m ? '#20163b' : 'transparent',
                 color: mode === m ? 'var(--brand-primary)' : 'var(--text-secondary)' }}>
               {m === 'login' ? 'Login' : 'Register'}
             </button>
