@@ -213,7 +213,9 @@ const PlayerDashboard = () => {
   const poorVideo = uploadedVideos.find(v => v.review_flag === 'poor');
   const selectedVideo = uploadedVideos.find(v => v.review_flag === 'good' || v.review_flag === 'best');
   const isSelected = !!selectedVideo;
-  const isRejected = !isSelected && !!poorVideo;
+  const hasPendingVideos = uploadedVideos.some(v => v.status === 'Pending');
+  const isRejected = !isSelected && !!poorVideo && !hasPendingVideos;
+  const isUnderReview = !isSelected && (hasPendingVideos || (uploadedVideos.length > 0 && !isRejected));
   const hasBookedMatch = dashboardState.upcomingMatches && dashboardState.upcomingMatches.length > 0;
 
   return (
@@ -503,6 +505,17 @@ const PlayerDashboard = () => {
                     </div>
                   );
                 }
+              }
+
+              if (isUnderReview) {
+                return (
+                  <div style={{ padding: '1rem', borderRadius: 'var(--radius-lg)', backgroundColor: 'rgba(234, 179, 8, 0.1)', border: '1px solid rgba(234, 179, 8, 0.2)' }}>
+                    <p style={{ fontWeight: 700, color: '#eab308', marginBottom: '0.5rem' }}>Under Review</p>
+                    <p className="text-secondary text-small" style={{ lineHeight: '1.4', margin: 0 }}>
+                      Your videos have been submitted. A Selector will review them soon.
+                    </p>
+                  </div>
+                );
               }
 
               if (isRejected) {
