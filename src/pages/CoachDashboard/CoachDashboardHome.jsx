@@ -101,7 +101,7 @@ const CoachDashboardHome = () => {
             <ArrowRight size={20} color="var(--text-secondary)" />
           </div>
           <h3 className="heading-3" style={{ marginBottom: '0.5rem' }}>Video Scrutiny</h3>
-          <p className="text-small text-secondary">Review gameplay footage uploaded by your allocated players.</p>
+          <p className="text-small text-secondary">Review batting & bowling videos uploaded by your allocated players.</p>
         </div>
 
       </div>

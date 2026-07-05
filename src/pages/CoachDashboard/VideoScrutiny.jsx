@@ -29,7 +29,7 @@ const VideoScrutiny = () => {
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
       <div style={{ marginBottom: '2rem' }}>
         <h1 className="heading-1">Video Scrutiny</h1>
-        <p className="text-secondary" style={{ marginTop: '0.5rem' }}>Review gameplay footage uploaded by your allocated players.</p>
+        <p className="text-secondary" style={{ marginTop: '0.5rem' }}>Review batting & bowling videos uploaded by your allocated players.</p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>

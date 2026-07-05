@@ -3,12 +3,9 @@ import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
 import { playerAPI } from '../../services/api';
 import { Camera, Plus, Link as LinkIcon, Trash2, CheckCircle, Video, Upload } from 'lucide-react';
-
 const categories = [
   { id: 'batting',  label: 'Batting' },
-  { id: 'bowling',  label: 'Bowling' },
-  { id: 'fielding', label: 'Fielding' },
-  { id: 'wk',       label: 'Wicket Keeping' }
+  { id: 'bowling',  label: 'Bowling' }
 ];
 
 const GameplayUpload = () => {
@@ -48,13 +45,13 @@ const GameplayUpload = () => {
   const handleSave = async () => {
     const totalLinks = Object.values(links).reduce((acc, curr) => acc + curr.length, 0);
     if (totalLinks === 0) {
-      Swal.fire({ icon: 'warning', title: 'No Links Added', text: 'Add at least one Instagram gameplay link.', background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: '#cbf905' });
+      Swal.fire({ icon: 'warning', title: 'No Links Added', text: 'Add at least one Instagram batting or bowling video link.', background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: '#cbf905' });
       return;
     }
     setSubmitting(true);
     try {
       await playerAPI.updateProfile({ gameplayLinks: links });
-      Swal.fire({ icon: 'success', title: 'Gameplay Links Saved! 🎉', text: 'Your videos have been submitted to the selectors for review.', background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: '#cbf905', timer: 2000, showConfirmButton: false });
+      Swal.fire({ icon: 'success', title: 'Video Links Saved! 🎉', text: 'Your videos have been submitted to the selectors for review.', background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: '#cbf905', timer: 2000, showConfirmButton: false });
     } catch (err) {
       Swal.fire({ icon: 'error', title: 'Error', text: err.response?.data?.message || 'Failed to save. Try again.', background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: '#cbf905' });
     } finally { setSubmitting(false); }
@@ -72,7 +69,7 @@ const GameplayUpload = () => {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
       <div style={{ marginBottom: '1.5rem' }}>
-        <h1 className="heading-1">Upload My Gameplay</h1>
+        <h1 className="heading-1">Upload Batting & Bowling Videos</h1>
         <p className="text-body" style={{ marginTop: '0.5rem', color: 'var(--text-secondary)' }}>
           Share your best Instagram cricket videos with JWS Selectors. Max 2 links per category.
         </p>
@@ -83,7 +80,7 @@ const GameplayUpload = () => {
           <Camera size={20} color="#E1306C" /> Upload from Instagram
         </h3>
         <p className="text-small" style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-          Paste your Instagram post or reel links below. Selectors will review these videos for trial selection.
+          Paste your Instagram post or reel links below. Selectors will review these videos.
         </p>
 
         {/* Category Selector */}
@@ -99,7 +96,7 @@ const GameplayUpload = () => {
                 fontSize: '0.875rem',
                 fontWeight: currentCategory === cat.id ? 600 : 400
               }}>
-              {cat.label} ({links[cat.id].length}/2)
+              {cat.label} ({links[cat.id]?.length || 0}/2)
             </button>
           ))}
         </div>
@@ -115,10 +112,10 @@ const GameplayUpload = () => {
               onChange={e => setCurrentLink(e.target.value)}
               style={{ border: 'none', backgroundColor: 'transparent' }}
               onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddLink())}
-              disabled={links[currentCategory].length >= 2}
+              disabled={(links[currentCategory]?.length || 0) >= 2}
             />
           </div>
-          <button className="btn-secondary" onClick={handleAddLink} disabled={links[currentCategory].length >= 2}
+          <button className="btn-secondary" onClick={handleAddLink} disabled={(links[currentCategory]?.length || 0) >= 2}
             style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: 'auto', padding: '0 1.5rem', whiteSpace: 'nowrap' }}>
             <Plus size={18} /> Add
           </button>
@@ -128,7 +125,7 @@ const GameplayUpload = () => {
         {totalLinksCount > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             {categories.map(cat => {
-              if (links[cat.id].length === 0) return null;
+              if (!links[cat.id] || links[cat.id].length === 0) return null;
               return (
                 <div key={cat.id}>
                   <h4 style={{ fontWeight: 600, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--brand-primary)', fontSize: '0.9rem' }}>
@@ -155,7 +152,7 @@ const GameplayUpload = () => {
       <button className="btn-primary" onClick={handleSave} disabled={submitting}
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem' }}>
         <Upload size={20} />
-        {submitting ? 'Saving...' : 'Save Gameplay Links'}
+        {submitting ? 'Saving...' : 'Save Video Links'}
       </button>
     </motion.div>
   );

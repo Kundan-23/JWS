@@ -41,7 +41,7 @@ const DashboardLayout = () => {
   ];
 
   if (!poorVideo) {
-    navLinks.push({ name: 'Upload My Gameplay', path: '/dashboard/gameplay', icon: <Upload size={20} /> });
+    navLinks.push({ name: 'Upload Batting & Bowling Videos', path: '/dashboard/gameplay', icon: <Upload size={20} /> });
   }
 
   navLinks.push({ name: 'My Documents', path: '/dashboard/documents', icon: <FileText size={20} /> });

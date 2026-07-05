@@ -292,7 +292,7 @@ const PlayerDashboard = () => {
           <h2 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0, lineHeight: 1.2, fontFamily: 'monospace', letterSpacing: '0.05em' }}>
             {basicInfo.giclId || 'PENDING'}
           </h2>
-          <p style={{ fontSize: '0.8rem', marginTop: '0.75rem', opacity: 0.9 }}>Junior World Cup Series 2026</p>
+          <p style={{ fontSize: '0.8rem', marginTop: '0.75rem', opacity: 0.9 }}>Junior World Series 2026</p>
         </div>
 
         {/* Selector Card */}
@@ -524,14 +524,14 @@ const PlayerDashboard = () => {
                 <div style={{ padding: '1rem', borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--bg-surface-elevated)', border: '1px solid var(--bg-surface-elevated)' }}>
                   <p style={{ fontWeight: 700, color: '#ef4444', marginBottom: '0.5rem' }}>Not Selected</p>
                   <p className="text-secondary text-small" style={{ lineHeight: '1.4', marginBottom: '1rem' }}>
-                    You are not selected yet. Please upload your gameplay videos under "Upload My Gameplay" in the sidebar to begin your selector review.
+                    You are not selected yet. Please upload your videos under "Upload Batting & Bowling Videos" in the sidebar to begin your selector review.
                   </p>
                   <button 
                     className="btn-primary" 
                     onClick={() => navigate('/dashboard/gameplay')}
                     style={{ width: '100%', fontSize: '0.875rem', padding: '0.6rem 1rem' }}
                   >
-                    Upload Gameplay Videos
+                    Upload Batting & Bowling Videos
                   </button>
                 </div>
               );

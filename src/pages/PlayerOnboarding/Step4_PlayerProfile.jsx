@@ -233,7 +233,7 @@ const Step4_PlayerProfile = () => {
           <Controller
             name="instagramLink"
             control={control}
-            rules={{ required: 'Instagram Link is compulsory for tracking gameplay videos' }}
+            rules={{ required: 'Instagram Link is compulsory for tracking batting & bowling videos' }}
             render={({ field }) => (
               <div className="form-group" style={{ marginBottom: '1.5rem' }}>
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

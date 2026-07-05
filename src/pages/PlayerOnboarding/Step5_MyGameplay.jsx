@@ -81,13 +81,13 @@ const Step5_Complete = () => {
         Your JWS player profile has been successfully set up.
       </p>
       <p className="text-small" style={{ color: 'var(--text-secondary)', marginBottom: '2rem', maxWidth: '320px' }}>
-        You can upload your gameplay videos and documents from your dashboard after registration.
+        You can upload your batting & bowling videos and documents from your dashboard after registration.
       </p>
 
       {/* Feature highlights */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2.5rem', width: '100%', maxWidth: '320px' }}>
         {[
-          'Upload gameplay videos for selectors',
+          'Upload batting & bowling videos for selectors',
           'Upload your Aadhaar card',
           'Book upcoming offline trials',
           'Track your selection status'
