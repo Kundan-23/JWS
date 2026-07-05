@@ -105,7 +105,7 @@ const VideoScrutiny = () => {
 
               {/* Actual Video Player */}
               <div style={{ width: '100%', aspectRatio: '16/9', backgroundColor: '#000', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', overflow: 'hidden', position: 'relative' }}>
-                {selectedVideo.url && selectedVideo.url.match(/(youtube\.com|youtu\.be|vimeo\.com|soundcloud\.com|twitch\.tv|dailymotion\.com|facebook\.com|wistia\.com|\.mp4|\.webm|\.ogg)/i) ? (
+                {selectedVideo.url && selectedVideo.url.match(/(youtube\.com|youtu\.be|vimeo\.com|soundcloud\.com|twitch\.tv|dailymotion\.com|facebook\.com|wistia\.com|instagram\.com|instagr\.am|\.mp4|\.webm|\.ogg)/i) ? (
                   <ReactPlayer 
                     url={selectedVideo.url.startsWith('http') ? selectedVideo.url : `https://${selectedVideo.url}`} 
                     controls 
