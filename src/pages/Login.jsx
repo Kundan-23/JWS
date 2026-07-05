@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Swal from 'sweetalert2';
 import { authAPI } from '../services/api';
@@ -9,7 +9,9 @@ const RESEND_SECONDS = 60;
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { saveSession, isAuthenticated, role } = useAuth();
+  const targetRole = location.state?.role || 'player';
 
   // Redirect if ALREADY logged in when page first loads
   useEffect(() => {
@@ -211,22 +213,24 @@ const Login = () => {
       }}>
 
         {/* Mode Toggle: Login / Register */}
-        <div style={{ display: 'flex', backgroundColor: '#160e2b', padding: '0.25rem',
-          borderRadius: 'var(--radius-lg)', marginBottom: '2rem' }}>
-          {['login', 'register'].map((m) => (
-            <button key={m} onClick={() => switchMode(m)}
-              style={{ flex: 1, padding: '0.5rem', borderRadius: 'var(--radius-md)', fontWeight: 600, transition: 'all 0.2s',
-                backgroundColor: mode === m ? '#20163b' : 'transparent',
-                color: mode === m ? 'var(--brand-primary)' : 'var(--text-secondary)' }}>
-              {m === 'login' ? 'Login' : 'Register'}
-            </button>
-          ))}
-        </div>
+        {targetRole !== 'coach' && (
+          <div style={{ display: 'flex', backgroundColor: '#160e2b', padding: '0.25rem',
+            borderRadius: 'var(--radius-lg)', marginBottom: '2rem' }}>
+            {['login', 'register'].map((m) => (
+              <button key={m} onClick={() => switchMode(m)}
+                style={{ flex: 1, padding: '0.5rem', borderRadius: 'var(--radius-md)', fontWeight: 600, transition: 'all 0.2s',
+                  backgroundColor: mode === m ? '#20163b' : 'transparent',
+                  color: mode === m ? 'var(--brand-primary)' : 'var(--text-secondary)' }}>
+                {m === 'login' ? 'Login' : 'Register'}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <h1 className="heading-1" style={{ fontSize: '1.5rem', marginBottom: '0.4rem' }}>
-            {mode === 'login'    && 'Welcome Back 👋'}
+            {mode === 'login'    && (targetRole === 'coach' ? 'Selector Login' : 'Welcome Back 👋')}
             {mode === 'register' && 'Create Account'}
             {mode === 'forgot'   && 'Reset Password'}
           </h1>
