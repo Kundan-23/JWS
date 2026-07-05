@@ -187,6 +187,23 @@ const VideoScrutiny = () => {
                       </div>
                     )}
                   </div>
+                  {isInstagram && (
+                    <div style={{ 
+                      marginTop: '0.75rem', 
+                      backgroundColor: 'rgba(203, 249, 5, 0.08)', 
+                      border: '1px solid rgba(203, 249, 5, 0.2)', 
+                      padding: '0.75rem', 
+                      borderRadius: 'var(--radius-md)', 
+                      display: 'flex', 
+                      gap: '0.5rem', 
+                      alignItems: 'flex-start' 
+                    }}>
+                      <AlertCircle size={16} style={{ color: 'var(--brand-primary)', flexShrink: 0, marginTop: '0.1rem' }} />
+                      <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.35 }}>
+                        <strong>Instagram Playback Note:</strong> Instagram restricts inline playback of reels on third-party sites (especially those with copyrighted music). If it shows "Watch on Instagram", please click it to view the gameplay video in a new tab.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Right Side: Form & Controls */}
