@@ -413,8 +413,8 @@ const Step2_BasicRegistration = () => {
             rules={{ required: 'Required' }}
             render={({ field }) => (
               <div className="form-group" style={{ marginBottom: '1rem' }}>
-                <label className="form-label">Emergency Contact Name *</label>
-                <input {...field} className="form-input" placeholder="Enter full name" />
+                <label className="form-label">Parent/Guardian Name *</label>
+                <input {...field} className="form-input" placeholder="Parent/Guardian name" />
                 {errors.emergencyContactName && <span className="form-error">{errors.emergencyContactName.message}</span>}
               </div>
             )}
@@ -430,7 +430,7 @@ const Step2_BasicRegistration = () => {
               }}
               render={({ field }) => (
                 <div className="form-group">
-                  <label className="form-label">Emergency Phone *</label>
+                  <label className="form-label">Parent/Guardian Number *</label>
                   <PhoneInput
                     international
                     defaultCountry="IN"

@@ -361,10 +361,6 @@ const PlayerDashboard = () => {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
               <span className="text-small text-secondary">Parent / Guardian</span>
-              <span style={{ fontWeight: 500 }}>{basicInfo.parentName || 'N/A'}</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
-              <span className="text-small text-secondary">Emergency Contact</span>
               <span style={{ fontWeight: 500, fontSize: '0.9rem' }}>{basicInfo.emergencyContactName || 'N/A'} ({basicInfo.emergencyContact || 'N/A'})</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>

@@ -74,7 +74,8 @@ const EditPlayerModal = ({ player, onClose, onSave }) => {
           
           <div style={{ gridColumn: '1 / -1', marginTop: '0.5rem' }}><h4 style={{ color: 'var(--brand-primary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Personal Info</h4></div>
           <div><label style={labelStyle}>Blood Group</label><input value={form.blood_group || ''} onChange={e => setForm({...form, blood_group: e.target.value})} style={inputStyle} /></div>
-          <div><label style={labelStyle}>Emergency Phone</label><PhoneInput defaultCountry="IN" value={form.emergency_contact || ''} onChange={val => setForm({...form, emergency_contact: val})} style={inputStyle} /></div>
+          <div><label style={labelStyle}>Parent/Guardian Name</label><input value={form.emergency_contact_name || ''} onChange={e => setForm({...form, emergency_contact_name: e.target.value})} style={inputStyle} /></div>
+          <div><label style={labelStyle}>Parent/Guardian Number</label><PhoneInput defaultCountry="IN" value={form.emergency_contact || ''} onChange={val => setForm({...form, emergency_contact: val})} style={inputStyle} /></div>
           <div><label style={labelStyle}>Height (cm)</label><input type="number" value={form.height || ''} onChange={e => setForm({...form, height: e.target.value})} style={inputStyle} /></div>
           <div><label style={labelStyle}>Weight (kg)</label><input type="number" value={form.weight || ''} onChange={e => setForm({...form, weight: e.target.value})} style={inputStyle} /></div>
           
@@ -331,7 +332,8 @@ const PlayerDetail = () => {
             } 
           />
           <InfoRow label="Blood Group" value={player.blood_group} />
-          <InfoRow label="Emergency Phone" value={player.emergency_contact || '—'} />
+          <InfoRow label="Parent/Guardian Name" value={player.emergency_contact_name} />
+          <InfoRow label="Parent/Guardian Number" value={player.emergency_contact} />
         </Section>
 
         <Section title="Address" icon={Mail}>
