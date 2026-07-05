@@ -14,6 +14,24 @@ const VideoScrutiny = () => {
   const pendingVideos = videos.filter(v => v.status === 'Pending');
   const reviewedVideos = videos.filter(v => v.status === 'Reviewed');
 
+  const isInstagram = selectedVideo?.url && (selectedVideo.url.includes('instagram.com') || selectedVideo.url.includes('instagr.am'));
+
+  const getInstagramEmbedUrl = (url) => {
+    if (!url) return '';
+    let cleanUrl = url.trim();
+    if (!cleanUrl.startsWith('http')) {
+      cleanUrl = 'https://' + cleanUrl;
+    }
+    cleanUrl = cleanUrl.split('?')[0];
+    if (!cleanUrl.endsWith('/')) {
+      cleanUrl += '/';
+    }
+    if (!cleanUrl.endsWith('/embed/')) {
+      cleanUrl += 'embed/';
+    }
+    return cleanUrl;
+  };
+
   const handleReviewSubmit = () => {
     if (!reviewText.trim() || !reviewFlag) {
       alert("Please enter feedback and select a tag.");
@@ -104,8 +122,32 @@ const VideoScrutiny = () => {
               </div>
 
               {/* Actual Video Player */}
-              <div style={{ width: '100%', aspectRatio: '16/9', backgroundColor: '#000', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', overflow: 'hidden', position: 'relative' }}>
-                {selectedVideo.url && selectedVideo.url.match(/(youtube\.com|youtu\.be|vimeo\.com|soundcloud\.com|twitch\.tv|dailymotion\.com|facebook\.com|wistia\.com|instagram\.com|instagr\.am|\.mp4|\.webm|\.ogg)/i) ? (
+              <div style={{ 
+                width: '100%', 
+                aspectRatio: isInstagram ? '4/5' : '16/9', 
+                maxHeight: isInstagram ? '450px' : 'none', 
+                backgroundColor: '#000', 
+                borderRadius: 'var(--radius-md)', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                marginBottom: '1.5rem', 
+                overflow: 'hidden', 
+                position: 'relative' 
+              }}>
+                {isInstagram ? (
+                  <iframe 
+                    src={getInstagramEmbedUrl(selectedVideo.url)} 
+                    width="100%" 
+                    height="100%" 
+                    frameBorder="0" 
+                    scrolling="no" 
+                    allowTransparency="true"
+                    allow="encrypted-media"
+                    style={{ position: 'absolute', top: 0, left: 0, border: 0 }}
+                  />
+                ) : selectedVideo.url && selectedVideo.url.match(/(youtube\.com|youtu\.be|vimeo\.com|soundcloud\.com|twitch\.tv|dailymotion\.com|facebook\.com|wistia\.com|\.mp4|\.webm|\.ogg)/i) ? (
                   <ReactPlayer 
                     url={selectedVideo.url.startsWith('http') ? selectedVideo.url : `https://${selectedVideo.url}`} 
                     controls 
@@ -116,7 +158,7 @@ const VideoScrutiny = () => {
                 ) : (
                   <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
                     <Video size={48} style={{ margin: '0 auto 1rem auto', opacity: 0.5 }} />
-                    <p style={{ marginBottom: '1rem', fontSize: '0.9rem' }}>This video is hosted externally (e.g. Google Drive, Instagram) and cannot be embedded.</p>
+                    <p style={{ marginBottom: '1rem', fontSize: '0.9rem' }}>This video is hosted externally (e.g. Google Drive) and cannot be embedded.</p>
                     <a 
                       href={selectedVideo.url?.startsWith('http') ? selectedVideo.url : `https://${selectedVideo.url}`} 
                       target="_blank" 
