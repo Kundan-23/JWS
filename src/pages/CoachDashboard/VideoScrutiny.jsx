@@ -114,7 +114,7 @@ const VideoScrutiny = () => {
             <motion.div 
               className="modal-content"
               initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
-              style={{ maxWidth: '600px', width: '100%' }}
+              style={{ maxWidth: '600px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <h3 className="heading-2">Reviewing: {selectedVideo.playerName}</h3>
@@ -124,15 +124,15 @@ const VideoScrutiny = () => {
               {/* Actual Video Player */}
               <div style={{ 
                 width: '100%', 
-                aspectRatio: isInstagram ? '4/5' : '16/9', 
-                maxHeight: isInstagram ? '450px' : 'none', 
+                aspectRatio: isInstagram ? '1/1' : '16/9', 
+                maxHeight: '340px', 
+                margin: '0 auto 1.5rem auto',
                 backgroundColor: '#000', 
                 borderRadius: 'var(--radius-md)', 
                 display: 'flex', 
                 flexDirection: 'column', 
                 alignItems: 'center', 
                 justifyContent: 'center', 
-                marginBottom: '1.5rem', 
                 overflow: 'hidden', 
                 position: 'relative' 
               }}>
