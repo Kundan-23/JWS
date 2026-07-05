@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCoachStore } from '../../store/useCoachStore';
-import { Video, CheckCircle, MessageSquare, ExternalLink } from 'lucide-react';
+import { Video, CheckCircle, MessageSquare, ExternalLink, AlertCircle } from 'lucide-react';
 import ReactPlayerRaw from 'react-player';
 const ReactPlayer = ReactPlayerRaw.default || ReactPlayerRaw;
 
