@@ -23,6 +23,16 @@ const VideoScrutiny = () => {
       cleanUrl = 'https://' + cleanUrl;
     }
     cleanUrl = cleanUrl.split('?')[0];
+
+    const shortcodeRegex = /\/(p|reel)\/([A-Za-z0-9_-]+)/;
+    const match = cleanUrl.match(shortcodeRegex);
+
+    if (match) {
+      const type = match[1];
+      const shortcode = match[2];
+      return `https://www.instagram.com/${type}/${shortcode}/embed/`;
+    }
+
     if (!cleanUrl.endsWith('/')) {
       cleanUrl += '/';
     }
