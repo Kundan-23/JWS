@@ -446,10 +446,9 @@ const Step2_BasicRegistration = () => {
             <Controller
               name="bloodGroup"
               control={control}
-              rules={{ required: 'Required' }}
               render={({ field }) => (
                 <div className="form-group">
-                  <label className="form-label">Blood Group *</label>
+                  <label className="form-label">Blood Group</label>
                   <select {...field} className="form-input">
                     <option value="">--Select--</option>
                     <option value="A+">A+</option>
@@ -461,7 +460,6 @@ const Step2_BasicRegistration = () => {
                     <option value="AB+">AB+</option>
                     <option value="AB-">AB-</option>
                   </select>
-                  {errors.bloodGroup && <span className="form-error">{errors.bloodGroup.message}</span>}
                 </div>
               )}
             />
