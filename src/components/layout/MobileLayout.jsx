@@ -71,7 +71,7 @@ const MobileLayout = () => {
         alignItems: 'center', 
         justifyContent: 'space-between' 
       }}>
-        <img src={appLogoUrl || "/logo/logonew.png"} alt="JWS Sports Logo" style={{ maxWidth: '100%', maxHeight: '44px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
+        <img src={appLogoUrl || "/logo/logonew.png"} alt="JWS Sports Logo" style={{ maxWidth: '100%', maxHeight: '70px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
       </header>
 
       {/* Main App Container */}
