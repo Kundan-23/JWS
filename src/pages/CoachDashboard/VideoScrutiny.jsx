@@ -114,89 +114,101 @@ const VideoScrutiny = () => {
             <motion.div 
               className="modal-content"
               initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
-              style={{ maxWidth: '600px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}
+              style={{ maxWidth: '920px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <h3 className="heading-2">Reviewing: {selectedVideo.playerName}</h3>
-                <button onClick={() => setSelectedVideo(null)} style={{ background: 'none', color: 'var(--text-secondary)' }}>Close</button>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '1rem' }}>
+                <h3 className="heading-2" style={{ margin: 0 }}>Reviewing: {selectedVideo.playerName}</h3>
+                <button onClick={() => setSelectedVideo(null)} style={{ background: 'none', color: 'var(--text-secondary)', fontWeight: 600 }}>Close</button>
               </div>
 
-              {/* Actual Video Player */}
-              <div style={{ 
-                width: '100%', 
-                aspectRatio: isInstagram ? '1/1' : '16/9', 
-                maxHeight: '340px', 
-                margin: '0 auto 1.5rem auto',
-                backgroundColor: '#000', 
-                borderRadius: 'var(--radius-md)', 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                overflow: 'hidden', 
-                position: 'relative' 
-              }}>
-                {isInstagram ? (
-                  <iframe 
-                    src={getInstagramEmbedUrl(selectedVideo.url)} 
-                    width="100%" 
-                    height="100%" 
-                    frameBorder="0" 
-                    scrolling="no" 
-                    allowTransparency="true"
-                    allow="encrypted-media"
-                    style={{ position: 'absolute', top: 0, left: 0, border: 0 }}
-                  />
-                ) : selectedVideo.url && selectedVideo.url.match(/(youtube\.com|youtu\.be|vimeo\.com|soundcloud\.com|twitch\.tv|dailymotion\.com|facebook\.com|wistia\.com|\.mp4|\.webm|\.ogg)/i) ? (
-                  <ReactPlayer 
-                    url={selectedVideo.url.startsWith('http') ? selectedVideo.url : `https://${selectedVideo.url}`} 
-                    controls 
-                    width="100%" 
-                    height="100%" 
-                    style={{ position: 'absolute', top: 0, left: 0 }}
-                  />
-                ) : (
-                  <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                    <Video size={48} style={{ margin: '0 auto 1rem auto', opacity: 0.5 }} />
-                    <p style={{ marginBottom: '1rem', fontSize: '0.9rem' }}>This video is hosted externally (e.g. Google Drive) and cannot be embedded.</p>
-                    <a 
-                      href={selectedVideo.url?.startsWith('http') ? selectedVideo.url : `https://${selectedVideo.url}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="btn-primary"
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}
-                    >
-                      Watch on External Site <ExternalLink size={16} />
-                    </a>
+              {/* Side-by-Side Flex Layout */}
+              <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'stretch' }}>
+                
+                {/* Left Side: Video Container */}
+                <div style={{ flex: '1 1 420px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div style={{ 
+                    width: '100%', 
+                    aspectRatio: isInstagram ? '1/1' : '16/9', 
+                    maxHeight: '340px', 
+                    margin: '0 auto',
+                    backgroundColor: '#000', 
+                    borderRadius: 'var(--radius-md)', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    overflow: 'hidden', 
+                    position: 'relative' 
+                  }}>
+                    {isInstagram ? (
+                      <iframe 
+                        src={getInstagramEmbedUrl(selectedVideo.url)} 
+                        width="100%" 
+                        height="100%" 
+                        frameBorder="0" 
+                        scrolling="no" 
+                        allowTransparency="true"
+                        allow="encrypted-media"
+                        style={{ position: 'absolute', top: 0, left: 0, border: 0 }}
+                      />
+                    ) : selectedVideo.url && selectedVideo.url.match(/(youtube\.com|youtu\.be|vimeo\.com|soundcloud\.com|twitch\.tv|dailymotion\.com|facebook\.com|wistia\.com|\.mp4|\.webm|\.ogg)/i) ? (
+                      <ReactPlayer 
+                        url={selectedVideo.url.startsWith('http') ? selectedVideo.url : `https://${selectedVideo.url}`} 
+                        controls 
+                        width="100%" 
+                        height="100%" 
+                        style={{ position: 'absolute', top: 0, left: 0 }}
+                      />
+                    ) : (
+                      <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                        <Video size={48} style={{ margin: '0 auto 1rem auto', opacity: 0.5 }} />
+                        <p style={{ marginBottom: '1rem', fontSize: '0.9rem' }}>This video is hosted externally (e.g. Google Drive) and cannot be embedded.</p>
+                        <a 
+                          href={selectedVideo.url?.startsWith('http') ? selectedVideo.url : `https://${selectedVideo.url}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="btn-primary"
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}
+                        >
+                          Watch on External Site <ExternalLink size={16} />
+                        </a>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <MessageSquare size={16} /> Selector Feedback
-                </label>
-                <textarea 
-                  className="form-input" 
-                  rows={4} 
-                  placeholder="Leave detailed text feedback regarding footwork, bat speed, or general technique..."
-                  value={reviewText}
-                  onChange={(e) => setReviewText(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group" style={{ marginTop: '1rem' }}>
-                <label className="form-label">Video Tag</label>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                  <button onClick={() => setReviewFlag('poor')} style={{ flex: 1, padding: '0.75rem', borderRadius: 'var(--radius-md)', border: `2px solid ${reviewFlag === 'poor' ? '#ef4444' : 'transparent'}`, backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', fontWeight: 600, transition: 'all 0.2s' }}>Poor</button>
-                  <button onClick={() => setReviewFlag('good')} style={{ flex: 1, padding: '0.75rem', borderRadius: 'var(--radius-md)', border: `2px solid ${reviewFlag === 'good' ? '#eab308' : 'transparent'}`, backgroundColor: 'rgba(234, 179, 8, 0.1)', color: '#eab308', fontWeight: 600, transition: 'all 0.2s' }}>Good</button>
-                  <button onClick={() => setReviewFlag('best')} style={{ flex: 1, padding: '0.75rem', borderRadius: 'var(--radius-md)', border: `2px solid ${reviewFlag === 'best' ? '#10b981' : 'transparent'}`, backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#10b981', fontWeight: 600, transition: 'all 0.2s' }}>Best</button>
                 </div>
-              </div>
 
-              <button className="btn-primary" style={{ width: '100%', marginTop: '1.5rem' }} onClick={handleReviewSubmit} disabled={!reviewText.trim() || !reviewFlag}>
-                {reviewFlag === 'poor' ? 'Reject & Submit Scrutiny' : 'Approve & Submit Scrutiny'}
-              </button>
+                {/* Right Side: Form & Controls */}
+                <div style={{ flex: '1 1 360px', display: 'flex', flexDirection: 'column', gap: '1.25rem', justifyContent: 'space-between' }}>
+                  
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <MessageSquare size={16} /> Selector Feedback
+                    </label>
+                    <textarea 
+                      className="form-input" 
+                      rows={5} 
+                      placeholder="Leave detailed text feedback regarding footwork, bat speed, or general technique..."
+                      value={reviewText}
+                      onChange={(e) => setReviewText(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Video Tag</label>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                      <button onClick={() => setReviewFlag('poor')} style={{ flex: 1, padding: '0.75rem', borderRadius: 'var(--radius-md)', border: `2px solid ${reviewFlag === 'poor' ? '#ef4444' : 'transparent'}`, backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', fontWeight: 600, transition: 'all 0.2s' }}>Poor</button>
+                      <button onClick={() => setReviewFlag('good')} style={{ flex: 1, padding: '0.75rem', borderRadius: 'var(--radius-md)', border: `2px solid ${reviewFlag === 'good' ? '#eab308' : 'transparent'}`, backgroundColor: 'rgba(234, 179, 8, 0.1)', color: '#eab308', fontWeight: 600, transition: 'all 0.2s' }}>Good</button>
+                      <button onClick={() => setReviewFlag('best')} style={{ flex: 1, padding: '0.75rem', borderRadius: 'var(--radius-md)', border: `2px solid ${reviewFlag === 'best' ? '#10b981' : 'transparent'}`, backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#10b981', fontWeight: 600, transition: 'all 0.2s' }}>Best</button>
+                    </div>
+                  </div>
+
+                  <button className="btn-primary" style={{ width: '100%', marginTop: '0.5rem' }} onClick={handleReviewSubmit} disabled={!reviewText.trim() || !reviewFlag}>
+                    {reviewFlag === 'poor' ? 'Reject & Submit Scrutiny' : 'Approve & Submit Scrutiny'}
+                  </button>
+
+                </div>
+
+              </div>
             </motion.div>
           </motion.div>
         )}
