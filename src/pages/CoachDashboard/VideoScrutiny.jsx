@@ -126,10 +126,12 @@ const VideoScrutiny = () => {
                 
                 {/* Left Side: Video Container */}
                 <div style={{ flex: '1 1 420px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  {/* Actual Video Player */}
                   <div style={{ 
                     width: '100%', 
-                    aspectRatio: isInstagram ? '1/1' : '16/9', 
-                    maxHeight: '340px', 
+                    maxWidth: isInstagram ? '345px' : 'none',
+                    aspectRatio: isInstagram ? '3/4' : '16/9', 
+                    height: isInstagram ? '460px' : 'auto',
                     margin: '0 auto',
                     backgroundColor: '#000', 
                     borderRadius: 'var(--radius-md)', 
