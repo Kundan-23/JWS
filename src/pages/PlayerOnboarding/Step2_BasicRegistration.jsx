@@ -20,13 +20,54 @@ const Step2_BasicRegistration = () => {
   const [photoFile, setPhotoFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [pincodeState, setPincodeState] = useState({ loading: false, stateName: '', stateCode: '', error: '' });
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
-  const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm({
+  const { control, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm({
     defaultValues: { ...basicInfo, email: basicInfo.email || user?.email || '', middleName: basicInfo.middleName || '' },
     mode: 'onBlur'
   });
 
   const dobValue = watch('dob');
+
+  // Fetch saved profile from database on mount to populate form
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const res = await playerAPI.getProfile();
+        if (res.data?.player) {
+          const player = res.data.player;
+          const mapped = {
+            firstName: player.first_name || '',
+            middleName: player.middle_name || '',
+            lastName: player.last_name || '',
+            dob: player.dob || '',
+            gender: player.gender || '',
+            whatsapp: player.whatsapp || '',
+            emergencyContact: player.emergency_contact || '',
+            emergencyContactName: player.emergency_contact_name || '',
+            bloodGroup: player.blood_group || '',
+            parentName: player.parent_name || '',
+            addressLine1: player.address_line1 || '',
+            addressLine2: player.address_line2 || '',
+            city: player.city || '',
+            country: player.country || '',
+            zipCode: player.zip_code || '',
+            jerseySize: player.jersey_size || '',
+            instagramLink: player.instagram_link || '',
+            email: player.email || user?.email || '',
+            profilePhotoUrl: player.profile_photo_url || '',
+          };
+          updateBasicInfo(mapped);
+          reset(mapped);
+        }
+      } catch (err) {
+        console.error('Failed to load profile from backend:', err);
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+    loadProfile();
+  }, [reset, updateBasicInfo, user?.email]);
 
 
   // Calculate age when DOB changes
@@ -115,9 +156,49 @@ const Step2_BasicRegistration = () => {
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPhotoFile(file);
       const reader = new FileReader();
-      reader.onloadend = () => { setValue('profilePhotoUrl', reader.result); };
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const max_size = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > max_size) {
+              height *= max_size / width;
+              width = max_size;
+            }
+          } else {
+            if (height > max_size) {
+              width *= max_size / height;
+              height = max_size;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob((blob) => {
+            if (blob) {
+              // Convert blob to File object so it can be uploaded via FormData
+              const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              });
+              setPhotoFile(compressedFile);
+              
+              const base64Reader = new FileReader();
+              base64Reader.onloadend = () => { setValue('profilePhotoUrl', base64Reader.result); };
+              base64Reader.readAsDataURL(compressedFile);
+            }
+          }, 'image/jpeg', 0.7);
+        };
+        img.src = event.target.result;
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -146,6 +227,14 @@ const Step2_BasicRegistration = () => {
         background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: '#cbf905' });
     } finally { setSubmitting(false); }
   };
+
+  if (loadingProfile) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '50vh', color: '#fff' }}>
+        <p style={{ fontWeight: 600, fontSize: '1rem' }}>Loading registration details...</p>
+      </div>
+    );
+  }
 
   return (
     <motion.div 

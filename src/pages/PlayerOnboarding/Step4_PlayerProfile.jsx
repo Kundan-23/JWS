@@ -29,6 +29,7 @@ const Step4_PlayerProfile = () => {
   const [zoomLevel, setZoomLevel] = useState(1);
   const [customPosition, setCustomPosition] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   
   // Calculate age from dob
   const [calculatedAge, setCalculatedAge] = useState('');
@@ -45,7 +46,7 @@ const Step4_PlayerProfile = () => {
     }
   }, [basicInfo.dob]);
 
-  const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm({
+  const { control, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm({
     defaultValues: { 
       ...playerProfile, 
       age: calculatedAge,
@@ -69,6 +70,60 @@ const Step4_PlayerProfile = () => {
     },
     mode: 'onBlur'
   });
+
+  // Fetch saved profile from database on mount to populate form
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const res = await playerAPI.getProfile();
+        if (res.data?.player) {
+          const player = res.data.player;
+          
+          // Map array / styles safely
+          const mapped = {
+            height: player.height || '',
+            weight: player.weight || '',
+            battingStyle: player.batting_style || '',
+            bowlingStyle: player.bowling_style || '',
+            clubAssociated: player.club_associated || 'no',
+            clubsDetails: Array.isArray(player.clubs_details) ? player.clubs_details : [],
+            ballsSelected: Array.isArray(player.balls_selected) ? player.balls_selected : [],
+            fieldPositions: Array.isArray(player.field_positions) ? player.field_positions : [],
+            instagramLink: player.instagram_link || '',
+            age: playerProfile.age || '',
+          };
+
+          if (player.dob) {
+            const birthDate = new Date(player.dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+              age--;
+            }
+            mapped.age = age.toString();
+            setCalculatedAge(age);
+          }
+
+          // Handle default order mapping for cricket history
+          const defaultOrder = ['Taluka', 'District', 'State', 'National', 'International', 'Other'];
+          const existing = Array.isArray(player.cricket_history) ? player.cricket_history : [];
+          mapped.cricketHistory = defaultOrder.map(level => {
+            const found = existing.find(e => e.level === level);
+            return found ? found : { level, matches: 0 };
+          });
+
+          updatePlayerProfile(mapped);
+          reset(mapped);
+        }
+      } catch (err) {
+        console.error('Failed to load profile from backend:', err);
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+    loadProfile();
+  }, [reset, updatePlayerProfile, user]);
 
   const watchBallsSelected = watch('ballsSelected') || [];
   const watchClubAssociated = watch('clubAssociated');
@@ -146,6 +201,14 @@ const Step4_PlayerProfile = () => {
         background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: '#cbf905' });
     } finally { setSubmitting(false); }
   };
+
+  if (loadingProfile) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '50vh', color: '#fff' }}>
+        <p style={{ fontWeight: 600, fontSize: '1rem' }}>Loading profile details...</p>
+      </div>
+    );
+  }
 
   return (
     <motion.div 

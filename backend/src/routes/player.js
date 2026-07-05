@@ -34,6 +34,7 @@ const profileUpdateSchema = z.object({
   gender:           z.string().optional(),
   whatsapp:         z.string().optional(),
   emergencyContact: z.string().optional(),
+  emergencyContactName: z.string().optional(),
   bloodGroup:       z.string().optional(),
   parentName:       z.string().optional(),
   addressLine1:     z.string().optional(),
