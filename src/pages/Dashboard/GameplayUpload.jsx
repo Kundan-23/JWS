@@ -178,7 +178,7 @@ const GameplayUpload = () => {
                           allowTransparency="true" 
                           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                           title="Instagram Video Preview"
-                          style={{ border: 'none', overflow: 'hidden' }}
+                          style={{ border: 'none', overflow: 'hidden', pointerEvents: 'none' }}
                         />
                       </div>
                     </div>
