@@ -161,6 +161,14 @@ const GameplayUpload = () => {
 
                       {/* Video Preview */}
                       <div style={{ position: 'relative', width: '100%', maxWidth: '320px', height: '360px', borderRadius: 8, overflow: 'hidden', backgroundColor: '#000', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        {/* Transparent click link overlay to bypass mobile iframe click blocks */}
+                        <a 
+                          href={link} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10, cursor: 'pointer' }}
+                          title="Watch on Instagram"
+                        />
                         <iframe 
                           src={getInstagramEmbedUrl(link)} 
                           width="100%" 
