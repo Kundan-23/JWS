@@ -145,7 +145,7 @@ const MatchModal = ({ match, onClose, onSave }) => {
       <div onClick={onClose} style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }} />
       <div style={{ position: 'relative', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-subtle)', padding: '2rem', width: '100%', maxWidth: 520, boxShadow: 'var(--shadow-lg)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h2 className="heading-2">{match ? 'Edit Match' : 'Schedule Match'}</h2>
+          <h2 className="heading-2">{match ? 'Edit Selection Trial' : 'Schedule Selection Trial'}</h2>
           <button onClick={onClose} style={{ background: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex' }}><X size={22} /></button>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-subtle)' }}>
@@ -176,7 +176,7 @@ const MatchModal = ({ match, onClose, onSave }) => {
                 <input required value={form.title} onChange={e => set('title', e.target.value)} style={inputStyle} placeholder="e.g. Sunday Practice Slot" />
               </div>
               <div>
-                <label style={labelStyle}>Match Type</label>
+                <label style={labelStyle}>Trial Type</label>
                 <DarkSelect
                   value={form.match_type}
                   options={MATCH_TYPES}
@@ -254,7 +254,7 @@ const MatchModal = ({ match, onClose, onSave }) => {
                 <input value={form.venue} onChange={e => set('venue', e.target.value)} style={inputStyle} placeholder="Ground / location" />
               </div>
               <div>
-                <label style={labelStyle}>About the Match</label>
+                <label style={labelStyle}>About the Trial</label>
                 <textarea value={form.description} onChange={e => set('description', e.target.value)} rows={3} style={{ ...inputStyle, resize: 'vertical' }} placeholder="Optional notes…" />
               </div>
               
@@ -280,7 +280,7 @@ const MatchModal = ({ match, onClose, onSave }) => {
               </div>
               <div>
                 <label style={labelStyle}>Terms & Conditions / Rules</label>
-                <textarea value={form.rules || ''} onChange={e => set('rules', e.target.value)} rows={3} style={{ ...inputStyle, resize: 'vertical' }} placeholder="Optional rules or terms for this match…" />
+                <textarea value={form.rules || ''} onChange={e => set('rules', e.target.value)} rows={3} style={{ ...inputStyle, resize: 'vertical' }} placeholder="Optional rules or terms for this trial…" />
               </div>
             </>
           )}
@@ -423,23 +423,23 @@ const Matches = () => {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
         <div>
-          <h1 className="heading-1">Matches</h1>
-          <p className="text-secondary" style={{ marginTop: '0.35rem' }}>Schedule and manage GICL matches.</p>
+          <h1 className="heading-1">Selection Trials</h1>
+          <p className="text-secondary" style={{ marginTop: '0.35rem' }}>Schedule and manage JWS selection trials.</p>
         </div>
         <button
           onClick={() => setModal('add')}
           style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.7rem 1.4rem', borderRadius: 'var(--radius-md)', background: 'var(--brand-primary)', color: '#121A3F', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', border: 'none', boxShadow: '0 4px 12px rgba(203,249,5,0.25)', transition: 'all 0.15s' }}
         >
-          <Plus size={18} /> Schedule Match
+          <Plus size={18} /> Schedule Trial
         </button>
       </div>
 
       <div style={{ backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto' }}>
           {loading ? (
-            <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading matches…</div>
+            <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading trials…</div>
           ) : matches.length === 0 ? (
-            <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-secondary)' }}>No matches scheduled yet.</div>
+            <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-secondary)' }}>No selection trials scheduled yet.</div>
           ) : (
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
@@ -561,7 +561,7 @@ const Matches = () => {
                                 bookingsLoading ? (
                                   <p style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: '1rem' }}>Loading bookings...</p>
                                 ) : bookings.length === 0 ? (
-                                  <p style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: '1rem' }}>No player bookings yet for this match.</p>
+                                  <p style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: '1rem' }}>No player bookings yet for this trial.</p>
                                 ) : (
                                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto auto', gap: '0.5rem 1rem', padding: '0.5rem 0.75rem', fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
