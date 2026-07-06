@@ -1,3 +1,5 @@
+const path         = require('path');
+const ExcelJS      = require('exceljs');
 const supabase     = require('../config/supabase');
 const asyncHandler = require('../utils/asyncHandler');
 const { createNotification } = require('./notificationController');
@@ -63,6 +65,86 @@ exports.getPlayers = asyncHandler(async (req, res) => {
   if (error) throw new Error(error.message);
 
   res.json({ success: true, players: players || [], total: count, page: Number(page), limit: Number(limit) });
+});
+
+// ─── GET /api/admin/players/export ────────────────────────────────
+exports.exportPlayers = asyncHandler(async (req, res) => {
+  const { search, plan, payment, status } = req.query;
+
+  let query = supabase
+    .from('players')
+    .select('id, gicl_id, first_name, last_name, middle_name, email, whatsapp, dob, plan, payment_status, city, zip_code, profile_photo_url, aadhar_url')
+    .order('created_at', { ascending: false });
+
+  if (search)  query = query.or(`email.ilike.%${search}%,first_name.ilike.%${search}%,last_name.ilike.%${search}%,gicl_id.ilike.%${search}%`);
+  if (plan)    query = query.eq('plan', plan);
+  if (payment) query = query.eq('payment_status', payment);
+  if (status)  query = query.eq('status', status);
+
+  const { data: players, error } = await query;
+  if (error) throw new Error('Failed to fetch players for export: ' + error.message);
+
+  const templatePath = path.join(__dirname, '..', '..', 'assets', 'JWS_2026_Players.xlsx');
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(templatePath);
+  const worksheet = workbook.worksheets[0];
+
+  // Clean all existing data rows starting from the bottom down to row 2
+  const rowCount = worksheet.rowCount;
+  if (rowCount >= 2) {
+    worksheet.spliceRows(2, rowCount - 1);
+  }
+
+  const now = new Date();
+  players.forEach((p) => {
+    let age = '';
+    if (p.dob) {
+      const birthDate = new Date(p.dob);
+      let calculatedAge = now.getFullYear() - birthDate.getFullYear();
+      const m = now.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && now.getDate() < birthDate.getDate())) {
+        calculatedAge--;
+      }
+      age = calculatedAge;
+    }
+
+    const rowValues = [
+      p.gicl_id || '',
+      p.first_name || '',
+      p.middle_name || '',
+      p.last_name || '',
+      p.dob || '',
+      age,
+      p.whatsapp || '',
+      p.city || '',
+      p.zip_code || '',
+      p.profile_photo_url || '',
+      p.aadhar_url || '',
+    ];
+
+    const newRow = worksheet.addRow(rowValues);
+    newRow.eachCell((cell) => {
+      cell.alignment = { vertical: 'middle', horizontal: 'left' };
+      cell.border = {
+        top: { style: 'thin', color: { argb: 'D3D3D3' } },
+        left: { style: 'thin', color: { argb: 'D3D3D3' } },
+        bottom: { style: 'thin', color: { argb: 'D3D3D3' } },
+        right: { style: 'thin', color: { argb: 'D3D3D3' } }
+      };
+    });
+  });
+
+  res.setHeader(
+    'Content-Type',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  );
+  res.setHeader(
+    'Content-Disposition',
+    'attachment; filename=JWS_2026_Players.xlsx'
+  );
+
+  await workbook.xlsx.write(res);
+  res.end();
 });
 
 // ─── GET /api/admin/players/:id ───────────────────────────────────

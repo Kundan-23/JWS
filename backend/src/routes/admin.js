@@ -15,6 +15,7 @@ router.get('/stats',                                    ctrl.getStats);
 
 // Players
 router.get('/players',                                  ctrl.getPlayers);
+router.get('/players/export',                           ctrl.exportPlayers);
 router.get('/players/:id',                              ctrl.getPlayerDetail);
 router.put('/players/:id',                              ctrl.updatePlayer);
 router.put('/players/:id/status',                       ctrl.updatePlayerStatus);

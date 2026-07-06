@@ -26,6 +26,7 @@ export const adminAPI = {
 
   // Players
   getPlayers:           (params)      => API.get('/admin/players', { params }),
+  exportPlayers:        (params)      => API.get('/admin/players/export', { params, responseType: 'blob' }),
   getPlayerDetail:      (id)          => API.get(`/admin/players/${id}`),
   updatePlayer:         (id, data)    => API.put(`/admin/players/${id}`, data),
   updatePlayerStatus:   (id, status, reason) => API.put(`/admin/players/${id}/status`, { status, reason }),

@@ -71,104 +71,29 @@ const Players = () => {
   // ── Excel Export ──────────────────────────────────────────────────
   const handleExport = async () => {
     try {
-      // 1. Fetch the template file from the public directory
-      const response = await fetch('/JWS_2026_Players.xlsx');
-      if (!response.ok) throw new Error('Failed to fetch template spreadsheet');
-      const arrayBuffer = await response.arrayBuffer();
-
-      // 2. Load the workbook using SheetJS
-      const wb = XLSX.read(arrayBuffer, { type: 'array' });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-
-      // 3. Clear existing placeholder data rows (from row 2 onwards)
-      Object.keys(ws).forEach(key => {
-        if (key[0] === '!') return;
-        const row = parseInt(key.replace(/^[A-Z]+/, ''), 10);
-        if (row >= 2) {
-          delete ws[key];
-        }
+      const res = await adminAPI.exportPlayers({
+        search: search || undefined,
+        payment: payFilter || undefined,
+        status: statusFilter || undefined,
       });
 
-      // 4. Map players into arrays matching the template columns
-      const exportData = players.map(p => [
-        p.gicl_id || '',
-        p.first_name || '',
-        p.middle_name || '',
-        p.last_name || '',
-        p.dob || '',
-        p.dob ? Math.floor((Date.now() - new Date(p.dob)) / (365.25 * 24 * 3600 * 1000)) : '',
-        p.whatsapp || '',
-        p.city || '',
-        p.zip_code || '',
-        p.profile_photo_url || '',
-        p.aadhar_url || '',
-      ]);
-
-      // 5. Add the new dynamic data starting at A2 (below headers)
-      XLSX.utils.sheet_add_aoa(ws, exportData, { origin: "A2" });
-
-      // 6. Recalculate sheet range correctly based on the new length
-      let minRow = 10000000, maxRow = 0;
-      let minCol = 10000000, maxCol = 0;
-      Object.keys(ws).forEach(key => {
-        if (key[0] === '!') return;
-        const row = parseInt(key.replace(/^[A-Z]+/, ''), 10);
-        const colStr = key.replace(/\d+$/, '');
-        let col = 0;
-        for (let i = 0; i < colStr.length; i++) {
-          col = col * 26 + (colStr.charCodeAt(i) - 64);
-        }
-        if (row < minRow) minRow = row;
-        if (row > maxRow) maxRow = row;
-        if (col < minCol) minCol = col;
-        if (col > maxCol) maxCol = col;
-      });
-      if (maxRow === 0) {
-        ws['!ref'] = 'A1:A1';
-      } else {
-        const getColLetter = (c) => {
-          let temp, letter = '';
-          while (c > 0) {
-            temp = (c - 1) % 26;
-            letter = String.fromCharCode(65 + temp) + letter;
-            c = (c - temp - 1) / 26;
-          }
-          return letter;
-        };
-        ws['!ref'] = `${getColLetter(minCol)}${minRow}:${getColLetter(maxCol)}${maxRow}`;
-      }
-
-      // 7. Save and trigger browser download
-      XLSX.writeFile(wb, 'JWS_2026_Players.xlsx');
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'JWS_2026_Players.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     } catch (err) {
       console.error(err);
       Swal.fire({
         icon: 'error',
         title: 'Export Failed',
-        text: 'Could not generate styled Excel sheet. Falling back to default format.',
+        text: 'Failed to download the formatted Excel sheet.',
         background: 'var(--bg-surface)',
         color: 'var(--text-primary)',
         confirmButtonColor: 'var(--brand-primary)',
       });
-
-      // Fallback to standard sheet generation
-      const exportData = players.map(p => ({
-        'JWS ID':       p.gicl_id || '',
-        'FIRST NAME':   p.first_name || '',
-        'MIDDLE NAME':  p.middle_name || '',
-        'LAST NAME':    p.last_name || '',
-        'DATE OF BIRTH': p.dob || '',
-        'AGE':          p.dob ? Math.floor((Date.now() - new Date(p.dob)) / (365.25 * 24 * 3600 * 1000)) : '',
-        'WHATSAPP NUMBER': p.whatsapp || '',
-        'LOCATION':     p.city || '',
-        'PINCODE':      p.zip_code || '',
-        'PROFILE PHOTO LINK': p.profile_photo_url || '',
-        'AADHAAR CARD LINK': p.aadhar_url || '',
-      }));
-      const ws = XLSX.utils.json_to_sheet(exportData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Players');
-      XLSX.writeFile(wb, 'JWS_2026_Players.xlsx');
     }
   };
 
