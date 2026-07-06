@@ -247,7 +247,8 @@ const Config = () => {
           setBallTypes(cfg.ballTypes.map(b => typeof b === 'string' ? { name: b, imageUrl: '' } : b));
         }
         if (Array.isArray(cfg.age_groups)) setAgeGroups(cfg.age_groups);
-        if (cfg.max_players_per_coach !== undefined) setMaxPlayersPerCoach(cfg.max_players_per_coach);
+        if (cfg.max_squad_size !== undefined) setMaxPlayersPerCoach(cfg.max_squad_size);
+        else if (cfg.max_players_per_coach !== undefined) setMaxPlayersPerCoach(cfg.max_players_per_coach);
 
         // Tab 5
         if (cfg.registration_terms !== undefined) setRegTerms(cfg.registration_terms || '');
@@ -1122,7 +1123,7 @@ const Config = () => {
           <Section
             title="Coach Allotment limit"
             description="Set the maximum number of players that can be assigned to a single coach."
-            onSave={() => save('coachAllotment', { max_players_per_coach: parseInt(maxPlayersPerCoach, 10) || 20 })}
+            onSave={() => save('coachAllotment', { max_squad_size: parseInt(maxPlayersPerCoach, 10) || 20 })}
             saving={savingSection === 'coachAllotment'}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

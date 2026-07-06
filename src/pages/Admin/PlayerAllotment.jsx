@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 
 const PlayerAllotment = () => {
   const config = useConfig();
-  const MAX_SQUAD = config.max_players_per_coach || 20;
+  const MAX_SQUAD = config.maxSquadSize || config.max_squad_size || 20;
 
   const [unassigned, setUnassigned]   = useState([]);
   const [coaches, setCoaches]         = useState([]);
