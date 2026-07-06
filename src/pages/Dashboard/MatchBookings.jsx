@@ -28,7 +28,17 @@ const CollapsibleSection = ({ title, content }) => {
         </span>
       </div>
       {isOpen && (
-        <div style={{ padding: '0 0.75rem 0.75rem', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+        <div style={{ 
+          padding: '0.75rem', 
+          fontSize: '0.8rem', 
+          color: 'rgba(255,255,255,0.6)', 
+          lineHeight: 1.5, 
+          whiteSpace: 'pre-wrap',
+          maxHeight: '160px', 
+          overflowY: 'auto',
+          borderTop: '1px solid rgba(255,255,255,0.05)',
+          background: 'rgba(0,0,0,0.1)'
+        }}>
           {content}
         </div>
       )}
@@ -43,6 +53,8 @@ const MatchBookings = ({ hideHeader }) => {
   const [loading,   setLoading]   = useState(true);
   const [bookingId, setBookingId] = useState(null);
   const [aadharUrl, setAadharUrl] = useState(null); // null = not checked yet, '' = missing
+
+  const hasAnyBooking = booked.size > 0;
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -170,7 +182,7 @@ const MatchBookings = ({ hideHeader }) => {
             <p className="text-secondary" style={{ marginTop: '0.35rem' }}>Loading available matches…</p>
           </div>
         )}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.25rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '800px', margin: '0 auto' }}>
           {[1, 2, 3].map(i => (
             <div key={i} style={{ height: 280, borderRadius: 20, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', animation: 'pulse 1.5s ease-in-out infinite' }} />
           ))}
@@ -197,6 +209,26 @@ const MatchBookings = ({ hideHeader }) => {
           </div>
         )}
 
+        {/* Single booking restriction warning banner */}
+        {hasAnyBooking && (
+          <div style={{ 
+            maxWidth: '800px',
+            margin: '0 auto 1.5rem auto', 
+            backgroundColor: 'rgba(239, 68, 68, 0.1)', 
+            border: '1px solid rgba(239, 68, 68, 0.3)', 
+            padding: '0.85rem 1.25rem', 
+            borderRadius: 'var(--radius-lg)', 
+            display: 'flex', 
+            gap: '0.75rem', 
+            alignItems: 'center' 
+          }}>
+            <AlertTriangle size={18} style={{ color: '#ef4444', flexShrink: 0 }} />
+            <p style={{ fontSize: '0.85rem', color: '#f87171', margin: 0, fontWeight: 500, lineHeight: 1.4 }}>
+              You have already booked a selection trial slot. Players are restricted to one active slot booking.
+            </p>
+          </div>
+        )}
+
       {/* Empty state */}
       {matches.length === 0 ? (
         <div style={{ backgroundColor: 'var(--bg-surface)', padding: '5rem 2rem', borderRadius: 20, textAlign: 'center', border: '1px solid var(--border-subtle)' }}>
@@ -205,7 +237,7 @@ const MatchBookings = ({ hideHeader }) => {
           <p className="text-secondary" style={{ marginTop: '0.5rem' }}>Check back soon — new matches will appear here once scheduled.</p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.25rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '800px', margin: '0 auto' }}>
           {matches.map((match, idx) => {
             const isFull    = match.total_slots > 0 && (match.booked_slots || 0) >= match.total_slots;
             const isBooked  = booked.has(match.id);
@@ -336,12 +368,12 @@ const MatchBookings = ({ hideHeader }) => {
 
                   {/* Info rows */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem', marginBottom: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'rgba(255,255,255,0.55)', fontSize: '0.84rem' }}>
-                      <Calendar size={14} style={{ flexShrink: 0 }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#10b981', fontSize: '0.84rem', fontWeight: 500 }}>
+                      <Calendar size={14} style={{ flexShrink: 0, color: '#10b981' }} />
                       <span>{new Date(match.date).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'rgba(255,255,255,0.55)', fontSize: '0.84rem' }}>
-                      <MapPin size={14} style={{ flexShrink: 0 }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#10b981', fontSize: '0.84rem', fontWeight: 500 }}>
+                      <MapPin size={14} style={{ flexShrink: 0, color: '#10b981' }} />
                       <span>{match.venue || '—'}</span>
                     </div>
                   </div>
@@ -437,19 +469,19 @@ const MatchBookings = ({ hideHeader }) => {
                       ) : (
                         <button
                           onClick={() => handleBook(match)}
-                          disabled={isFull || isLoading}
+                          disabled={isFull || isLoading || hasAnyBooking}
                           style={{
                             display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
                             padding: '0.6rem 1.1rem', borderRadius: 10,
-                            background: isFull
+                            background: (isFull || hasAnyBooking)
                               ? 'rgba(255,255,255,0.06)'
                               : isLoading
                                 ? 'rgba(203,249,5,0.7)'
                                 : 'var(--brand-primary)',
-                            color: isFull ? 'rgba(255,255,255,0.3)' : '#121A3F',
+                            color: (isFull || hasAnyBooking) ? 'rgba(255,255,255,0.3)' : '#121A3F',
                             fontWeight: 700, fontSize: '0.84rem',
                             border: 'none',
-                            cursor: isFull || isLoading ? 'not-allowed' : 'pointer',
+                            cursor: (isFull || isLoading || hasAnyBooking) ? 'not-allowed' : 'pointer',
                             transition: 'all 0.15s',
                             whiteSpace: 'nowrap',
                           }}
@@ -458,6 +490,8 @@ const MatchBookings = ({ hideHeader }) => {
                             'Processing…'
                           ) : isFull ? (
                             'Fully Booked'
+                          ) : hasAnyBooking ? (
+                            'Limit Exceeded'
                           ) : (
                             <><ShieldCheck size={15} /> Book — ₹{match.price_per_slot}</>
                           )}
