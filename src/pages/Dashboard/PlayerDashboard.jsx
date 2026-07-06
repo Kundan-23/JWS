@@ -475,7 +475,7 @@ const PlayerDashboard = () => {
                     <div style={{ backgroundColor: 'var(--bg-surface-elevated)', padding: '1.25rem', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(203,249,5,0.15)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                         <span style={{ fontSize: '0.72rem', color: 'var(--brand-primary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', background: 'rgba(203,249,5,0.1)', padding: '0.2rem 0.65rem', borderRadius: 9999, border: '1px solid rgba(203,249,5,0.25)' }}>
-                          {nextMatch.type}
+                          {(nextMatch.type?.toLowerCase() === 'league' || nextMatch.type?.toLowerCase() === 'trial') ? 'Trial' : nextMatch.type}
                         </span>
                         <span style={{ fontSize: '0.72rem', color: '#10b981', fontWeight: 700, textTransform: 'uppercase', background: 'rgba(16,185,129,0.12)', padding: '0.2rem 0.65rem', borderRadius: 9999, border: '1px solid rgba(16,185,129,0.3)' }}>
                           Slot Booked

@@ -105,7 +105,9 @@ const MatchesCalendar = ({ hideHeader }) => {
                 <div style={{ flex: 1, minWidth: '200px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
-                      <p style={{ color: 'var(--brand-accent)', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>{match.type}</p>
+                      <p style={{ color: 'var(--brand-accent)', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                        {(match.type?.toLowerCase() === 'league' || match.type?.toLowerCase() === 'trial') ? 'Trial' : match.type}
+                      </p>
                       <h3 className="heading-3" style={{ marginBottom: '0.75rem' }}>vs {match.opponent}</h3>
                     </div>
                   </div>
@@ -150,7 +152,7 @@ const MatchesCalendar = ({ hideHeader }) => {
                       if (navigator.share) {
                         navigator.share({
                           title: `JWS Selection Trial: ${match.opponent}`,
-                          text: `Join us for the ${match.type} trial against ${match.opponent} on ${matchDate.toLocaleString()} at ${match.location}!`,
+                          text: `Join us for the ${(match.type?.toLowerCase() === 'league' || match.type?.toLowerCase() === 'trial') ? 'Trial' : match.type} trial against ${match.opponent} on ${matchDate.toLocaleString()} at ${match.location}!`,
                           url: window.location.href,
                         }).catch(console.error);
                       } else {

@@ -8,6 +8,7 @@ import FaqAccordionList from '../../components/FaqAccordionList';
 
 const TYPE_COLORS = {
   league:     { bg: '#3b82f6', glow: 'rgba(59,130,246,0.15)' },
+  trial:      { bg: '#3b82f6', glow: 'rgba(59,130,246,0.15)' },
   friendly:   { bg: '#10b981', glow: 'rgba(16,185,129,0.15)' },
   tournament: { bg: '#f59e0b', glow: 'rgba(245,158,11,0.15)' },
 };
@@ -163,7 +164,9 @@ const MatchBookings = ({ hideHeader }) => {
   };
 
   const handleShare = async (match) => {
-    const text = `🏏 ${match.match_type?.toUpperCase()} | ${match.title}\n📅 ${new Date(match.date).toLocaleString('en-IN')}\n📍 ${match.venue}\n💰 ₹${match.price_per_slot}/slot\n\nBook on JWS Sports!`;
+    const isLeague = match.match_type?.toLowerCase() === 'league' || match.match_type?.toLowerCase() === 'trial';
+    const typeLabel = isLeague ? 'TRIAL' : match.match_type?.toUpperCase();
+    const text = `🏏 ${typeLabel} | ${match.title}\n📅 ${new Date(match.date).toLocaleString('en-IN')}\n📍 ${match.venue}\n💰 ₹${match.price_per_slot}/slot\n\nBook on JWS Sports!`;
     if (navigator.share) {
       try { await navigator.share({ title: match.title, text }); } catch { /* cancelled */ }
     } else {
@@ -308,7 +311,7 @@ const MatchBookings = ({ hideHeader }) => {
                         border: `1px solid ${typeColor}50`,
                         textTransform: 'uppercase',
                       }}>
-                        {match.match_type}
+                        {match.match_type?.toLowerCase() === 'league' || match.match_type?.toLowerCase() === 'trial' ? 'Trial' : match.match_type}
                       </span>
                       {/* Age category */}
                       {ageCategory && (

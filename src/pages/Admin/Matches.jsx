@@ -8,10 +8,10 @@ const tdStyle = { padding: '1rem 1.25rem', fontSize: '0.875rem', color: 'var(--t
 const inputStyle = { width: '100%', padding: '0.7rem 0.875rem', backgroundColor: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', color: 'var(--text-primary)', fontSize: '0.875rem' };
 const labelStyle = { display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 500 };
 
-const MATCH_TYPES = ['League', 'Friendly', 'Tournament', 'Practice', 'Intro Match'];
-const MATCH_TYPE_COLORS = { League: '#3b82f6', Friendly: '#10b981', Tournament: '#f59e0b', Practice: '#a78bfa', 'Intro Match': '#f97316' };
+const MATCH_TYPES = ['Trial', 'Friendly', 'Tournament', 'Practice', 'Intro Match'];
+const MATCH_TYPE_COLORS = { Trial: '#3b82f6', Friendly: '#10b981', Tournament: '#f59e0b', Practice: '#a78bfa', 'Intro Match': '#f97316' };
 const AGE_CATEGORIES = ['U-13', 'U-15', 'U-17', 'U-19', 'U-22', 'Open', '35+', '40+', '45+', '50+', '55+', '60+', '65+'];
-const EMPTY = { title: '', date: '', venue: '', match_type: 'League', base_age: 'U-13', gender: 'Boys', description: '', rules: '', price_per_slot: 0, total_slots: 0 };
+const EMPTY = { title: '', date: '', venue: '', match_type: 'Trial', base_age: 'U-13', gender: 'Boys', description: '', rules: '', price_per_slot: 0, total_slots: 0 };
 
 // Custom dark-themed dropdown
 const DarkSelect = ({ value, onChange, options }) => {
@@ -313,8 +313,9 @@ const MatchModal = ({ match, onClose, onSave }) => {
 };
 
 const TypeBadge = ({ type }) => {
-  const key = (type || '').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
-  const colorMap = { League: '#3b82f6', Friendly: '#10b981', Tournament: '#f59e0b', Practice: '#a78bfa', 'Intro Match': '#f97316' };
+  let key = (type || '').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+  if (key === 'League') key = 'Trial';
+  const colorMap = { Trial: '#3b82f6', Friendly: '#10b981', Tournament: '#f59e0b', Practice: '#a78bfa', 'Intro Match': '#f97316' };
   const col = colorMap[key] || '#94a3b8';
   return <span style={{ padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700, backgroundColor: `${col}22`, color: col, border: `1px solid ${col}44` }}>{key}</span>;
 };

@@ -4,7 +4,7 @@ const supabase   = require('../config/supabase');          // ← FIXED: direct 
 const asyncHandler = require('../utils/asyncHandler');
 
 // Types that go through Razorpay player booking
-const BOOKABLE_TYPES = ['league', 'friendly', 'tournament'];
+const BOOKABLE_TYPES = ['league', 'trial', 'friendly', 'tournament'];
 
 const razorpay = new Razorpay({
   key_id:     process.env.RAZORPAY_KEY_ID,
