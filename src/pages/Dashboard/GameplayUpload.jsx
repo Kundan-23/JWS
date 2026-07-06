@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
 import { playerAPI } from '../../services/api';
-import { Camera, Plus, Link as LinkIcon, Trash2, CheckCircle, Video, Upload } from 'lucide-react';
+import { Camera, Plus, Link as LinkIcon, Trash2, CheckCircle, Video, Upload, ExternalLink } from 'lucide-react';
 const categories = [
   { id: 'batting',  label: 'Batting' },
   { id: 'bowling',  label: 'Bowling' }
@@ -147,11 +147,16 @@ const GameplayUpload = () => {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                         <span style={{ fontSize: '0.8rem', color: 'var(--success)', display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
                           <CheckCircle size={14} />
-                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '80%' }}>{link}</span>
+                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '75%' }}>{link}</span>
                         </span>
-                        <button onClick={() => handleRemoveLink(cat.id, idx)} style={{ background: 'none', color: 'var(--error)', flexShrink: 0, marginLeft: '0.5rem', cursor: 'pointer' }}>
-                          <Trash2 size={16} />
-                        </button>
+                        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexShrink: 0 }}>
+                          <a href={link} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand-primary)', display: 'flex', alignItems: 'center', textDecoration: 'none' }} title="Open in Instagram">
+                            <ExternalLink size={16} />
+                          </a>
+                          <button onClick={() => handleRemoveLink(cat.id, idx)} style={{ background: 'none', color: 'var(--error)', flexShrink: 0, cursor: 'pointer' }}>
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </div>
 
                       {/* Video Preview */}
@@ -163,7 +168,7 @@ const GameplayUpload = () => {
                           frameBorder="0" 
                           scrolling="no" 
                           allowTransparency="true" 
-                          allow="encrypted-media"
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                           title="Instagram Video Preview"
                           style={{ border: 'none', overflow: 'hidden' }}
                         />
