@@ -325,3 +325,13 @@ select.form-input {
   background-color: rgba(203, 249, 5, 0.15) !important;
   color: #cbf905 !important;
 }
+
+/* Hide number input spinners globally */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}

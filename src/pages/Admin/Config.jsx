@@ -1016,15 +1016,15 @@ const Config = () => {
                   <div style={{ flex: 3, display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.8rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                       <span style={{ color: 'var(--text-secondary)', width: '30px' }}>Min:</span>
-                      <input type="number" min="0" placeholder="Y" value={minLimit.years} onChange={e => handleUpdateAgeLimit(idx, 'min', 'years', e.target.value)} style={{ width: '45px', ...inputStyle, padding: '0.3rem' }} /> y
-                      <input type="number" min="0" max="11" placeholder="M" value={minLimit.months} onChange={e => handleUpdateAgeLimit(idx, 'min', 'months', e.target.value)} style={{ width: '45px', ...inputStyle, padding: '0.3rem' }} /> m
-                      <input type="number" min="0" max="31" placeholder="D" value={minLimit.days} onChange={e => handleUpdateAgeLimit(idx, 'min', 'days', e.target.value)} style={{ width: '45px', ...inputStyle, padding: '0.3rem' }} /> d
+                      <input type="number" min="0" placeholder="Y" value={minLimit.years} onChange={e => handleUpdateAgeLimit(idx, 'min', 'years', e.target.value)} style={{ width: '50px', ...inputStyle, padding: '0.3rem', textAlign: 'center' }} /> y
+                      <input type="number" min="0" max="11" placeholder="M" value={minLimit.months} onChange={e => handleUpdateAgeLimit(idx, 'min', 'months', e.target.value)} style={{ width: '50px', ...inputStyle, padding: '0.3rem', textAlign: 'center' }} /> m
+                      <input type="number" min="0" max="31" placeholder="D" value={minLimit.days} onChange={e => handleUpdateAgeLimit(idx, 'min', 'days', e.target.value)} style={{ width: '50px', ...inputStyle, padding: '0.3rem', textAlign: 'center' }} /> d
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                       <span style={{ color: 'var(--text-secondary)', width: '30px' }}>Max:</span>
-                      <input type="number" min="0" placeholder="Y" value={maxLimit.years} onChange={e => handleUpdateAgeLimit(idx, 'max', 'years', e.target.value)} style={{ width: '45px', ...inputStyle, padding: '0.3rem' }} /> y
-                      <input type="number" min="0" max="11" placeholder="M" value={maxLimit.months} onChange={e => handleUpdateAgeLimit(idx, 'max', 'months', e.target.value)} style={{ width: '45px', ...inputStyle, padding: '0.3rem' }} /> m
-                      <input type="number" min="0" max="31" placeholder="D" value={maxLimit.days} onChange={e => handleUpdateAgeLimit(idx, 'max', 'days', e.target.value)} style={{ width: '45px', ...inputStyle, padding: '0.3rem' }} /> d
+                      <input type="number" min="0" placeholder="Y" value={maxLimit.years} onChange={e => handleUpdateAgeLimit(idx, 'max', 'years', e.target.value)} style={{ width: '50px', ...inputStyle, padding: '0.3rem', textAlign: 'center' }} /> y
+                      <input type="number" min="0" max="11" placeholder="M" value={maxLimit.months} onChange={e => handleUpdateAgeLimit(idx, 'max', 'months', e.target.value)} style={{ width: '50px', ...inputStyle, padding: '0.3rem', textAlign: 'center' }} /> m
+                      <input type="number" min="0" max="31" placeholder="D" value={maxLimit.days} onChange={e => handleUpdateAgeLimit(idx, 'max', 'days', e.target.value)} style={{ width: '50px', ...inputStyle, padding: '0.3rem', textAlign: 'center' }} /> d
                     </div>
                   </div>
 
@@ -1073,29 +1073,29 @@ const Config = () => {
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <div>
                         <label style={labelStyle}>Min Yrs</label>
-                        <input type="number" value={newAge.minYears} onChange={e => setNewAge(a => ({ ...a, minYears: e.target.value }))} style={{ ...inputStyle, width: '55px' }} placeholder="0" />
+                        <input type="number" value={newAge.minYears} onChange={e => setNewAge(a => ({ ...a, minYears: e.target.value }))} style={{ ...inputStyle, width: '65px', padding: '0.4rem 0.2rem', textAlign: 'center' }} placeholder="0" />
                       </div>
                       <div>
                         <label style={labelStyle}>Min Mos</label>
-                        <input type="number" min="0" max="11" value={newAge.minMonths} onChange={e => setNewAge(a => ({ ...a, minMonths: e.target.value }))} style={{ ...inputStyle, width: '55px' }} placeholder="0" />
+                        <input type="number" min="0" max="11" value={newAge.minMonths} onChange={e => setNewAge(a => ({ ...a, minMonths: e.target.value }))} style={{ ...inputStyle, width: '65px', padding: '0.4rem 0.2rem', textAlign: 'center' }} placeholder="0" />
                       </div>
                       <div>
                         <label style={labelStyle}>Min Days</label>
-                        <input type="number" min="0" max="31" value={newAge.minDays} onChange={e => setNewAge(a => ({ ...a, minDays: e.target.value }))} style={{ ...inputStyle, width: '55px' }} placeholder="0" />
+                        <input type="number" min="0" max="31" value={newAge.minDays} onChange={e => setNewAge(a => ({ ...a, minDays: e.target.value }))} style={{ ...inputStyle, width: '65px', padding: '0.4rem 0.2rem', textAlign: 'center' }} placeholder="0" />
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <div>
                         <label style={labelStyle}>Max Yrs</label>
-                        <input type="number" value={newAge.maxYears} onChange={e => setNewAge(a => ({ ...a, maxYears: e.target.value }))} style={{ ...inputStyle, width: '55px' }} placeholder="99" />
+                        <input type="number" value={newAge.maxYears} onChange={e => setNewAge(a => ({ ...a, maxYears: e.target.value }))} style={{ ...inputStyle, width: '65px', padding: '0.4rem 0.2rem', textAlign: 'center' }} placeholder="99" />
                       </div>
                       <div>
                         <label style={labelStyle}>Max Mos</label>
-                        <input type="number" min="0" max="11" value={newAge.maxMonths} onChange={e => setNewAge(a => ({ ...a, maxMonths: e.target.value }))} style={{ ...inputStyle, width: '55px' }} placeholder="0" />
+                        <input type="number" min="0" max="11" value={newAge.maxMonths} onChange={e => setNewAge(a => ({ ...a, maxMonths: e.target.value }))} style={{ ...inputStyle, width: '65px', padding: '0.4rem 0.2rem', textAlign: 'center' }} placeholder="0" />
                       </div>
                       <div>
                         <label style={labelStyle}>Max Days</label>
-                        <input type="number" min="0" max="31" value={newAge.maxDays} onChange={e => setNewAge(a => ({ ...a, maxDays: e.target.value }))} style={{ ...inputStyle, width: '55px' }} placeholder="0" />
+                        <input type="number" min="0" max="31" value={newAge.maxDays} onChange={e => setNewAge(a => ({ ...a, maxDays: e.target.value }))} style={{ ...inputStyle, width: '65px', padding: '0.4rem 0.2rem', textAlign: 'center' }} placeholder="0" />
                       </div>
                     </div>
                   </div>
@@ -1121,13 +1121,13 @@ const Config = () => {
           </Section>
 
           <Section
-            title="Coach Allotment limit"
-            description="Set the maximum number of players that can be assigned to a single coach."
+            title="Selector Allotment limit"
+            description="Set the maximum number of players that can be assigned to a single selector."
             onSave={() => save('coachAllotment', { max_squad_size: parseInt(maxPlayersPerCoach, 10) || 20 })}
             saving={savingSection === 'coachAllotment'}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <label style={{ fontSize: '0.9rem', fontWeight: 600 }}>Max Players per Coach</label>
+              <label style={{ fontSize: '0.9rem', fontWeight: 600 }}>Max Players per Selector</label>
               <input
                 type="number"
                 value={maxPlayersPerCoach}
@@ -1220,7 +1220,7 @@ const Config = () => {
 
           <Section
             title="Advance Training Unlock Fee"
-            description="Fee required to unlock advanced training videos uploaded by coaches (₹)."
+            description="Fee required to unlock advanced training videos uploaded by selectors (₹)."
             onSave={() => save('advanceFee', { advance_training_fee: Number(advanceFee) })}
             saving={savingSection === 'advanceFee'}
           >
