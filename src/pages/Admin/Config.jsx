@@ -268,6 +268,7 @@ const Config = () => {
     setSavingSection(section);
     try {
       await adminAPI.updateConfig(data);
+      if (refetch) refetch();
       Swal.fire({ icon: 'success', title: 'Saved!', timer: 1200, showConfirmButton: false, background: 'var(--bg-surface)', color: 'var(--text-primary)' });
     } catch (err) {
       Swal.fire({ icon: 'error', title: 'Error', text: err.response?.data?.message || 'Failed to save.', background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: 'var(--brand-primary)' });
@@ -348,6 +349,7 @@ const Config = () => {
   const handleClearLanding = async () => {
     setLandingBg('');
     await adminAPI.updateConfig({ landing_bg_image: '' });
+    if (refetch) refetch();
   };
 
   // ─── App Logo upload ───────────────────────────────────────────────
@@ -453,6 +455,7 @@ const Config = () => {
     const updated = banners.filter((_, i) => i !== idx);
     setBanners(updated);
     await adminAPI.updateConfig({ banners: updated });
+    if (refetch) refetch();
   };
 
   // ─── Ad banner upload ─────────────────────────────────────────────────────
@@ -476,6 +479,7 @@ const Config = () => {
     const updated = adBanners.filter((_, i) => i !== idx);
     setAdBanners(updated);
     await adminAPI.updateConfig({ ad_banners: updated });
+    if (refetch) refetch();
   };
 
   // ─── Sponsor Logo upload ──────────────────────────────────────────────────
@@ -524,6 +528,7 @@ const Config = () => {
     const updated = ballTypes.filter((_, i) => i !== idx);
     setBallTypes(updated);
     await adminAPI.updateConfig({ ball_types: updated });
+    if (refetch) refetch();
   };
 
   // ─── Age Groups ───────────────────────────────────────────────────────────
@@ -547,12 +552,14 @@ const Config = () => {
     setNewAge({ cat: '', sub: '', color: '#cbf905', maxYears: '', maxMonths: '', maxDays: '', minYears: '', minMonths: '', minDays: '' });
     setShowAgeForm(false);
     await adminAPI.updateConfig({ age_groups: updated });
+    if (refetch) refetch();
   };
 
   const handleRemoveAgeGroup = async (idx) => {
     const updated = ageGroups.filter((_, i) => i !== idx);
     setAgeGroups(updated);
     await adminAPI.updateConfig({ age_groups: updated });
+    if (refetch) refetch();
   };
 
   const handleUpdateAgeLimit = async (idx, type, field, value) => {
@@ -567,12 +574,14 @@ const Config = () => {
     }
     setAgeGroups(updated);
     await adminAPI.updateConfig({ age_groups: updated });
+    if (refetch) refetch();
   };
 
   const handleAgeColorChange = async (idx, color) => {
     const updated = ageGroups.map((ag, i) => i === idx ? { ...ag, color } : ag);
     setAgeGroups(updated);
     await adminAPI.updateConfig({ age_groups: updated });
+    if (refetch) refetch();
   };
 
   if (loading) return <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading config…</div>;

@@ -28,8 +28,21 @@ const DEFAULTS = {
   adults_jersey_measure_urls: [],
 };
 
+// Helper to load initially cached config
+const getInitialConfig = () => {
+  try {
+    const cached = localStorage.getItem('jws_app_config');
+    if (cached) {
+      return { ...DEFAULTS, ...JSON.parse(cached) };
+    }
+  } catch (e) {
+    console.warn('[ConfigContext] Failed to load cached config:', e);
+  }
+  return DEFAULTS;
+};
+
 export const ConfigProvider = ({ children }) => {
-  const [config, setConfig]   = useState(DEFAULTS);
+  const [config, setConfig]   = useState(getInitialConfig);
   const [loading, setLoading] = useState(true);
   const [lastFetched, setLastFetched] = useState(null);
 
@@ -45,11 +58,25 @@ export const ConfigProvider = ({ children }) => {
         if (configData.app_logo_url) {
           configData.appLogoUrl = configData.app_logo_url;
         }
-        setConfig({ ...DEFAULTS, ...configData });
+        const merged = { ...DEFAULTS, ...configData };
+        setConfig(merged);
+        try {
+          localStorage.setItem('jws_app_config', JSON.stringify(configData));
+        } catch (e) {
+          console.warn('[ConfigContext] Failed to write cache:', e);
+        }
         setLastFetched(Date.now());
       }
     } catch (err) {
-      console.warn('[ConfigContext] Failed to fetch config, using defaults:', err.message);
+      console.warn('[ConfigContext] Failed to fetch config, keeping cache/defaults:', err.message);
+      try {
+        const cached = localStorage.getItem('jws_app_config');
+        if (cached) {
+          setConfig({ ...DEFAULTS, ...JSON.parse(cached) });
+        }
+      } catch (e) {
+        console.warn('[ConfigContext] Failed to load cached fallback config:', e);
+      }
     } finally {
       setLoading(false);
     }
