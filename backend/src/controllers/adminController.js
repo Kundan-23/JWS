@@ -460,7 +460,7 @@ exports.rejectSquad = asyncHandler(async (req, res) => {
 });
 
 // ─── Training Slots ───────────────────────────────────────────────
-const { sendEmail } = require('../config/brevo');
+const { sendEmail } = require('../config/mailersend');
 
 exports.getTrainingSlots = asyncHandler(async (req, res) => {
   const { data, error } = await supabase.from('training_slots')

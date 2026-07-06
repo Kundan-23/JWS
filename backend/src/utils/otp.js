@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const supabase = require('../config/supabase');
-const { sendEmail: sendEmailViaBrevo } = require('../config/brevo');
+const { sendEmail: sendEmailViaMailerSend } = require('../config/mailersend');
 
 const OTP_EXPIRY_MINUTES = 10;
 const MAX_ATTEMPTS = 5;
@@ -52,12 +52,12 @@ async function sendOTP(email, purpose) {
   console.log(`  OTP for ${email}: ${code}  `);
   console.log(`================================\n`);
 
-  // Send email via Brevo (catch errors so unverified domains don't crash testing)
+  // Send email via MailerSend (catch errors so unverified domains don't crash testing)
   const html = getOTPEmailTemplate(code, purpose);
   try {
-    await sendEmailViaBrevo(email, getOTPSubject(purpose), html);
+    await sendEmailViaMailerSend(email, getOTPSubject(purpose), html);
   } catch (err) {
-    console.error('⚠️ Could not send email via Brevo. Check the console above for your OTP.', err.message);
+    console.error('⚠️ Could not send email via MailerSend. Check the console above for your OTP.', err.message);
   }
 
   return { expiresIn: OTP_EXPIRY_MINUTES * 60 };
