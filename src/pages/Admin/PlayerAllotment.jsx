@@ -43,7 +43,7 @@ const PlayerAllotment = () => {
   const handleAssign = async (playerId) => {
     const coachId = coachSelect[playerId];
     if (!coachId) {
-      Swal.fire({ icon: 'warning', title: 'Select a coach', background: 'var(--bg-surface)', color: 'var(--text-primary)', timer: 1500, showConfirmButton: false });
+      Swal.fire({ icon: 'warning', title: 'Select a selector', background: 'var(--bg-surface)', color: 'var(--text-primary)', timer: 1500, showConfirmButton: false });
       return;
     }
     setAssigning(playerId);
@@ -90,7 +90,7 @@ const PlayerAllotment = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
         <div>
           <h1 className="heading-1">Player Allotment</h1>
-          <p className="text-secondary" style={{ marginTop: '0.35rem' }}>Assign paid players to coaches and manage squads.</p>
+          <p className="text-secondary" style={{ marginTop: '0.35rem' }}>Assign paid players to selectors and manage squads.</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <button
@@ -155,7 +155,7 @@ const PlayerAllotment = () => {
                     onChange={e => setCoachSelect(prev => ({ ...prev, [player.id]: e.target.value }))}
                     style={selectStyle}
                   >
-                    <option value="">Select coach</option>
+                    <option value="">Select selector</option>
                     {coaches.map(c => (
                       <option key={c.id} value={c.id}>
                         {c.first_name} {c.last_name}
@@ -186,8 +186,8 @@ const PlayerAllotment = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', overflowY: 'auto', maxHeight: 640 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '1.25rem 0 0.25rem' }}>
             <UserCog size={18} color="#a78bfa" />
-            <h2 style={{ fontWeight: 700, fontSize: '1rem' }}>Coaches & Squads</h2>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>({coaches.length} coaches)</span>
+            <h2 style={{ fontWeight: 700, fontSize: '1rem' }}>Selectors & Squads</h2>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>({coaches.length} selectors)</span>
           </div>
 
           {loading ? (
@@ -196,7 +196,7 @@ const PlayerAllotment = () => {
             ))
           ) : coaches.length === 0 ? (
             <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-subtle)' }}>
-              No coaches found.
+              No selectors found.
             </div>
           ) : (
             coaches.map(coach => {

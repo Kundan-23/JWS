@@ -45,7 +45,7 @@ const AdminDashboard = () => {
             <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', padding: '0.75rem', borderRadius: '50%' }}>
               <TrendingUp size={24} color="#10b981" />
             </div>
-            <h3 className="heading-3">Total Coaches</h3>
+            <h3 className="heading-3">Total Selectors</h3>
           </div>
           <p style={{ fontSize: '2rem', fontWeight: 800 }}>{coaches.length}</p>
           <p className="text-small text-secondary">View detailed list</p>
@@ -136,7 +136,7 @@ const AdminDashboard = () => {
 
               {selectedCard === 'coaches' && (
                 <div>
-                  <h2 className="heading-2" style={{ marginBottom: '1.5rem' }}>Active Coaches</h2>
+                  <h2 className="heading-2" style={{ marginBottom: '1.5rem' }}>Active Selectors</h2>
                   <div style={{ overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                       <thead>
