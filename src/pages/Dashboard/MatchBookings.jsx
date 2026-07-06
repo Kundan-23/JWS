@@ -355,7 +355,7 @@ const MatchBookings = ({ hideHeader }) => {
                           <Zap size={11} fill="#f59e0b" /> {slotsLeft} left
                         </span>
                       ) : slotsLeft !== null ? (
-                        <span style={{ fontSize: '0.72rem', color: '#10b981', fontWeight: 600 }}>{slotsLeft} slots left</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--brand-primary)', fontWeight: 600 }}>{slotsLeft} slots left</span>
                       ) : null}
                     </div>
                   </div>
