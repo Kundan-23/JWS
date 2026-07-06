@@ -3,8 +3,6 @@ import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
 import { playerAPI } from '../../services/api';
 import { Camera, Plus, Link as LinkIcon, Trash2, CheckCircle, Video, Upload } from 'lucide-react';
-import ReactPlayerRaw from 'react-player';
-const ReactPlayer = ReactPlayerRaw.default || ReactPlayerRaw;
 const categories = [
   { id: 'batting',  label: 'Batting' },
   { id: 'bowling',  label: 'Bowling' }
@@ -16,6 +14,17 @@ const GameplayUpload = () => {
   const [currentLink, setCurrentLink] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const getInstagramEmbedUrl = (url) => {
+    if (!url) return '';
+    try {
+      const cleanUrl = url.split('?')[0];
+      const baseUrl = cleanUrl.endsWith('/') ? cleanUrl : `${cleanUrl}/`;
+      return `${baseUrl}embed`;
+    } catch (e) {
+      return '';
+    }
+  };
 
   useEffect(() => {
     playerAPI.getProfile()
@@ -146,17 +155,17 @@ const GameplayUpload = () => {
                       </div>
 
                       {/* Video Preview */}
-                      <div style={{ position: 'relative', width: '100%', maxWidth: '280px', height: '160px', borderRadius: 8, overflow: 'hidden', backgroundColor: '#000', border: '1px solid rgba(255,255,255,0.08)' }}>
-                        <ReactPlayer 
-                          url={link} 
+                      <div style={{ position: 'relative', width: '100%', maxWidth: '320px', height: '360px', borderRadius: 8, overflow: 'hidden', backgroundColor: '#000', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        <iframe 
+                          src={getInstagramEmbedUrl(link)} 
                           width="100%" 
                           height="100%" 
-                          controls 
-                          config={{
-                            instagram: {
-                              hideCaption: true
-                            }
-                          }}
+                          frameBorder="0" 
+                          scrolling="no" 
+                          allowTransparency="true" 
+                          allow="encrypted-media"
+                          title="Instagram Video Preview"
+                          style={{ border: 'none', overflow: 'hidden' }}
                         />
                       </div>
                     </div>
