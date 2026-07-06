@@ -153,6 +153,17 @@ const Step2_BasicRegistration = () => {
     ? (isKidSize ? kidSizes : jerseySizes.filter(size => !size.toLowerCase().includes('kid')))
     : [];
 
+  const handlePhoneChange = (val, onChange) => {
+    if (val && val.startsWith('+91')) {
+      const digits = val.replace(/\D/g, '');
+      if (digits.length > 12) {
+        onChange('+' + digits.slice(0, 12));
+        return;
+      }
+    }
+    onChange(val);
+  };
+
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -398,7 +409,7 @@ const Step2_BasicRegistration = () => {
                   international
                   defaultCountry="IN"
                   value={field.value}
-                  onChange={field.onChange}
+                  onChange={(val) => handlePhoneChange(val, field.onChange)}
                   className="form-input"
                   style={{ '--PhoneInput-color--focus': 'transparent' }}
                 />
@@ -435,7 +446,7 @@ const Step2_BasicRegistration = () => {
                     international
                     defaultCountry="IN"
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(val) => handlePhoneChange(val, field.onChange)}
                     className="form-input"
                     style={{ '--PhoneInput-color--focus': 'transparent' }}
                   />
