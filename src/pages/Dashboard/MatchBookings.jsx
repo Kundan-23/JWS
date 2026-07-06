@@ -182,7 +182,7 @@ const MatchBookings = ({ hideHeader }) => {
             <p className="text-secondary" style={{ marginTop: '0.35rem' }}>Loading available matches…</p>
           </div>
         )}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '800px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
           {[1, 2, 3].map(i => (
             <div key={i} style={{ height: 280, borderRadius: 20, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', animation: 'pulse 1.5s ease-in-out infinite' }} />
           ))}
@@ -212,8 +212,8 @@ const MatchBookings = ({ hideHeader }) => {
         {/* Single booking restriction warning banner */}
         {hasAnyBooking && (
           <div style={{ 
-            maxWidth: '800px',
-            margin: '0 auto 1.5rem auto', 
+            width: '100%',
+            marginBottom: '1.5rem', 
             backgroundColor: 'rgba(239, 68, 68, 0.1)', 
             border: '1px solid rgba(239, 68, 68, 0.3)', 
             padding: '0.85rem 1.25rem', 
@@ -237,7 +237,7 @@ const MatchBookings = ({ hideHeader }) => {
           <p className="text-secondary" style={{ marginTop: '0.5rem' }}>Check back soon — new matches will appear here once scheduled.</p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '800px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
           {matches.map((match, idx) => {
             const isFull    = match.total_slots > 0 && (match.booked_slots || 0) >= match.total_slots;
             const isBooked  = booked.has(match.id);
