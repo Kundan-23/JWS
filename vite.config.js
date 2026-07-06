@@ -12,9 +12,9 @@ export default defineConfig({
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'GICL Sports',
-        short_name: 'GICL',
-        description: 'GICL Sports Enterprise Application',
+        name: 'JWS 2026',
+        short_name: 'JWS 2026',
+        description: 'JWS 2026 Enterprise Application',
         theme_color: '#0f172a',
         background_color: '#0f172a',
         display: 'standalone',
