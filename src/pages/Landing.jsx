@@ -131,7 +131,7 @@ const Landing = () => {
       <div style={{ textAlign: 'center', marginBottom: '2.5rem', paddingTop: '0.5rem' }}>
         <motion.img
           src="/logo/logonew.png"
-          alt="JWS Sports Logo"
+          alt="JWS 2026 Logo"
           initial={{ scale: 0.85, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.45, ease: 'easeOut' }}

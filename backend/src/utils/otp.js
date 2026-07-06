@@ -114,9 +114,9 @@ async function verifyOTP(email, code, purpose) {
 }
 
 function getOTPSubject(purpose) {
-  if (purpose === 'register') return 'Verify your JWS Sports account';
-  if (purpose === 'reset_password') return 'Reset your JWS Sports password';
-  return 'Your JWS Sports OTP';
+  if (purpose === 'register') return 'Verify your JWS 2026 account';
+  if (purpose === 'reset_password') return 'Reset your JWS 2026 password';
+  return 'Your JWS 2026 OTP';
 }
 
 function getOTPEmailTemplate(code, purpose) {
@@ -126,7 +126,7 @@ function getOTPEmailTemplate(code, purpose) {
   <body style="font-family: Arial, sans-serif; background: #0a0a0a; margin: 0; padding: 40px 0;">
     <div style="max-width: 480px; margin: 0 auto; background: #1a1a1a; border-radius: 16px; overflow: hidden; border: 1px solid #FFD700;">
       <div style="background: linear-gradient(135deg, #2a1d4e, #6b4fa8); padding: 32px; text-align: center;">
-        <h1 style="margin: 0; color: #cbf905; font-size: 28px; font-weight: 900; letter-spacing: 2px;">JWS SPORTS</h1>
+        <h1 style="margin: 0; color: #cbf905; font-size: 28px; font-weight: 900; letter-spacing: 2px;">JWS 2026</h1>
         <p style="margin: 4px 0 0; color: #ccc; font-size: 13px;">Junior World Series 2026</p>
       </div>
       <div style="padding: 40px 32px; text-align: center;">
@@ -139,7 +139,7 @@ function getOTPEmailTemplate(code, purpose) {
       </div>
       <div style="background: #111; padding: 20px; text-align: center; border-top: 1px solid #333;">
         <p style="color: #555; font-size: 12px; margin: 0;">If you didn't request this, ignore this email.</p>
-        <p style="color: #555; font-size: 12px; margin: 4px 0 0;">© 2026 JWS Sports. All rights reserved.</p>
+        <p style="color: #555; font-size: 12px; margin: 4px 0 0;">© 2026 JWS 2026. All rights reserved.</p>
       </div>
     </div>
   </body>

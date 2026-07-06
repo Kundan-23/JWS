@@ -48,7 +48,7 @@ const MobileLayout = () => {
         }}>
           <Outlet />
           <footer style={{ textAlign: 'center', fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)', marginTop: '2rem' }}>
-            © {new Date().getFullYear()} JWS Sports
+            © {new Date().getFullYear()} JWS 2026
           </footer>
         </div>
       </div>
@@ -71,7 +71,7 @@ const MobileLayout = () => {
         alignItems: 'center', 
         justifyContent: 'space-between' 
       }}>
-        <img src={appLogoUrl || "/logo/logonew.png"} alt="JWS Sports Logo" style={{ maxWidth: '100%', maxHeight: '70px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
+        <img src={appLogoUrl || "/logo/logonew.png"} alt="JWS 2026 Logo" style={{ maxWidth: '100%', maxHeight: '70px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
       </header>
 
       {/* Main App Container */}
@@ -80,7 +80,7 @@ const MobileLayout = () => {
           <Outlet />
         </main>
         <footer style={{ padding: '1rem', textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-          © {new Date().getFullYear()} JWS Sports
+          © {new Date().getFullYear()} JWS 2026
         </footer>
       </div>
     </div>

@@ -76,7 +76,7 @@ const Step3_Payment = () => {
         key: keyId,
         amount,
         currency,
-        name: 'JWS Sports',
+        name: 'JWS 2026',
         description: plan.title,
         order_id: orderId,
         prefill: { email: user?.email || '' },
@@ -97,7 +97,7 @@ const Step3_Payment = () => {
             localStorage.setItem('jws_user', JSON.stringify(updatedUser));
 
             Swal.fire({ icon: 'success', title: 'Payment Successful! 🎉',
-              text: `Welcome to JWS Sports!`,
+              text: `Welcome to JWS 2026!`,
               background: 'var(--bg-surface)', color: 'var(--text-primary)',
               confirmButtonColor: '#cbf905', timer: 2500, showConfirmButton: false });
             setTimeout(() => navigate('/onboarding/step4'), 2500);

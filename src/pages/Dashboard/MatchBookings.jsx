@@ -111,7 +111,7 @@ const MatchBookings = ({ hideHeader }) => {
         key:         import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount,
         currency,
-        name:        'JWS Sports',
+        name:        'JWS 2026',
         description: `Slot booking — ${matchTitle}`,
         order_id:    orderId,
         theme:       { color: '#cbf905' },
@@ -166,7 +166,7 @@ const MatchBookings = ({ hideHeader }) => {
   const handleShare = async (match) => {
     const isLeague = match.match_type?.toLowerCase() === 'league' || match.match_type?.toLowerCase() === 'trial';
     const typeLabel = isLeague ? 'TRIAL' : match.match_type?.toUpperCase();
-    const text = `🏏 ${typeLabel} | ${match.title}\n📅 ${new Date(match.date).toLocaleString('en-IN')}\n📍 ${match.venue}\n💰 ₹${match.price_per_slot}/slot\n\nBook on JWS Sports!`;
+    const text = `🏏 ${typeLabel} | ${match.title}\n📅 ${new Date(match.date).toLocaleString('en-IN')}\n📍 ${match.venue}\n💰 ₹${match.price_per_slot}/slot\n\nBook on JWS 2026!`;
     if (navigator.share) {
       try { await navigator.share({ title: match.title, text }); } catch { /* cancelled */ }
     } else {

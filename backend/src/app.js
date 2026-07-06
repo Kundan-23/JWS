@@ -47,7 +47,7 @@ if (process.env.NODE_ENV !== 'test') {
 // ─── Root ─────────────────────────────────────────────────
 app.get('/', (req, res) => {
   res.json({
-    service: 'JWS Sports Backend API',
+    service: 'JWS 2026 Backend API',
     version: '1.0.0',
     status: 'running',
     endpoints: {

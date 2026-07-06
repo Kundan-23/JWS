@@ -35,7 +35,7 @@ const Step1_Terms = () => {
         marginBottom: '1.5rem',
         border: '1px solid var(--bg-surface-elevated)'
       }}>
-        <h3 className="heading-3" style={{ marginBottom: '1rem' }}>JWS Sports Registration Agreement</h3>
+        <h3 className="heading-3" style={{ marginBottom: '1rem' }}>JWS 2026 Registration Agreement</h3>
         <pre style={{ 
           whiteSpace: 'pre-wrap', 
           fontFamily: 'inherit', 

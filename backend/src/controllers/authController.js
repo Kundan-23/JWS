@@ -107,7 +107,7 @@ exports.setPassword = asyncHandler(async (req, res) => {
   const { notifyAdmins } = require('./notificationController');
   notifyAdmins(
     'New Player Registered',
-    `A new player (${email}) has joined JWS Sports.`,
+    `A new player (${email}) has joined JWS 2026.`,
     'registration',
     '/admin-dashboard/users'
   );

@@ -133,7 +133,7 @@ const Login = () => {
       const res = await authAPI.setPassword(sessionToken, password, confirmPassword);
       const { token, refreshToken, user } = res.data;
       saveSession(token, refreshToken, user);
-      showSuccess('Account created! Welcome to JWS Sports 🎉');
+      showSuccess('Account created! Welcome to JWS 2026 🎉');
       navigate('/onboarding/step1', { replace: true });
     } catch (err) {
       showError(err.response?.data?.message || 'Failed to set password.');

@@ -37,7 +37,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
         playerId: req.user.id,
         planId,
         planName: plan.name,
-        company:  'JWS Sports',
+        company:  'JWS 2026',
       },
     });
   } catch (rzpErr) {

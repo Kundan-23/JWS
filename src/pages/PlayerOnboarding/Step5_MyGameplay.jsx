@@ -29,7 +29,7 @@ const Step5_Complete = () => {
       Swal.fire({
         icon: 'success',
         title: '🎉 Registration Complete!',
-        text: 'Welcome to JWS Sports! Taking you to your dashboard...',
+        text: 'Welcome to JWS 2026! Taking you to your dashboard...',
         background: 'var(--bg-surface)',
         color: 'var(--text-primary)',
         confirmButtonColor: '#cbf905',
