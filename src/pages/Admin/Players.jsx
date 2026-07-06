@@ -71,8 +71,9 @@ const Players = () => {
   // ── Excel Export ──────────────────────────────────────────────────
   const handleExport = () => {
     const exportData = players.map(p => ({
-      'GICL ID':      p.gicl_id || '',
+      'JWS ID':       p.gicl_id || '',
       'FIRST NAME':   p.first_name || '',
+      'MIDDLE NAME':  p.middle_name || '',
       'LAST NAME':    p.last_name || '',
       'DATE OF BIRTH': p.dob || '',
       'AGE':          p.dob ? Math.floor((Date.now() - new Date(p.dob)) / (365.25 * 24 * 3600 * 1000)) : '',
@@ -80,13 +81,12 @@ const Players = () => {
       'LOCATION':     p.city || '',
       'PINCODE':      p.zip_code || '',
       'PROFILE PHOTO LINK': p.profile_photo_url || '',
-      'BIRTH CERTIFICATE LINK': p.birth_cert_url || '',
-      'ADDRESS PROOF LINK': p.address_proof_url || '',
+      'AADHAAR CARD LINK': p.aadhar_url || '',
     }));
     const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Players');
-    XLSX.writeFile(wb, 'GICL_Players.xlsx');
+    XLSX.writeFile(wb, 'JWS_2026_Players.xlsx');
   };
 
   // ── Excel Import ──────────────────────────────────────────────────
