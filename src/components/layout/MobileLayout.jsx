@@ -48,7 +48,7 @@ const MobileLayout = () => {
         }}>
           <Outlet />
           <footer style={{ textAlign: 'center', fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)', marginTop: '2rem' }}>
-            © {new Date().getFullYear()} JWS 2026
+            © JWS 2026
           </footer>
         </div>
       </div>
@@ -80,7 +80,7 @@ const MobileLayout = () => {
           <Outlet />
         </main>
         <footer style={{ padding: '1rem', textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-          © {new Date().getFullYear()} JWS 2026
+          © JWS 2026
         </footer>
       </div>
     </div>

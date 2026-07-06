@@ -139,7 +139,7 @@ function getOTPEmailTemplate(code, purpose) {
       </div>
       <div style="background: #111; padding: 20px; text-align: center; border-top: 1px solid #333;">
         <p style="color: #555; font-size: 12px; margin: 0;">If you didn't request this, ignore this email.</p>
-        <p style="color: #555; font-size: 12px; margin: 4px 0 0;">© 2026 JWS 2026. All rights reserved.</p>
+        <p style="color: #555; font-size: 12px; margin: 4px 0 0;">© JWS 2026. All rights reserved.</p>
       </div>
     </div>
   </body>
