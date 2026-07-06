@@ -368,12 +368,12 @@ const MatchBookings = ({ hideHeader }) => {
 
                   {/* Info rows */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem', marginBottom: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#10b981', fontSize: '0.84rem', fontWeight: 500 }}>
-                      <Calendar size={14} style={{ flexShrink: 0, color: '#10b981' }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--brand-primary)', fontSize: '0.84rem', fontWeight: 500 }}>
+                      <Calendar size={14} style={{ flexShrink: 0, color: 'var(--brand-primary)' }} />
                       <span>{new Date(match.date).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#10b981', fontSize: '0.84rem', fontWeight: 500 }}>
-                      <MapPin size={14} style={{ flexShrink: 0, color: '#10b981' }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--brand-primary)', fontSize: '0.84rem', fontWeight: 500 }}>
+                      <MapPin size={14} style={{ flexShrink: 0, color: 'var(--brand-primary)' }} />
                       <span>{match.venue || '—'}</span>
                     </div>
                   </div>
