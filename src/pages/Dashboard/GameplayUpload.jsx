@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
 import { playerAPI } from '../../services/api';
 import { Camera, Plus, Link as LinkIcon, Trash2, CheckCircle, Video, Upload } from 'lucide-react';
+import ReactPlayerRaw from 'react-player';
+const ReactPlayer = ReactPlayerRaw.default || ReactPlayerRaw;
 const categories = [
   { id: 'batting',  label: 'Batting' },
   { id: 'bowling',  label: 'Bowling' }
@@ -132,14 +134,31 @@ const GameplayUpload = () => {
                     <Video size={16} /> {cat.label} Videos
                   </h4>
                   {links[cat.id].map((link, idx) => (
-                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-color)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', marginBottom: '0.5rem', border: '1px solid var(--bg-surface-elevated)' }}>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--success)', display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
-                        <CheckCircle size={14} />
-                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{link}</span>
-                      </span>
-                      <button onClick={() => handleRemoveLink(cat.id, idx)} style={{ background: 'none', color: 'var(--error)', flexShrink: 0, marginLeft: '0.5rem' }}>
-                        <Trash2 size={16} />
-                      </button>
+                    <div key={idx} style={{ backgroundColor: 'var(--bg-color)', padding: '1rem', borderRadius: 'var(--radius-md)', marginBottom: '0.75rem', border: '1px solid var(--bg-surface-elevated)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--success)', display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
+                          <CheckCircle size={14} />
+                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '80%' }}>{link}</span>
+                        </span>
+                        <button onClick={() => handleRemoveLink(cat.id, idx)} style={{ background: 'none', color: 'var(--error)', flexShrink: 0, marginLeft: '0.5rem', cursor: 'pointer' }}>
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+
+                      {/* Video Preview */}
+                      <div style={{ position: 'relative', width: '100%', maxWidth: '280px', height: '160px', borderRadius: 8, overflow: 'hidden', backgroundColor: '#000', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        <ReactPlayer 
+                          url={link} 
+                          width="100%" 
+                          height="100%" 
+                          controls 
+                          config={{
+                            instagram: {
+                              hideCaption: true
+                            }
+                          }}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
