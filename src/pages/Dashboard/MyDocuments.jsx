@@ -106,7 +106,7 @@ const MyDocuments = () => {
       {/* Info Box */}
       <div style={{ backgroundColor: 'rgba(203,249,5,0.06)', border: '1px solid rgba(203,249,5,0.2)', borderRadius: 'var(--radius-lg)', padding: '1rem 1.25rem', fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
         <strong style={{ color: '#cbf905' }}>📌 Why is this required?</strong><br />
-        JWS requires identity proof to ensure all players are genuine and age-eligible for the Junior World Cup Series trials.
+        JWS requires identity proof to ensure all players are genuine and age-eligible for the Junior World Series trials.
         Your Aadhaar data is kept strictly confidential.
       </div>
     </motion.div>

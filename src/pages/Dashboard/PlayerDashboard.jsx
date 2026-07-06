@@ -5,7 +5,7 @@ import { jsPDF } from 'jspdf';
 import { useFormStore } from '../../store/useFormStore';
 import { playerAPI } from '../../services/api';
 import Swal from 'sweetalert2';
-import { User, Award, Activity, Star, Info, Shirt, Users, Video, X, Edit } from 'lucide-react';
+import { User, Award, Activity, Star, Info, Shirt, Users, Video, X, Edit, Calendar, MapPin } from 'lucide-react';
 
 const PlayerDashboard = () => {
   const navigate = useNavigate();
@@ -472,13 +472,27 @@ const PlayerDashboard = () => {
                 if (hasBookedMatch) {
                   const nextMatch = dashboardState.upcomingMatches[0];
                   return (
-                    <div style={{ backgroundColor: 'var(--bg-surface-elevated)', padding: '1rem', borderRadius: 'var(--radius-lg)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <span style={{ fontSize: '0.875rem', color: 'var(--brand-accent)', fontWeight: 600 }}>{nextMatch.type}</span>
-                        <span className="text-small">{new Date(nextMatch.date).toLocaleDateString()}</span>
+                    <div style={{ backgroundColor: 'var(--bg-surface-elevated)', padding: '1.25rem', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(203,249,5,0.15)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--brand-primary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', background: 'rgba(203,249,5,0.1)', padding: '0.2rem 0.65rem', borderRadius: 9999, border: '1px solid rgba(203,249,5,0.25)' }}>
+                          {nextMatch.type}
+                        </span>
+                        <span style={{ fontSize: '0.72rem', color: '#10b981', fontWeight: 700, textTransform: 'uppercase', background: 'rgba(16,185,129,0.12)', padding: '0.2rem 0.65rem', borderRadius: 9999, border: '1px solid rgba(16,185,129,0.3)' }}>
+                          Slot Booked
+                        </span>
                       </div>
-                      <p style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.25rem' }}>{nextMatch.opponent}</p>
-                      <p className="text-small">📍 {nextMatch.location}</p>
+                      <p style={{ fontWeight: 800, fontSize: '1.15rem', marginBottom: '0.75rem', color: '#fff', lineHeight: 1.3 }}>{nextMatch.opponent}</p>
+                      
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', color: 'var(--brand-primary)', fontSize: '0.84rem', fontWeight: 500 }}>
+                          <Calendar size={14} style={{ flexShrink: 0, color: 'var(--brand-primary)' }} />
+                          <span>{new Date(nextMatch.date).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', color: 'var(--brand-primary)', fontSize: '0.84rem', fontWeight: 500 }}>
+                          <MapPin size={14} style={{ flexShrink: 0, color: 'var(--brand-primary)' }} />
+                          <span>{nextMatch.location || '—'}</span>
+                        </div>
+                      </div>
                     </div>
                   );
                 } else {
