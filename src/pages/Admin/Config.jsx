@@ -171,6 +171,13 @@ const Config = () => {
   const [sponsorTimestamp, setSponsorTimestamp] = useState(Date.now());
 
   // Tab 4 — Player Options
+  const arrangeNoneAtEnd = (arr) => {
+    if (!Array.isArray(arr)) return [];
+    const withoutNone = arr.filter(item => (item || '').trim().toLowerCase() !== 'none');
+    const noneItems = arr.filter(item => (item || '').trim().toLowerCase() === 'none');
+    return [...withoutNone, ...noneItems];
+  };
+
   const [jerseySizes, setJerseySizes] = useState([]);
   const [battingStyles, setBattingStyles] = useState([]);
   const [bowlingStyles, setBowlingStyles] = useState([]);
@@ -235,10 +242,10 @@ const Config = () => {
         if (Array.isArray(cfg.kids_jersey_measure_urls)) setKidsJerseyUrls(cfg.kids_jersey_measure_urls);
         if (Array.isArray(cfg.adults_jersey_measure_urls)) setAdultsJerseyUrls(cfg.adults_jersey_measure_urls);
 
-        // Tab 4
+         // Tab 4
         if (cfg.jersey_sizes || cfg.jerseySizes) setJerseySizes(cfg.jersey_sizes || cfg.jerseySizes);
-        if (cfg.batting_styles || cfg.battingStyles) setBattingStyles(cfg.batting_styles || cfg.battingStyles);
-        if (cfg.bowling_styles || cfg.bowlingStyles) setBowlingStyles(cfg.bowling_styles || cfg.bowlingStyles);
+        if (cfg.batting_styles || cfg.battingStyles) setBattingStyles(arrangeNoneAtEnd(cfg.batting_styles || cfg.battingStyles));
+        if (cfg.bowling_styles || cfg.bowlingStyles) setBowlingStyles(arrangeNoneAtEnd(cfg.bowling_styles || cfg.bowlingStyles));
         if (Array.isArray(cfg.clubs)) setClubs(cfg.clubs);
         if (Array.isArray(cfg.ball_types)) {
           // Normalize: legacy strings become { name: str, imageUrl: '' }
@@ -941,11 +948,11 @@ const Config = () => {
           </Section>
 
           <Section title="Batting Styles" description="Add or remove batting style options." onSave={() => save('battingStyles', { batting_styles: battingStyles })} saving={savingSection === 'battingStyles'}>
-            <TagList items={battingStyles} onRemove={i => setBattingStyles(s => s.filter((_, j) => j !== i))} onAdd={v => setBattingStyles(s => [...s, v])} placeholder="e.g. Right-hand bat" />
+            <TagList items={battingStyles} onRemove={i => setBattingStyles(s => s.filter((_, j) => j !== i))} onAdd={v => setBattingStyles(s => arrangeNoneAtEnd([...s, v]))} placeholder="e.g. Right-hand bat" />
           </Section>
 
           <Section title="Bowling Styles" description="Add or remove bowling style options." onSave={() => save('bowlingStyles', { bowling_styles: bowlingStyles })} saving={savingSection === 'bowlingStyles'}>
-            <TagList items={bowlingStyles} onRemove={i => setBowlingStyles(s => s.filter((_, j) => j !== i))} onAdd={v => setBowlingStyles(s => [...s, v])} placeholder="e.g. Right-arm fast" />
+            <TagList items={bowlingStyles} onRemove={i => setBowlingStyles(s => s.filter((_, j) => j !== i))} onAdd={v => setBowlingStyles(s => arrangeNoneAtEnd([...s, v]))} placeholder="e.g. Right-arm fast" />
           </Section>
 
           {/* Associated Clubs */}
