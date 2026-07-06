@@ -410,6 +410,8 @@ const Step2_BasicRegistration = () => {
                   defaultCountry="IN"
                   value={field.value}
                   onChange={(val) => handlePhoneChange(val, field.onChange)}
+                  limitMaxLength={true}
+                  maxLength={field.value?.startsWith('+91') ? 15 : undefined}
                   className="form-input"
                   style={{ '--PhoneInput-color--focus': 'transparent' }}
                 />
@@ -447,6 +449,8 @@ const Step2_BasicRegistration = () => {
                     defaultCountry="IN"
                     value={field.value}
                     onChange={(val) => handlePhoneChange(val, field.onChange)}
+                    limitMaxLength={true}
+                    maxLength={field.value?.startsWith('+91') ? 15 : undefined}
                     className="form-input"
                     style={{ '--PhoneInput-color--focus': 'transparent' }}
                   />
