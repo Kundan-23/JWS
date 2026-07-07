@@ -37,8 +37,8 @@ function resolveState(zipCode) {
 }
 
 /**
- * Generate Player JWS ID in format: JWS00001062026MH
- * JWS + 5-digit-seq + 2-digit-month + 4-digit-year + 2-char-state
+ * Generate Player JWS ID in format: JWS000000012026MH
+ * JWS + 8-digit-seq + 2-digit-month + 4-digit-year + 2-char-state
  * Uses atomic DB increment via Supabase RPC.
  *
  * @param {string} zipCode - Player pincode
@@ -48,7 +48,7 @@ async function generateGiclId(zipCode) {
   const { data, error } = await supabase.rpc('increment_registration_number');
   if (error) throw new Error('Failed to generate registration number: ' + error.message);
 
-  const seq   = String(data).padStart(5, '0');
+  const seq   = String(data).padStart(8, '0');
   const now   = new Date();
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const year  = String(now.getFullYear());

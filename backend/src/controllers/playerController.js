@@ -232,12 +232,12 @@ exports.uploadAddressProof = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'Address proof uploaded. Pending admin approval.', url: signedUrl });
 });
 
-// ─── POST /api/player/upload/aadhar ─────────────────────────
-exports.uploadAadhar = asyncHandler(async (req, res) => {
+// ─── POST /api/player/upload/aadhar-front ───────────────────
+exports.uploadAadharFront = asyncHandler(async (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded.' });
 
   const ext  = req.file.mimetype.split('/')[1];
-  const path = `${req.user.id}/aadhar.${ext}`;
+  const path = `${req.user.id}/aadhar-front.${ext}`;
 
   const { error: uploadError } = await supabase.storage
     .from('documents')
@@ -247,12 +247,35 @@ exports.uploadAadhar = asyncHandler(async (req, res) => {
 
   const { data: { signedUrl } } = await supabase.storage
     .from('documents')
-    .createSignedUrl(path, 60 * 60 * 24 * 365);
+    .createSignedUrl(path, 60 * 60 * 24 * 365); // 1 year
 
-  await supabase.from('players').update({ aadhar_url: signedUrl, docs_approved: false }).eq('id', req.user.id);
+  await supabase.from('players').update({ aadhar_front_url: signedUrl, docs_approved: false }).eq('id', req.user.id);
 
-  res.json({ success: true, message: 'Aadhaar card uploaded. Pending admin approval.', url: signedUrl });
+  res.json({ success: true, message: 'Aadhaar front side uploaded. Pending admin approval.', url: signedUrl });
 });
+
+// ─── POST /api/player/upload/aadhar-back ────────────────────
+exports.uploadAadharBack = asyncHandler(async (req, res) => {
+  if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded.' });
+
+  const ext  = req.file.mimetype.split('/')[1];
+  const path = `${req.user.id}/aadhar-back.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from('documents')
+    .upload(path, req.file.buffer, { contentType: req.file.mimetype, upsert: true });
+
+  if (uploadError) throw new Error('Upload failed: ' + uploadError.message);
+
+  const { data: { signedUrl } } = await supabase.storage
+    .from('documents')
+    .createSignedUrl(path, 60 * 60 * 24 * 365); // 1 year
+
+  await supabase.from('players').update({ aadhar_back_url: signedUrl, docs_approved: false }).eq('id', req.user.id);
+
+  res.json({ success: true, message: 'Aadhaar back side uploaded. Pending admin approval.', url: signedUrl });
+});
+
 
 // ─── GET /api/player/matches ────────────────────────────────
 exports.getMatches = asyncHandler(async (req, res) => {
