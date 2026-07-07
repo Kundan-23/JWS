@@ -357,25 +357,28 @@ const PlayerDetail = () => {
 
         <Section title="Documents" icon={FileText}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {player.address_proof_url && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.875rem' }}>Address Proof</span>
-                <a href={player.address_proof_url} target="_blank" rel="noreferrer" style={{ color: 'var(--brand-accent)', fontSize: '0.8rem', fontWeight: 600 }}>View →</a>
+            {player.aadhar_front_url && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0', borderBottom: '1px solid var(--bg-surface-elevated)' }}>
+                <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>🪪 Aadhaar — Front Side</span>
+                <a href={player.aadhar_front_url} target="_blank" rel="noreferrer" style={{ color: 'var(--brand-accent)', fontSize: '0.8rem', fontWeight: 600 }}>View →</a>
               </div>
             )}
-            {player.birth_cert_url && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.875rem' }}>Birth Certificate</span>
-                <a href={player.birth_cert_url} target="_blank" rel="noreferrer" style={{ color: 'var(--brand-accent)', fontSize: '0.8rem', fontWeight: 600 }}>View →</a>
+            {player.aadhar_back_url && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0', borderBottom: '1px solid var(--bg-surface-elevated)' }}>
+                <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>🪪 Aadhaar — Back Side</span>
+                <a href={player.aadhar_back_url} target="_blank" rel="noreferrer" style={{ color: 'var(--brand-accent)', fontSize: '0.8rem', fontWeight: 600 }}>View →</a>
               </div>
             )}
-            {!player.address_proof_url && !player.birth_cert_url && (
+            {!player.aadhar_front_url && !player.aadhar_back_url && (
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>No documents uploaded.</p>
             )}
-            {(player.address_proof_url || player.birth_cert_url) && (
+            {player.aadhar_front_url && !player.aadhar_back_url && (
+              <p style={{ color: '#f59e0b', fontSize: '0.82rem', fontWeight: 500 }}>⚠️ Back side not yet uploaded by player.</p>
+            )}
+            {(player.aadhar_front_url || player.aadhar_back_url) && (
               <button
                 onClick={handleApproveDocs}
-                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-md)', background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', width: 'fit-content', transition: 'all 0.15s' }}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-md)', background: player.docs_approved ? 'rgba(16,185,129,0.15)' : 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)', fontWeight: 600, fontSize: '0.875rem', cursor: player.docs_approved ? 'default' : 'pointer', width: 'fit-content', transition: 'all 0.15s' }}
                 disabled={player.docs_approved}
               >
                 <CheckCircle size={16} />
