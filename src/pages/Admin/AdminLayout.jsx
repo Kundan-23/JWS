@@ -34,13 +34,13 @@ const AdminLayout = () => {
   let user = null;
   try { user = raw ? JSON.parse(raw) : null; } catch { user = null; }
   if (!user || user.role !== 'admin') {
-    return <Navigate to="/admin-login" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   const handleLogout = () => {
     localStorage.removeItem('jws_token');
     localStorage.removeItem('jws_user');
-    navigate('/admin-login');
+    navigate('/login');
   };
 
   const sidebarStyle = {
