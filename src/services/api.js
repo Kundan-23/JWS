@@ -91,6 +91,7 @@ export const coachAPI = {
   getAvailableMatches: ()      => API.get('/coach/available-matches'),
   getReferrals: ()           => API.get('/coach/referrals'),
   requestCashout: (data)     => API.post('/coach/referrals/cashout', data),
+  uploadAadhar: (file)       => { const f = new FormData(); f.append('file', file); return API.post('/coach/upload/aadhar', f, { headers: { 'Content-Type': 'multipart/form-data' } }); },
   // Slots & Scheduling
   getPracticeMatches: ()         => API.get('/coach/practice-matches'),
   submitMatchSquad:   (data)     => API.post('/coach/squad-matches', data),

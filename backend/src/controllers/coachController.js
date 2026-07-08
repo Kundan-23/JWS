@@ -245,3 +245,26 @@ exports.requestCashout = asyncHandler(async (req, res) => {
     newBalance: balance - amount,
   });
 });
+
+// ─── POST /api/coach/upload/aadhar ────────────────────────────────
+// Selectors upload their Aadhaar for identity (no admin verification required)
+exports.uploadAadhar = asyncHandler(async (req, res) => {
+  if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded.' });
+
+  const ext  = req.file.mimetype.split('/')[1];
+  const filePath = `coaches/${req.user.id}/aadhar.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from('documents')
+    .upload(filePath, req.file.buffer, { contentType: req.file.mimetype, upsert: true });
+
+  if (uploadError) throw new Error('Upload failed: ' + uploadError.message);
+
+  const { data: { signedUrl } } = await supabase.storage
+    .from('documents')
+    .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year
+
+  await supabase.from('coaches').update({ aadhar_url: signedUrl }).eq('id', req.user.id);
+
+  res.json({ success: true, message: 'Aadhaar uploaded successfully.', url: signedUrl });
+});

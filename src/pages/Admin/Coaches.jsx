@@ -49,6 +49,22 @@ const CoachFormDrawer = ({ coach, onClose, onSave }) => {
   const [pincodeState, setPincodeState] = useState({ loading: false, stateName: '', error: '' });
   const [birthCertFile, setBirthCertFile] = useState(null);
   const [addressProofFile, setAddressProofFile] = useState(null);
+  const [aadharFrontFile, setAadharFrontFile] = useState(null);
+  const [aadharBackFile, setAadharBackFile] = useState(null);
+
+  const getAadharUrls = () => {
+    try {
+      const parsed = JSON.parse(coach?.aadhar_url || '{}');
+      if (parsed && typeof parsed === 'object') {
+        return {
+          front: parsed.front || '',
+          back: parsed.back || ''
+        };
+      }
+    } catch (e) {}
+    return { front: coach?.aadhar_url || '', back: '' };
+  };
+  const aadharUrls = getAadharUrls();
   const photoRef = useRef();
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
@@ -132,7 +148,7 @@ const CoachFormDrawer = ({ coach, onClose, onSave }) => {
         profilePhotoUrl: form.profile_photo_url,
       };
       if (form.password) payload.password = form.password;
-      await onSave(payload, birthCertFile, addressProofFile);
+      await onSave(payload, birthCertFile, addressProofFile, aadharFrontFile, aadharBackFile);
     } finally {
       setSaving(false);
     }
@@ -302,7 +318,7 @@ const CoachFormDrawer = ({ coach, onClose, onSave }) => {
           {/* Section: Documents */}
           <div style={sec}>
             <p style={secTitle}>📄 Documents</p>
-            <div style={{ ...grid2 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.875rem', marginBottom: '0.875rem' }}>
               <div style={fgrp}>
                 <label style={lbl}>Birth Certificate (PDF/Image)</label>
                 <input type="file" accept="image/*,application/pdf" onChange={e => setBirthCertFile(e.target.files[0])} style={{ ...inp, padding: '0.4rem' }} />
@@ -312,6 +328,26 @@ const CoachFormDrawer = ({ coach, onClose, onSave }) => {
                 <label style={lbl}>Address Proof (PDF/Image)</label>
                 <input type="file" accept="image/*,application/pdf" onChange={e => setAddressProofFile(e.target.files[0])} style={{ ...inp, padding: '0.4rem' }} />
                 {coach?.address_proof_url && !addressProofFile && <span style={{ fontSize: '0.75rem', color: 'var(--success)', marginTop: '0.3rem' }}>✓ Uploaded</span>}
+              </div>
+            </div>
+            <div style={{ ...grid2 }}>
+              <div style={fgrp}>
+                <label style={lbl}>Aadhaar Card Front (PDF/Image)</label>
+                <input type="file" accept="image/*,application/pdf" onChange={e => setAadharFrontFile(e.target.files[0])} style={{ ...inp, padding: '0.4rem' }} />
+                {aadharUrls.front && !aadharFrontFile && (
+                  <span style={{ fontSize: '0.75rem', color: 'var(--success)', marginTop: '0.3rem' }}>
+                    ✓ Uploaded (<a href={aadharUrls.front} target="_blank" rel="noreferrer" style={{ color: 'var(--brand-accent)', textDecoration: 'underline' }}>View</a>)
+                  </span>
+                )}
+              </div>
+              <div style={fgrp}>
+                <label style={lbl}>Aadhaar Card Back (PDF/Image)</label>
+                <input type="file" accept="image/*,application/pdf" onChange={e => setAadharBackFile(e.target.files[0])} style={{ ...inp, padding: '0.4rem' }} />
+                {aadharUrls.back && !aadharBackFile && (
+                  <span style={{ fontSize: '0.75rem', color: 'var(--success)', marginTop: '0.3rem' }}>
+                    ✓ Uploaded (<a href={aadharUrls.back} target="_blank" rel="noreferrer" style={{ color: 'var(--brand-accent)', textDecoration: 'underline' }}>View</a>)
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -347,7 +383,7 @@ const Coaches = () => {
 
   useEffect(() => { load(); }, []);
 
-  const handleSave = async (data, birthCertFile, addressProofFile) => {
+  const handleSave = async (data, birthCertFile, addressProofFile, aadharFrontFile, aadharBackFile) => {
     try {
       let coachId;
       if (modal && modal !== 'add') {
@@ -365,6 +401,12 @@ const Coaches = () => {
       }
       if (addressProofFile) {
         await adminAPI.uploadCoachDocument(coachId, 'address_proof', addressProofFile);
+      }
+      if (aadharFrontFile) {
+        await adminAPI.uploadCoachDocument(coachId, 'aadhar_front', aadharFrontFile);
+      }
+      if (aadharBackFile) {
+        await adminAPI.uploadCoachDocument(coachId, 'aadhar_back', aadharBackFile);
       }
 
       setModal(null);
@@ -428,6 +470,8 @@ const Coaches = () => {
                   <th style={thStyle}>Pincode</th>
                   <th style={thStyle}>Birth Certificate</th>
                   <th style={thStyle}>Address Proof</th>
+                  <th style={thStyle}>Aadhaar Front</th>
+                  <th style={thStyle}>Aadhaar Back</th>
                   <th style={thStyle}>Status</th>
                   <th style={thStyle}>Actions</th>
                 </tr>
@@ -461,8 +505,24 @@ const Coaches = () => {
                       <td style={tdStyle}>{c.whatsapp || '—'}</td>
                       <td style={tdStyle}>{c.city || '—'}</td>
                       <td style={{ ...tdStyle, color: 'var(--text-secondary)' }}>{c.zip_code || '—'}</td>
-                      <td style={{ ...tdStyle, textAlign: 'center' }}>{docBadge(c.birth_cert_url)}</td>
+                       <td style={{ ...tdStyle, textAlign: 'center' }}>{docBadge(c.birth_cert_url)}</td>
                       <td style={{ ...tdStyle, textAlign: 'center' }}>{docBadge(c.address_proof_url)}</td>
+                      <td style={{ ...tdStyle, textAlign: 'center' }}>{(() => {
+                        try {
+                          const parsed = JSON.parse(c.aadhar_url || '{}');
+                          return docBadge(!!(parsed && parsed.front));
+                        } catch (e) {
+                          return docBadge(!!c.aadhar_url);
+                        }
+                      })()}</td>
+                      <td style={{ ...tdStyle, textAlign: 'center' }}>{(() => {
+                        try {
+                          const parsed = JSON.parse(c.aadhar_url || '{}');
+                          return docBadge(!!(parsed && parsed.back));
+                        } catch (e) {
+                          return docBadge(false);
+                        }
+                      })()}</td>
                       <td style={tdStyle}>
                         <span style={{ padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700,
                           backgroundColor: c.status === 'Active' ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)',

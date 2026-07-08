@@ -73,7 +73,7 @@ exports.exportPlayers = asyncHandler(async (req, res) => {
 
   let query = supabase
     .from('players')
-    .select('id, gicl_id, first_name, last_name, middle_name, email, whatsapp, dob, plan, payment_status, city, zip_code, profile_photo_url, aadhar_url')
+    .select('id, gicl_id, first_name, last_name, middle_name, email, whatsapp, dob, gender, plan, payment_status, city, state_code, zip_code, profile_photo_url, aadhar_front_url, aadhar_back_url')
     .order('created_at', { ascending: false });
 
   if (search)  query = query.or(`email.ilike.%${search}%,first_name.ilike.%${search}%,last_name.ilike.%${search}%,gicl_id.ilike.%${search}%`);
@@ -84,17 +84,53 @@ exports.exportPlayers = asyncHandler(async (req, res) => {
   const { data: players, error } = await query;
   if (error) throw new Error('Failed to fetch players for export: ' + error.message);
 
-  const templatePath = path.join(__dirname, '..', '..', 'assets', 'JWS_2026_Players.xlsx');
+  // ── Build workbook from scratch (no template) to avoid pre-filled reference data ──
   const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.readFile(templatePath);
-  const worksheet = workbook.worksheets[0];
+  workbook.creator = 'JWS 2026';
+  workbook.created = new Date();
+  const worksheet = workbook.addWorksheet('Players', {
+    views: [{ state: 'frozen', ySplit: 1 }],
+  });
 
-  // Clean all existing data rows starting from the bottom down to row 2
-  const rowCount = worksheet.rowCount;
-  if (rowCount >= 2) {
-    worksheet.spliceRows(2, rowCount - 1);
-  }
+  // ── Define columns with widths ──
+  const COLUMNS = [
+    { header: 'JWS ID',            key: 'gicl_id',          width: 24 },
+    { header: 'First Name',         key: 'first_name',        width: 16 },
+    { header: 'Middle Name',        key: 'middle_name',       width: 16 },
+    { header: 'Last Name',          key: 'last_name',         width: 16 },
+    { header: 'Date of Birth',      key: 'dob',               width: 14 },
+    { header: 'Age',                key: 'age',               width: 8  },
+    { header: 'Gender',             key: 'gender',            width: 10 },
+    { header: 'Email',              key: 'email',             width: 28 },
+    { header: 'WhatsApp',           key: 'whatsapp',          width: 16 },
+    { header: 'City',               key: 'city',              width: 16 },
+    { header: 'State',              key: 'state_code',        width: 8  },
+    { header: 'Pincode',            key: 'zip_code',          width: 10 },
+    { header: 'Plan',               key: 'plan',              width: 14 },
+    { header: 'Payment Status',     key: 'payment_status',    width: 16 },
+    { header: 'Profile Photo URL',  key: 'profile_photo_url', width: 40 },
+    { header: 'Aadhaar Front URL',  key: 'aadhar_front_url',  width: 40 },
+    { header: 'Aadhaar Back URL',   key: 'aadhar_back_url',   width: 40 },
+  ];
 
+  worksheet.columns = COLUMNS;
+
+  // ── Style the header row ──
+  const headerRow = worksheet.getRow(1);
+  headerRow.height = 30;
+  headerRow.eachCell((cell) => {
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF203B00' } }; // dark green
+    cell.font = { bold: true, color: { argb: 'FFCBF905' }, size: 11 };                 // JWS yellow
+    cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: false };
+    cell.border = {
+      top:    { style: 'thin', color: { argb: 'FF4A7C00' } },
+      left:   { style: 'thin', color: { argb: 'FF4A7C00' } },
+      bottom: { style: 'thin', color: { argb: 'FF4A7C00' } },
+      right:  { style: 'thin', color: { argb: 'FF4A7C00' } },
+    };
+  });
+
+  // ── Write player data rows ──
   const now = new Date();
   players.forEach((p) => {
     let age = '';
@@ -102,47 +138,43 @@ exports.exportPlayers = asyncHandler(async (req, res) => {
       const birthDate = new Date(p.dob);
       let calculatedAge = now.getFullYear() - birthDate.getFullYear();
       const m = now.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && now.getDate() < birthDate.getDate())) {
-        calculatedAge--;
-      }
+      if (m < 0 || (m === 0 && now.getDate() < birthDate.getDate())) calculatedAge--;
       age = calculatedAge;
     }
 
-    const rowValues = [
-      p.gicl_id || '',
-      p.first_name || '',
-      p.middle_name || '',
-      p.last_name || '',
-      p.dob || '',
+    const newRow = worksheet.addRow({
+      gicl_id:          p.gicl_id          || '',
+      first_name:       p.first_name        || '',
+      middle_name:      p.middle_name       || '',
+      last_name:        p.last_name         || '',
+      dob:              p.dob               || '',
       age,
-      p.whatsapp || '',
-      p.city || '',
-      p.zip_code || '',
-      p.profile_photo_url || '',
-      p.aadhar_url || '',
-    ];
+      gender:           p.gender            || '',
+      email:            p.email             || '',
+      whatsapp:         p.whatsapp          || '',
+      city:             p.city              || '',
+      state_code:       p.state_code        || '',
+      zip_code:         p.zip_code          || '',
+      plan:             p.plan              || '',
+      payment_status:   p.payment_status    || '',
+      profile_photo_url: p.profile_photo_url || '',
+      aadhar_front_url:  p.aadhar_front_url  || '',
+      aadhar_back_url:   p.aadhar_back_url   || '',
+    });
 
-    const newRow = worksheet.addRow(rowValues);
     newRow.eachCell((cell) => {
       cell.alignment = { vertical: 'middle', horizontal: 'left' };
       cell.border = {
-        top: { style: 'thin', color: { argb: 'D3D3D3' } },
-        left: { style: 'thin', color: { argb: 'D3D3D3' } },
-        bottom: { style: 'thin', color: { argb: 'D3D3D3' } },
-        right: { style: 'thin', color: { argb: 'D3D3D3' } }
+        top:    { style: 'thin', color: { argb: 'FFD3D3D3' } },
+        left:   { style: 'thin', color: { argb: 'FFD3D3D3' } },
+        bottom: { style: 'thin', color: { argb: 'FFD3D3D3' } },
+        right:  { style: 'thin', color: { argb: 'FFD3D3D3' } },
       };
     });
   });
 
-  res.setHeader(
-    'Content-Type',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  );
-  res.setHeader(
-    'Content-Disposition',
-    'attachment; filename=JWS_2026_Players.xlsx'
-  );
-
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader('Content-Disposition', 'attachment; filename=JWS_2026_Players.xlsx');
   await workbook.xlsx.write(res);
   res.end();
 });
@@ -771,7 +803,9 @@ exports.uploadCoachDocument = asyncHandler(async (req, res) => {
   const { createClient } = require('@supabase/supabase-js');
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
   if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded.' });
-  if (!['birth_cert', 'address_proof'].includes(type)) return res.status(400).json({ success: false, message: 'Invalid document type.' });
+  if (!['birth_cert', 'address_proof', 'aadhar_front', 'aadhar_back'].includes(type)) {
+    return res.status(400).json({ success: false, message: 'Invalid document type.' });
+  }
 
   const path = `coaches/${id}/${type}_${Date.now()}`;
   const { error: uploadError } = await sb.storage.from('documents').upload(path, req.file.buffer, { 
@@ -782,8 +816,24 @@ exports.uploadCoachDocument = asyncHandler(async (req, res) => {
   const { data: publicUrlData } = sb.storage.from('documents').getPublicUrl(path);
 
   const updateData = {};
-  if (type === 'birth_cert') updateData.birth_cert_url = publicUrlData.publicUrl;
-  if (type === 'address_proof') updateData.address_proof_url = publicUrlData.publicUrl;
+  if (type === 'birth_cert') {
+    updateData.birth_cert_url = publicUrlData.publicUrl;
+  } else if (type === 'address_proof') {
+    updateData.address_proof_url = publicUrlData.publicUrl;
+  } else {
+    // Aadhaar Front / Back side
+    const { data: coach } = await sb.from('coaches').select('aadhar_url').eq('id', id).single();
+    let docs = {};
+    try {
+      docs = JSON.parse(coach?.aadhar_url || '{}');
+      if (typeof docs !== 'object' || docs === null) docs = {};
+    } catch (e) {
+      if (coach?.aadhar_url) docs.front = coach.aadhar_url;
+    }
+    if (type === 'aadhar_front') docs.front = publicUrlData.publicUrl;
+    if (type === 'aadhar_back') docs.back = publicUrlData.publicUrl;
+    updateData.aadhar_url = JSON.stringify(docs);
+  }
 
   const { error: updateError } = await sb.from('coaches').update(updateData).eq('id', id);
   if (updateError) throw new Error(updateError.message);
