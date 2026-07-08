@@ -6,10 +6,12 @@ import { useFormStore } from '../../store/useFormStore';
 import { playerAPI } from '../../services/api';
 import Swal from 'sweetalert2';
 import { User, Award, Activity, Star, Info, Shirt, Users, Video, X, Edit, Calendar, MapPin } from 'lucide-react';
+import { useConfig } from '../../context/ConfigContext';
 
 const PlayerDashboard = () => {
   const navigate = useNavigate();
   const { basicInfo, playerProfile, media, dashboardState, updateDashboard, updateBasicInfo, updatePlayerProfile } = useFormStore();
+  const { jersey_sizes: jerseySizes = [] } = useConfig();
   const [loadingPoints, setLoadingPoints] = useState(false);
   const [showCoachModal, setShowCoachModal] = useState(false);
   const fileInputRef = useRef(null);
@@ -271,6 +273,391 @@ const PlayerDashboard = () => {
     }
   };
 
+  const handleUpdateDOB = async () => {
+    const { value: selectedDOB } = await Swal.fire({
+      title: 'Update Date of Birth',
+      html: `
+        <div style="text-align: left; width: 80%; margin: 0 auto;">
+          <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Date of Birth *</label>
+          <input type="date" id="swal-dob" class="swal2-input" value="${basicInfo.dob || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+        </div>
+      `,
+      background: 'var(--bg-surface)',
+      color: 'var(--text-primary)',
+      showCancelButton: true,
+      confirmButtonColor: '#cbf905',
+      confirmButtonText: 'Save',
+      focusConfirm: false,
+      preConfirm: () => {
+        return document.getElementById('swal-dob').value;
+      }
+    });
+
+    if (selectedDOB) {
+      try {
+        Swal.showLoading();
+        await playerAPI.updateProfile({ dob: selectedDOB });
+        
+        // Calculate age
+        const birthDate = new Date(selectedDOB);
+        const today = new Date();
+        let newAge = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          newAge--;
+        }
+
+        updateBasicInfo({ dob: selectedDOB });
+        updatePlayerProfile({ age: String(newAge) });
+
+        // Update local session
+        const stored = localStorage.getItem('jws_user');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          parsed.dob = selectedDOB;
+          localStorage.setItem('jws_user', JSON.stringify(parsed));
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'Date of Birth successfully updated.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed',
+          text: err.response?.data?.message || 'Could not update Date of Birth.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905'
+        });
+      }
+    }
+  };
+
+  const handleUpdateWhatsApp = async () => {
+    const { value: whatsapp } = await Swal.fire({
+      title: 'Update WhatsApp Number',
+      html: `
+        <div style="text-align: left; width: 80%; margin: 0 auto;">
+          <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">WhatsApp Number *</label>
+          <input type="text" id="swal-whatsapp" class="swal2-input" placeholder="+91..." value="${basicInfo.whatsapp || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+        </div>
+      `,
+      background: 'var(--bg-surface)',
+      color: 'var(--text-primary)',
+      showCancelButton: true,
+      confirmButtonColor: '#cbf905',
+      confirmButtonText: 'Save',
+      focusConfirm: false,
+      preConfirm: () => {
+        return document.getElementById('swal-whatsapp').value.trim();
+      }
+    });
+
+    if (whatsapp) {
+      try {
+        Swal.showLoading();
+        await playerAPI.updateProfile({ whatsapp });
+        updateBasicInfo({ whatsapp });
+
+        // Update local session
+        const stored = localStorage.getItem('jws_user');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          parsed.whatsapp = whatsapp;
+          localStorage.setItem('jws_user', JSON.stringify(parsed));
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'WhatsApp number successfully updated.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed',
+          text: err.response?.data?.message || 'Could not update WhatsApp number.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905'
+        });
+      }
+    }
+  };
+
+  const handleUpdateParentName = async () => {
+    const { value: parentName } = await Swal.fire({
+      title: 'Update Parent/Guardian Name',
+      html: `
+        <div style="text-align: left; width: 80%; margin: 0 auto;">
+          <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Parent/Guardian Name *</label>
+          <input type="text" id="swal-parent-name" class="swal2-input" placeholder="Parent/Guardian Name" value="${basicInfo.emergencyContactName || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+        </div>
+      `,
+      background: 'var(--bg-surface)',
+      color: 'var(--text-primary)',
+      showCancelButton: true,
+      confirmButtonColor: '#cbf905',
+      confirmButtonText: 'Save',
+      focusConfirm: false,
+      preConfirm: () => {
+        return document.getElementById('swal-parent-name').value.trim();
+      }
+    });
+
+    if (parentName) {
+      try {
+        Swal.showLoading();
+        await playerAPI.updateProfile({ emergencyContactName: parentName });
+        updateBasicInfo({ emergencyContactName: parentName });
+
+        // Update local session
+        const stored = localStorage.getItem('jws_user');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          parsed.emergency_contact_name = parentName;
+          localStorage.setItem('jws_user', JSON.stringify(parsed));
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'Parent/Guardian Name successfully updated.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed',
+          text: err.response?.data?.message || 'Could not update Parent/Guardian Name.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905'
+        });
+      }
+    }
+  };
+
+  const handleUpdateParentNumber = async () => {
+    const { value: parentNumber } = await Swal.fire({
+      title: 'Update Parent/Guardian Number',
+      html: `
+        <div style="text-align: left; width: 80%; margin: 0 auto;">
+          <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Parent/Guardian Number *</label>
+          <input type="text" id="swal-parent-number" class="swal2-input" placeholder="Parent/Guardian Number" value="${basicInfo.emergencyContact || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+        </div>
+      `,
+      background: 'var(--bg-surface)',
+      color: 'var(--text-primary)',
+      showCancelButton: true,
+      confirmButtonColor: '#cbf905',
+      confirmButtonText: 'Save',
+      focusConfirm: false,
+      preConfirm: () => {
+        return document.getElementById('swal-parent-number').value.trim();
+      }
+    });
+
+    if (parentNumber) {
+      try {
+        Swal.showLoading();
+        await playerAPI.updateProfile({ emergencyContact: parentNumber });
+        updateBasicInfo({ emergencyContact: parentNumber });
+
+        // Update local session
+        const stored = localStorage.getItem('jws_user');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          parsed.emergency_contact = parentNumber;
+          localStorage.setItem('jws_user', JSON.stringify(parsed));
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'Parent/Guardian Number successfully updated.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed',
+          text: err.response?.data?.message || 'Could not update Parent/Guardian Number.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905'
+        });
+      }
+    }
+  };
+
+  const handleUpdateAddress = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: 'Update Address',
+      html: `
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; text-align: left; width: 85%; margin: 0 auto;">
+          <div>
+            <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Flat no, Wing name, Sector *</label>
+            <input id="addr-line1" class="swal2-input" value="${basicInfo.addressLine1 || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Area and Address</label>
+            <input id="addr-line2" class="swal2-input" value="${basicInfo.addressLine2 || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <div>
+              <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">City *</label>
+              <input id="addr-city" class="swal2-input" value="${basicInfo.city || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Pincode *</label>
+              <input id="addr-zip" class="swal2-input" value="${basicInfo.zipCode || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+            </div>
+          </div>
+        </div>
+      `,
+      background: 'var(--bg-surface)',
+      color: 'var(--text-primary)',
+      showCancelButton: true,
+      confirmButtonColor: '#cbf905',
+      preConfirm: () => {
+        return {
+          addressLine1: document.getElementById('addr-line1').value.trim(),
+          addressLine2: document.getElementById('addr-line2').value.trim(),
+          city: document.getElementById('addr-city').value.trim(),
+          zipCode: document.getElementById('addr-zip').value.trim(),
+        };
+      }
+    });
+
+    if (formValues) {
+      if (!formValues.addressLine1 || !formValues.city || !formValues.zipCode) {
+        return Swal.fire({ icon: 'warning', title: 'Required Fields', text: 'Please fill in all mandatory address fields.', background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: '#cbf905' });
+      }
+      try {
+        Swal.showLoading();
+        await playerAPI.updateProfile(formValues);
+        updateBasicInfo(formValues);
+
+        // Update local session
+        const stored = localStorage.getItem('jws_user');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          parsed.address_line1 = formValues.addressLine1;
+          parsed.address_line2 = formValues.addressLine2;
+          parsed.city = formValues.city;
+          parsed.zip_code = formValues.zipCode;
+          localStorage.setItem('jws_user', JSON.stringify(parsed));
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'Address successfully updated.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed',
+          text: err.response?.data?.message || 'Could not update address.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905'
+        });
+      }
+    }
+  };
+
+  const handleUpdateJerseySize = async () => {
+    const optionsHtml = (jerseySizes || ['S', 'M', 'L', 'XL', 'XXL']).map(sz => 
+      `<option value="${sz}" ${basicInfo.jerseySize === sz ? 'selected' : ''}>${sz}</option>`
+    ).join('');
+
+    const { value: jerseySize } = await Swal.fire({
+      title: 'Update Jersey Size',
+      html: `
+        <div style="text-align: left; width: 80%; margin: 0 auto;">
+          <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Jersey Size *</label>
+          <select id="swal-jersey-size" class="swal2-select" style="display: flex; margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+            <option value="">Select Size</option>
+            ${optionsHtml}
+          </select>
+        </div>
+      `,
+      background: 'var(--bg-surface)',
+      color: 'var(--text-primary)',
+      showCancelButton: true,
+      confirmButtonColor: '#cbf905',
+      confirmButtonText: 'Save',
+      focusConfirm: false,
+      preConfirm: () => {
+        return document.getElementById('swal-jersey-size').value;
+      }
+    });
+
+    if (jerseySize) {
+      try {
+        Swal.showLoading();
+        await playerAPI.updateProfile({ jerseySize });
+        updateBasicInfo({ jerseySize });
+
+        // Update local session
+        const stored = localStorage.getItem('jws_user');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          parsed.jersey_size = jerseySize;
+          localStorage.setItem('jws_user', JSON.stringify(parsed));
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'Jersey Size successfully updated.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed',
+          text: err.response?.data?.message || 'Could not update Jersey Size.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905'
+        });
+      }
+    }
+  };
+
   const handleDownloadIdCard = () => {
     if (!basicInfo.manualIdCardUrl) {
       return Swal.fire({ icon: 'info', title: 'Not Available', text: 'Your ID card has not been uploaded yet.', background: 'var(--bg-surface)', color: 'var(--text-primary)' });
@@ -425,9 +812,18 @@ const PlayerDashboard = () => {
                 </button>
               </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem', alignItems: 'center' }}>
               <span className="text-small text-secondary">Date of Birth / Age</span>
-              <span style={{ fontWeight: 500 }}>{basicInfo.dob ? new Date(basicInfo.dob).toLocaleDateString() : 'N/A'} ({playerProfile.age || 'N/A'} Yrs)</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontWeight: 500 }}>{basicInfo.dob ? new Date(basicInfo.dob).toLocaleDateString() : 'N/A'} ({playerProfile.age || 'N/A'} Yrs)</span>
+                <button 
+                  onClick={handleUpdateDOB} 
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--brand-primary)' }}
+                  title="Update Date of Birth"
+                >
+                  <Edit size={14} />
+                </button>
+              </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem', alignItems: 'center' }}>
               <span className="text-small text-secondary">Gender / Blood Group</span>
@@ -436,7 +832,7 @@ const PlayerDashboard = () => {
                 <button 
                   onClick={handleUpdateBloodGroup} 
                   style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--brand-primary)' }}
-                  title="Update blood group"
+                  title="Update gender & blood group"
                 >
                   <Edit size={14} />
                 </button>
@@ -444,15 +840,46 @@ const PlayerDashboard = () => {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
               <span className="text-small text-secondary">Email</span>
-              <span style={{ fontWeight: 500, fontSize: '0.9rem' }}>{basicInfo.email || 'N/A'}</span>
+              <span style={{ fontWeight: 500, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{basicInfo.email || 'N/A'}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem', alignItems: 'center' }}>
               <span className="text-small text-secondary">WhatsApp</span>
-              <span style={{ fontWeight: 500 }}>{basicInfo.whatsapp || 'N/A'}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontWeight: 500 }}>{basicInfo.whatsapp || 'N/A'}</span>
+                <button 
+                  onClick={handleUpdateWhatsApp} 
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--brand-primary)' }}
+                  title="Update WhatsApp"
+                >
+                  <Edit size={14} />
+                </button>
+              </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
-              <span className="text-small text-secondary">Parent / Guardian</span>
-              <span style={{ fontWeight: 500, fontSize: '0.9rem' }}>{basicInfo.emergencyContactName || 'N/A'} ({basicInfo.emergencyContact || 'N/A'})</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem', alignItems: 'center' }}>
+              <span className="text-small text-secondary">Parent / Guardian Name</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontWeight: 500 }}>{basicInfo.emergencyContactName || 'N/A'}</span>
+                <button 
+                  onClick={handleUpdateParentName} 
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--brand-primary)' }}
+                  title="Update Parent Name"
+                >
+                  <Edit size={14} />
+                </button>
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem', alignItems: 'center' }}>
+              <span className="text-small text-secondary">Parent Emergency Number</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontWeight: 500 }}>{basicInfo.emergencyContact || 'N/A'}</span>
+                <button 
+                  onClick={handleUpdateParentNumber} 
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--brand-primary)' }}
+                  title="Update Parent Number"
+                >
+                  <Edit size={14} />
+                </button>
+              </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
               <span className="text-small text-secondary">Aadhaar Card</span>
@@ -462,10 +889,19 @@ const PlayerDashboard = () => {
                 <span style={{ fontWeight: 500, color: 'var(--text-secondary)' }}>Not Uploaded</span>
               )}
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-              <span className="text-small text-secondary">Address</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="text-small text-secondary">Address</span>
+                <button 
+                  onClick={handleUpdateAddress} 
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--brand-primary)' }}
+                  title="Update Address"
+                >
+                  <Edit size={14} />
+                </button>
+              </div>
               <span style={{ fontWeight: 500, fontSize: '0.9rem', lineHeight: 1.4 }}>
-                {basicInfo.addressLine1}{basicInfo.addressLine2 ? `, ${basicInfo.addressLine2}` : ''}, {basicInfo.city}, {basicInfo.stateCode} - {basicInfo.zipCode}, {basicInfo.country}
+                {basicInfo.addressLine1 ? `${basicInfo.addressLine1}${basicInfo.addressLine2 ? `, ${basicInfo.addressLine2}` : ''}, ${basicInfo.city}, ${basicInfo.stateCode} - ${basicInfo.zipCode}, ${basicInfo.country}` : 'N/A'}
               </span>
             </div>
           </div>
@@ -490,9 +926,9 @@ const PlayerDashboard = () => {
               <span className="text-small text-secondary">Ball Types Selected</span>
               <span style={{ fontWeight: 500 }}>{(playerProfile.ballsSelected || []).join(', ') || 'N/A'}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem', alignItems: 'center' }}>
               <span className="text-small text-secondary">Fielding Positions</span>
-              <span style={{ fontWeight: 500, textAlign: 'right', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={(playerProfile.fieldPositions || []).join(', ')}>
+              <span style={{ fontWeight: 500, textAlign: 'right', maxWidth: '60%', lineHeight: 1.4 }} title={(playerProfile.fieldPositions || []).join(', ')}>
                 {(playerProfile.fieldPositions || []).join(', ') || 'N/A'}
               </span>
             </div>
@@ -543,9 +979,18 @@ const PlayerDashboard = () => {
               <span className="text-small text-secondary">Jersey Name</span>
               <span style={{ fontWeight: 500, textTransform: 'uppercase' }}>{basicInfo.jerseyName || 'N/A'}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem', alignItems: 'center' }}>
               <span className="text-small text-secondary">Jersey Size</span>
-              <span style={{ fontWeight: 500 }}>{basicInfo.jerseySize || 'N/A'}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontWeight: 500 }}>{basicInfo.jerseySize || 'N/A'}</span>
+                <button 
+                  onClick={handleUpdateJerseySize} 
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--brand-primary)' }}
+                  title="Update Jersey Size"
+                >
+                  <Edit size={14} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
