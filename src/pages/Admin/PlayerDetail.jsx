@@ -395,16 +395,6 @@ const PlayerDetail = () => {
           <InfoRow label="Transaction ID" value={player.payment_order_id || player.payment_id} />
         </Section>
 
-        <Section title="Referral Stats" icon={Users}>
-          <InfoRow label="Referral Code" value={player.referral_code} />
-          <InfoRow label="Referred By" value={
-            referrerDetail 
-              ? `${referrerDetail.first_name} ${referrerDetail.last_name} (${referrerDetail.type === 'coach' ? 'Coach' : 'Player'} - ${referrerDetail.gicl_id})` 
-              : (player.referred_by_code || 'None')
-          } />
-          <InfoRow label="Referral Balance" value={player.referral_balance != null ? `₹${player.referral_balance}` : '₹0'} />
-          <InfoRow label="Total Referrals Made" value={player.total_referrals} />
-        </Section>
 
         {player.cashouts && player.cashouts.length > 0 && (
           <Section title="Cashout History" icon={DollarSign}>
@@ -417,15 +407,15 @@ const PlayerDetail = () => {
           </Section>
         )}
 
-        {/* Assign Coach */}
-        <Section title="Assign Coach" icon={UserCheck}>
+        {/* Assign Selector */}
+        <Section title="Assign Selector" icon={UserCheck}>
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
             <select
               value={selectedCoach}
               onChange={e => setSelectedCoach(e.target.value)}
               style={{ flex: 1, minWidth: 180, padding: '0.65rem 2.5rem 0.65rem 0.875rem', backgroundColor: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', color: 'var(--text-primary)', fontSize: '0.875rem', appearance: 'none', backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1.25em' }}
             >
-              <option value="">No Coach</option>
+              <option value="">No Selector</option>
               {coaches.map(c => (
                 <option key={c.id} value={c.id}>{c.first_name} {c.last_name} ({c.email})</option>
               ))}
@@ -440,7 +430,7 @@ const PlayerDetail = () => {
           </div>
           {player.allocated_coach_id && coaches.find(c => c.id === player.allocated_coach_id) && (
             <p style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-              Current coach: <strong style={{ color: 'var(--text-primary)' }}>
+              Current selector: <strong style={{ color: 'var(--text-primary)' }}>
                 {coaches.find(c => c.id === player.allocated_coach_id)?.first_name} {coaches.find(c => c.id === player.allocated_coach_id)?.last_name}
               </strong>
             </p>
