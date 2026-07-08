@@ -18,6 +18,13 @@ const PlayerDashboard = () => {
 
   // Track whether we've loaded from API yet — prevents flash redirect
   const [profileLoaded, setProfileLoaded] = useState(false);
+  const [photoCacheBuster, setPhotoCacheBuster] = useState(Date.now());
+
+  const getDisplayPhotoUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('data:')) return url; // Base64 local preview
+    return `${url}?t=${photoCacheBuster}`;
+  };
 
   // Sync ALL profile data from backend on every mount (handles refresh / new login)
   useEffect(() => {
@@ -122,7 +129,10 @@ const PlayerDashboard = () => {
     try {
       const res = await playerAPI.uploadPhoto(file);
       const url = res.data?.url;
-      if (url) updateDashboard({ profilePhotoUrl: url });
+      if (url) {
+        updateDashboard({ profilePhotoUrl: url });
+        setPhotoCacheBuster(Date.now());
+      }
       Swal.fire({ icon: 'success', title: 'Photo Updated!', timer: 1500, showConfirmButton: false,
         background: 'var(--bg-surface)', color: 'var(--text-primary)' });
     } catch {
@@ -423,12 +433,13 @@ const PlayerDashboard = () => {
   };
 
   const handleUpdateWhatsApp = async () => {
+    const defaultVal = basicInfo.whatsapp && basicInfo.whatsapp.startsWith('+') ? basicInfo.whatsapp : '+91';
     const { value: whatsapp } = await Swal.fire({
       title: 'Update WhatsApp Number',
       html: `
         <div style="text-align: left; width: 80%; margin: 0 auto;">
           <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">WhatsApp Number *</label>
-          <input type="text" id="swal-whatsapp" class="swal2-input" placeholder="+91..." value="${basicInfo.whatsapp || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+          <input type="text" id="swal-whatsapp" class="swal2-input" placeholder="+91..." value="${defaultVal}" oninput="this.value = this.value.replace(/[^\\d+]/g, '').substring(0, 13)" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
         </div>
       `,
       background: 'var(--bg-surface)',
@@ -438,7 +449,12 @@ const PlayerDashboard = () => {
       confirmButtonText: 'Save',
       focusConfirm: false,
       preConfirm: () => {
-        return document.getElementById('swal-whatsapp').value.trim();
+        const val = document.getElementById('swal-whatsapp').value.trim();
+        if (!/^\+91\d{10}$/.test(val)) {
+          Swal.showValidationMessage('Please enter a valid 10-digit number starting with +91');
+          return false;
+        }
+        return val;
       }
     });
 
@@ -537,12 +553,13 @@ const PlayerDashboard = () => {
   };
 
   const handleUpdateParentNumber = async () => {
+    const defaultVal = basicInfo.emergencyContact && basicInfo.emergencyContact.startsWith('+') ? basicInfo.emergencyContact : '+91';
     const { value: parentNumber } = await Swal.fire({
       title: 'Update Parent/Guardian Number',
       html: `
         <div style="text-align: left; width: 80%; margin: 0 auto;">
           <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Parent/Guardian Number *</label>
-          <input type="text" id="swal-parent-number" class="swal2-input" placeholder="Parent/Guardian Number" value="${basicInfo.emergencyContact || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+          <input type="text" id="swal-parent-number" class="swal2-input" placeholder="+91..." value="${defaultVal}" oninput="this.value = this.value.replace(/[^\\d+]/g, '').substring(0, 13)" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
         </div>
       `,
       background: 'var(--bg-surface)',
@@ -552,7 +569,12 @@ const PlayerDashboard = () => {
       confirmButtonText: 'Save',
       focusConfirm: false,
       preConfirm: () => {
-        return document.getElementById('swal-parent-number').value.trim();
+        const val = document.getElementById('swal-parent-number').value.trim();
+        if (!/^\+91\d{10}$/.test(val)) {
+          Swal.showValidationMessage('Please enter a valid 10-digit number starting with +91');
+          return false;
+        }
+        return val;
       }
     });
 
@@ -787,7 +809,7 @@ const PlayerDashboard = () => {
               }}
             >
               {dashboardState.profilePhotoUrl ? (
-                <img src={dashboardState.profilePhotoUrl} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={getDisplayPhotoUrl(dashboardState.profilePhotoUrl)} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
                 <User size={40} color="var(--text-secondary)" />
               )}
