@@ -130,17 +130,32 @@ const PlayerDashboard = () => {
     } finally { setPhotoUploading(false); }
   };
 
-  const handleUpdateBloodGroup = async () => {
-    const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-    const optionsHtml = bloodGroups.map(g => `<option value="${g}" ${basicInfo.bloodGroup === g ? 'selected' : ''}>${g}</option>`).join('');
+  const handleUpdateGenderBloodGroup = async () => {
+    const genders = ['Male', 'Female', 'Other'];
+    const genderOptionsHtml = genders.map(g => `<option value="${g}" ${basicInfo.gender === g ? 'selected' : ''}>${g}</option>`).join('');
 
-    const { value: selectedGroup } = await Swal.fire({
-      title: 'Update Blood Group',
+    const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+    const bloodOptionsHtml = bloodGroups.map(g => `<option value="${g}" ${basicInfo.bloodGroup === g ? 'selected' : ''}>${g}</option>`).join('');
+
+    const { value: formValues } = await Swal.fire({
+      title: 'Update Gender & Blood Group',
       html: `
-        <select id="blood-group-select" class="swal2-select" style="display: flex; margin: 1.5rem auto; width: 80%; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
-          <option value="">Select Blood Group</option>
-          ${optionsHtml}
-        </select>
+        <div style="display: flex; flex-direction: column; gap: 1rem; text-align: left; width: 80%; margin: 0 auto; padding: 0.5rem 0;">
+          <div>
+            <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Gender *</label>
+            <select id="swal-gender" class="swal2-select" style="display: flex; margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+              <option value="">Select Gender</option>
+              ${genderOptionsHtml}
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Blood Group</label>
+            <select id="swal-blood-group" class="swal2-select" style="display: flex; margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+              <option value="">Select Blood Group</option>
+              ${bloodOptionsHtml}
+            </select>
+          </div>
+        </div>
       `,
       background: 'var(--bg-surface)',
       color: 'var(--text-primary)',
@@ -149,16 +164,19 @@ const PlayerDashboard = () => {
       confirmButtonText: 'Save',
       focusConfirm: false,
       preConfirm: () => {
-        return document.getElementById('blood-group-select').value;
+        return {
+          gender: document.getElementById('swal-gender').value,
+          bloodGroup: document.getElementById('swal-blood-group').value
+        };
       }
     });
 
-    if (selectedGroup !== undefined) {
-      if (selectedGroup === '') {
+    if (formValues) {
+      if (!formValues.gender) {
         return Swal.fire({
           icon: 'warning',
-          title: 'Empty Selection',
-          text: 'Please select a valid blood group.',
+          title: 'Gender Required',
+          text: 'Please select a valid gender.',
           background: 'var(--bg-surface)',
           color: 'var(--text-primary)',
           confirmButtonColor: '#cbf905'
@@ -166,12 +184,12 @@ const PlayerDashboard = () => {
       }
       try {
         Swal.showLoading();
-        await playerAPI.updateProfile({ bloodGroup: selectedGroup });
-        updateBasicInfo({ bloodGroup: selectedGroup });
+        await playerAPI.updateProfile(formValues);
+        updateBasicInfo(formValues);
         Swal.fire({
           icon: 'success',
           title: 'Updated!',
-          text: `Blood group successfully updated to ${selectedGroup}.`,
+          text: 'Gender & Blood Group successfully updated.',
           background: 'var(--bg-surface)',
           color: 'var(--text-primary)',
           confirmButtonColor: '#cbf905',
@@ -182,7 +200,7 @@ const PlayerDashboard = () => {
         Swal.fire({
           icon: 'error',
           title: 'Failed',
-          text: err.response?.data?.message || 'Could not update blood group.',
+          text: err.response?.data?.message || 'Could not update details.',
           background: 'var(--bg-surface)',
           color: 'var(--text-primary)',
           confirmButtonColor: '#cbf905'
@@ -830,7 +848,7 @@ const PlayerDashboard = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span style={{ fontWeight: 500 }}>{basicInfo.gender || 'N/A'} / {basicInfo.bloodGroup || 'N/A'}</span>
                 <button 
-                  onClick={handleUpdateBloodGroup} 
+                  onClick={handleUpdateGenderBloodGroup} 
                   style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--brand-primary)' }}
                   title="Update gender & blood group"
                 >
@@ -869,7 +887,7 @@ const PlayerDashboard = () => {
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem', alignItems: 'center' }}>
-              <span className="text-small text-secondary">Parent Emergency Number</span>
+              <span className="text-small text-secondary">Parent / Guardian Number</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span style={{ fontWeight: 500 }}>{basicInfo.emergencyContact || 'N/A'}</span>
                 <button 
