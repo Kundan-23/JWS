@@ -32,6 +32,20 @@ exports.updateProfile = asyncHandler(async (req, res) => {
   if (body.lastName         !== undefined) updateData.last_name         = body.lastName;
   if (body.dob              !== undefined) updateData.dob               = body.dob;
   if (body.gender           !== undefined) updateData.gender            = body.gender;
+  if (body.email            !== undefined) {
+    const emailVal = body.email.trim().toLowerCase();
+    const { data: existingPlayer } = await supabase
+      .from('players')
+      .select('id')
+      .eq('email', emailVal)
+      .neq('id', req.user.id)
+      .maybeSingle();
+
+    if (existingPlayer) {
+      return res.status(400).json({ success: false, message: 'This email is already in use by another player.' });
+    }
+    updateData.email = emailVal;
+  }
   if (body.whatsapp             !== undefined) updateData.whatsapp             = body.whatsapp;
   if (body.emergencyContact     !== undefined) updateData.emergency_contact    = body.emergencyContact;
   if (body.emergencyContactName !== undefined) updateData.emergency_contact_name = body.emergencyContactName;

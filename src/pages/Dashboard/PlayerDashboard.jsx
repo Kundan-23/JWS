@@ -359,6 +359,68 @@ const PlayerDashboard = () => {
     }
   };
 
+  const handleUpdateEmail = async () => {
+    const { value: email } = await Swal.fire({
+      title: 'Update Email Address',
+      html: `
+        <div style="text-align: left; width: 80%; margin: 0 auto;">
+          <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Email Address *</label>
+          <input type="email" id="swal-email" class="swal2-input" placeholder="john@example.com" value="${basicInfo.email || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+        </div>
+      `,
+      background: 'var(--bg-surface)',
+      color: 'var(--text-primary)',
+      showCancelButton: true,
+      confirmButtonColor: '#cbf905',
+      confirmButtonText: 'Save',
+      focusConfirm: false,
+      preConfirm: () => {
+        const val = document.getElementById('swal-email').value.trim().toLowerCase();
+        if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+          Swal.showValidationMessage('Please enter a valid email address');
+          return false;
+        }
+        return val;
+      }
+    });
+
+    if (email) {
+      try {
+        Swal.showLoading();
+        await playerAPI.updateProfile({ email });
+        updateBasicInfo({ email });
+
+        // Update local session
+        const stored = localStorage.getItem('jws_user');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          parsed.email = email;
+          localStorage.setItem('jws_user', JSON.stringify(parsed));
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'Email address successfully updated.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed',
+          text: err.response?.data?.message || 'Could not update email address.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905'
+        });
+      }
+    }
+  };
+
   const handleUpdateWhatsApp = async () => {
     const { value: whatsapp } = await Swal.fire({
       title: 'Update WhatsApp Number',
@@ -856,9 +918,18 @@ const PlayerDashboard = () => {
                 </button>
               </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem', alignItems: 'center' }}>
               <span className="text-small text-secondary">Email</span>
-              <span style={{ fontWeight: 500, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{basicInfo.email || 'N/A'}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontWeight: 500, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{basicInfo.email || 'N/A'}</span>
+                <button 
+                  onClick={handleUpdateEmail} 
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--brand-primary)' }}
+                  title="Update Email"
+                >
+                  <Edit size={14} />
+                </button>
+              </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem', alignItems: 'center' }}>
               <span className="text-small text-secondary">WhatsApp</span>
