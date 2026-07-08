@@ -146,11 +146,33 @@ const Step2_BasicRegistration = () => {
     { size: '15-16Y', chest: '43.0', length: '27.0', shoulder: '16.0' },
   ];
   
-  const kidSizes = kidSizeData.map(k => k.size);
-  
-  // If kid, use the hardcoded kid sizes. If adult, use the admin config sizes.
+  const getKidSizeMatch = (sizeName) => {
+    if (!sizeName) return null;
+    const normalized = sizeName.toLowerCase().replace(/\s+/g, '');
+    let match = kidSizeData.find(k => k.size.toLowerCase().replace(/\s+/g, '') === normalized);
+    if (match) return match;
+    const rangeMatch = normalized.match(/(\d+)-(\d+)/);
+    if (rangeMatch) {
+      const rangeStr = `${rangeMatch[1]}-${rangeMatch[2]}`;
+      match = kidSizeData.find(k => k.size.toLowerCase().replace(/\s+/g, '').includes(rangeStr));
+      if (match) return match;
+    }
+    return null;
+  };
+
+  const isKidSizeOption = (size) => {
+    const s = size.toLowerCase();
+    return s.includes('year') || s.includes('y') || s.includes('yr') || s.includes('kid') || s.includes('child') || s.includes('age') || /\d+-\d+/.test(s);
+  };
+
+  const kidOptions = (jerseySizes || []).filter(size => isKidSizeOption(size));
+  const adultOptions = (jerseySizes || []).filter(size => !isKidSizeOption(size));
+
+  // Use admin configuration sizes, falling back to all configured sizes if no specific match is found.
   const displaySizes = currentAge > 0 
-    ? (isKidSize ? kidSizes : jerseySizes.filter(size => !size.toLowerCase().includes('kid')))
+    ? (isKidSize 
+        ? (kidOptions.length > 0 ? kidOptions : (jerseySizes || [])) 
+        : (adultOptions.length > 0 ? adultOptions : (jerseySizes || [])))
     : [];
 
   const handlePhoneChange = (val, onChange) => {
@@ -502,8 +524,10 @@ const Step2_BasicRegistration = () => {
                   </option>
                   {currentAge > 0 && displaySizes.map(size => {
                     if (isKidSize) {
-                      const match = kidSizeData.find(k => k.size === size);
-                      return <option key={size} value={size}>{size} (Chest: {match?.chest}")</option>;
+                      const match = getKidSizeMatch(size);
+                      if (match) {
+                        return <option key={size} value={size}>{size} (Chest: {match.chest}")</option>;
+                      }
                     }
                     return <option key={size} value={size}>{size}</option>;
                   })}
