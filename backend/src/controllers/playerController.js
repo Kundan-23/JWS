@@ -173,7 +173,7 @@ exports.updateProfile = asyncHandler(async (req, res) => {
         .eq('id', 1)
         .single();
 
-      const regNum    = String(cfg?.next_registration_number || 1).padStart(5, '0');
+      const regNum    = String(cfg?.next_registration_number || 1).padStart(8, '0');
       const now       = new Date();
       const month     = String(now.getMonth() + 1).padStart(2, '0');
       const year      = String(now.getFullYear());
@@ -375,7 +375,7 @@ exports.unlockDashboard = asyncHandler(async (req, res) => {
         .eq('id', 1)
         .single();
 
-      const regNum = String(cfg?.next_registration_number || 1).padStart(5, '0');
+      const regNum = String(cfg?.next_registration_number || 1).padStart(8, '0');
       const now = new Date();
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const year = String(now.getFullYear());
