@@ -177,9 +177,13 @@ const Login = () => {
 
           if (!p) { navigate('/dashboard', { replace: true }); return; }
 
-          // Not paid yet → back to payment step
+          // Not paid yet → back to payment step (or step2 if basic profile not completed)
           if (p.payment_status !== 'paid' && !p.is_dashboard_unlocked) {
-            navigate('/onboarding/payment', { replace: true });
+            if (!p.first_name) {
+              navigate('/onboarding/step2', { replace: true });
+            } else {
+              navigate('/onboarding/payment', { replace: true });
+            }
             return;
           }
 

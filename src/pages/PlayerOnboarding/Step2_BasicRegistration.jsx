@@ -36,29 +36,33 @@ const Step2_BasicRegistration = () => {
         const res = await playerAPI.getProfile();
         if (res.data?.player) {
           const player = res.data.player;
-          const mapped = {
-            firstName: player.first_name || '',
-            middleName: player.middle_name || '',
-            lastName: player.last_name || '',
-            dob: player.dob || '',
-            gender: player.gender || '',
-            whatsapp: player.whatsapp || '',
-            emergencyContact: player.emergency_contact || '',
-            emergencyContactName: player.emergency_contact_name || '',
-            bloodGroup: player.blood_group || '',
-            parentName: player.parent_name || '',
-            addressLine1: player.address_line1 || '',
-            addressLine2: player.address_line2 || '',
-            city: player.city || '',
-            country: player.country || '',
-            zipCode: player.zip_code || '',
-            jerseySize: player.jersey_size || '',
-            instagramLink: player.instagram_link || '',
-            email: player.email || user?.email || '',
-            profilePhotoUrl: player.profile_photo_url || '',
-          };
-          updateBasicInfo(mapped);
-          reset(mapped);
+          
+          // Only merge fields that are actually in the DB (non-null/non-empty)
+          // to prevent overwriting local Zustand state with nulls
+          const dbValues = {};
+          if (player.first_name) dbValues.firstName = player.first_name;
+          if (player.middle_name) dbValues.middleName = player.middle_name;
+          if (player.last_name) dbValues.lastName = player.last_name;
+          if (player.dob) dbValues.dob = player.dob;
+          if (player.gender) dbValues.gender = player.gender;
+          if (player.whatsapp) dbValues.whatsapp = player.whatsapp;
+          if (player.emergency_contact) dbValues.emergencyContact = player.emergency_contact;
+          if (player.emergency_contact_name) dbValues.emergencyContactName = player.emergency_contact_name;
+          if (player.blood_group) dbValues.bloodGroup = player.blood_group;
+          if (player.parent_name) dbValues.parentName = player.parent_name;
+          if (player.address_line1) dbValues.addressLine1 = player.address_line1;
+          if (player.address_line2) dbValues.addressLine2 = player.address_line2;
+          if (player.city) dbValues.city = player.city;
+          if (player.country) dbValues.country = player.country;
+          if (player.zip_code) dbValues.zipCode = player.zip_code;
+          if (player.jersey_size) dbValues.jerseySize = player.jersey_size;
+          if (player.instagram_link) dbValues.instagramLink = player.instagram_link;
+          if (player.profile_photo_url) dbValues.profilePhotoUrl = player.profile_photo_url;
+          if (player.email) dbValues.email = player.email;
+
+          const merged = { ...basicInfo, ...dbValues };
+          updateBasicInfo(merged);
+          reset(merged);
         }
       } catch (err) {
         console.error('Failed to load profile from backend:', err);
@@ -67,7 +71,16 @@ const Step2_BasicRegistration = () => {
       }
     };
     loadProfile();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reset, updateBasicInfo, user?.email]);
+
+  // Auto-save form inputs to local store on change (only after loading is complete)
+  const formValues = watch();
+  useEffect(() => {
+    if (!loadingProfile) {
+      updateBasicInfo(formValues);
+    }
+  }, [formValues, updateBasicInfo, loadingProfile]);
 
 
   // Calculate age when DOB changes

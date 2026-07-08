@@ -61,13 +61,15 @@ function ProtectedRoute({ children, requiredRole }) {
   }
 
   // ── Player onboarding guard ─────────────────────────────
-  // If a player hasn't paid, send them to payment. After payment, dashboard is accessible.
+  // If a player hasn't paid, send them to payment (or step2 if basic profile is incomplete).
   if (requiredRole === 'player' && user) {
     const paymentDone = user.payment_status === 'paid' || user.is_dashboard_unlocked || user.isDashboardUnlocked;
     if (!paymentDone) {
+      if (!user.first_name) {
+        return <Navigate to="/onboarding/step2" replace />;
+      }
       return <Navigate to="/onboarding/payment" replace />;
     }
-    // After payment: allow full dashboard access (no profile/video check)
   }
 
   return children;

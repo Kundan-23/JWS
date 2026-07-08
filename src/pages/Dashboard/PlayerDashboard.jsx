@@ -189,6 +189,88 @@ const PlayerDashboard = () => {
     }
   };
 
+  const handleUpdateName = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: 'Update Name',
+      html: `
+        <div style="display: flex; flex-direction: column; gap: 1rem; padding: 1rem 0;">
+          <div style="text-align: left; width: 85%; margin: 0 auto;">
+            <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">First Name *</label>
+            <input id="swal-first-name" class="swal2-input" placeholder="First Name" value="${basicInfo.firstName || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+          </div>
+          <div style="text-align: left; width: 85%; margin: 0 auto;">
+            <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Middle Name</label>
+            <input id="swal-middle-name" class="swal2-input" placeholder="Middle Name" value="${basicInfo.middleName || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+          </div>
+          <div style="text-align: left; width: 85%; margin: 0 auto;">
+            <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Last Name *</label>
+            <input id="swal-last-name" class="swal2-input" placeholder="Last Name" value="${basicInfo.lastName || ''}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+          </div>
+        </div>
+      `,
+      background: 'var(--bg-surface)',
+      color: 'var(--text-primary)',
+      showCancelButton: true,
+      confirmButtonColor: '#cbf905',
+      confirmButtonText: 'Save',
+      focusConfirm: false,
+      preConfirm: () => {
+        const firstName = document.getElementById('swal-first-name').value.trim();
+        const middleName = document.getElementById('swal-middle-name').value.trim();
+        const lastName = document.getElementById('swal-last-name').value.trim();
+        return { firstName, middleName, lastName };
+      }
+    });
+
+    if (formValues) {
+      if (!formValues.firstName || !formValues.lastName) {
+        return Swal.fire({
+          icon: 'warning',
+          title: 'Required Fields',
+          text: 'First Name and Last Name are required.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905'
+        });
+      }
+      try {
+        Swal.showLoading();
+        await playerAPI.updateProfile(formValues);
+        updateBasicInfo(formValues);
+        
+        // Also update AuthContext user state if possible
+        const stored = localStorage.getItem('jws_user');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          parsed.first_name = formValues.firstName;
+          parsed.middle_name = formValues.middleName;
+          parsed.last_name = formValues.lastName;
+          localStorage.setItem('jws_user', JSON.stringify(parsed));
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'Name successfully updated.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed',
+          text: err.response?.data?.message || 'Could not update name.',
+          background: 'var(--bg-surface)',
+          color: 'var(--text-primary)',
+          confirmButtonColor: '#cbf905'
+        });
+      }
+    }
+  };
+
   const handleDownloadIdCard = () => {
     if (!basicInfo.manualIdCardUrl) {
       return Swal.fire({ icon: 'info', title: 'Not Available', text: 'Your ID card has not been uploaded yet.', background: 'var(--bg-surface)', color: 'var(--text-primary)' });
@@ -330,9 +412,18 @@ const PlayerDashboard = () => {
             Personal & Contact Details
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem', alignItems: 'center' }}>
               <span className="text-small text-secondary">Full Name</span>
-              <span style={{ fontWeight: 500 }}>{basicInfo.firstName} {basicInfo.middleName} {basicInfo.lastName}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontWeight: 500 }}>{basicInfo.firstName} {basicInfo.middleName} {basicInfo.lastName}</span>
+                <button 
+                  onClick={handleUpdateName} 
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--brand-primary)' }}
+                  title="Update name"
+                >
+                  <Edit size={14} />
+                </button>
+              </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--bg-surface-elevated)', paddingBottom: '0.5rem' }}>
               <span className="text-small text-secondary">Date of Birth / Age</span>

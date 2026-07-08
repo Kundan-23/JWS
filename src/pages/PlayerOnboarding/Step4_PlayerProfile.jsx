@@ -79,19 +79,18 @@ const Step4_PlayerProfile = () => {
         if (res.data?.player) {
           const player = res.data.player;
           
-          // Map array / styles safely
-          const mapped = {
-            height: player.height || '',
-            weight: player.weight || '',
-            battingStyle: player.batting_style || '',
-            bowlingStyle: player.bowling_style || '',
-            clubAssociated: player.club_associated || 'no',
-            clubsDetails: Array.isArray(player.clubs_details) ? player.clubs_details : [],
-            ballsSelected: Array.isArray(player.balls_selected) ? player.balls_selected : [],
-            fieldPositions: Array.isArray(player.field_positions) ? player.field_positions : [],
-            instagramLink: player.instagram_link || '',
-            age: playerProfile.age || '',
-          };
+          // Only merge fields that are actually in the DB (non-null/non-empty)
+          // to prevent overwriting local Zustand state with nulls
+          const dbValues = {};
+          if (player.height) dbValues.height = player.height;
+          if (player.weight) dbValues.weight = player.weight;
+          if (player.batting_style) dbValues.battingStyle = player.batting_style;
+          if (player.bowling_style) dbValues.bowlingStyle = player.bowling_style;
+          if (player.club_associated) dbValues.clubAssociated = player.club_associated;
+          if (player.clubs_details && player.clubs_details.length > 0) dbValues.clubsDetails = player.clubs_details;
+          if (player.balls_selected && player.balls_selected.length > 0) dbValues.ballsSelected = player.balls_selected;
+          if (player.field_positions && player.field_positions.length > 0) dbValues.fieldPositions = player.field_positions;
+          if (player.instagram_link) dbValues.instagramLink = player.instagram_link;
 
           if (player.dob) {
             const birthDate = new Date(player.dob);
@@ -101,20 +100,23 @@ const Step4_PlayerProfile = () => {
             if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
               age--;
             }
-            mapped.age = age.toString();
+            dbValues.age = age.toString();
             setCalculatedAge(age);
           }
 
           // Handle default order mapping for cricket history
-          const defaultOrder = ['Taluka', 'District', 'State', 'National', 'International', 'Other'];
-          const existing = Array.isArray(player.cricket_history) ? player.cricket_history : [];
-          mapped.cricketHistory = defaultOrder.map(level => {
-            const found = existing.find(e => e.level === level);
-            return found ? found : { level, matches: 0 };
-          });
+          if (player.cricket_history && player.cricket_history.length > 0) {
+            const defaultOrder = ['Taluka', 'District', 'State', 'National', 'International', 'Other'];
+            const existing = player.cricket_history;
+            dbValues.cricketHistory = defaultOrder.map(level => {
+              const found = existing.find(e => e.level === level);
+              return found ? found : { level, matches: 0 };
+            });
+          }
 
-          updatePlayerProfile(mapped);
-          reset(mapped);
+          const merged = { ...playerProfile, ...dbValues };
+          updatePlayerProfile(merged);
+          reset(merged);
         }
       } catch (err) {
         console.error('Failed to load profile from backend:', err);
@@ -123,7 +125,16 @@ const Step4_PlayerProfile = () => {
       }
     };
     loadProfile();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reset, updatePlayerProfile, user]);
+
+  // Auto-save form inputs to local store on change (only after loading is complete)
+  const formValues = watch();
+  useEffect(() => {
+    if (!loadingProfile) {
+      updatePlayerProfile(formValues);
+    }
+  }, [formValues, updatePlayerProfile, loadingProfile]);
 
   const watchBallsSelected = watch('ballsSelected') || [];
   const watchClubAssociated = watch('clubAssociated');
