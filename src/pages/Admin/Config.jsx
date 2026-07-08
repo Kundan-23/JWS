@@ -990,7 +990,7 @@ const Config = () => {
 
                     {/* Mobile View Column */}
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>📱 Mobile Version (640x360)</span>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>📱 Mobile Version (640x640)</span>
                       {mobileUrl ? (
                         <div style={{ position: 'relative', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
                           <img src={mobileUrl} alt={`Mobile Ad Banner ${idx + 1}`} style={{ width: '100%', height: '80px', objectFit: 'cover' }} />
