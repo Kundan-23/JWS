@@ -279,7 +279,7 @@ const DashboardLayout = () => {
           
           {/* Web Banners Carousel */}
           {banners && banners.length > 0 && (
-            <div style={{ marginBottom: '2rem', position: 'relative', overflow: 'hidden', borderRadius: 'var(--radius-xl)', height: '160px' }}>
+            <div style={{ marginBottom: '2rem', position: 'relative', overflow: 'hidden', borderRadius: 'var(--radius-xl)', height: windowWidth <= 768 ? 'auto' : '160px', aspectRatio: windowWidth <= 768 ? '1 / 1' : 'unset' }}>
               <AnimatePresence initial={false}>
                 <motion.div
                   key={currentBanner}
@@ -321,7 +321,7 @@ const DashboardLayout = () => {
 
           {/* Ad Banners Carousel */}
           {adBanners && adBanners.length > 0 && (
-            <div style={{ marginBottom: '2rem', position: 'relative', overflow: 'hidden', borderRadius: 'var(--radius-xl)', height: '250px' }}>
+            <div style={{ marginBottom: '2rem', position: 'relative', overflow: 'hidden', borderRadius: 'var(--radius-xl)', height: windowWidth <= 768 ? 'auto' : '250px', aspectRatio: windowWidth <= 768 ? '1 / 1' : 'unset' }}>
               <AnimatePresence initial={false}>
                 <motion.div
                   key={`ad-${currentAdBanner}`}
