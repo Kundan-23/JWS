@@ -36,6 +36,7 @@ const PlayerDashboard = () => {
         // Sync basicInfo (personal details)
         updateBasicInfo({
           giclId:           p.gicl_id          || basicInfo.giclId,
+          email:            p.email            || basicInfo.email,
           firstName:        p.first_name        || basicInfo.firstName,
           middleName:       p.middle_name       || basicInfo.middleName,
           lastName:         p.last_name         || basicInfo.lastName,
