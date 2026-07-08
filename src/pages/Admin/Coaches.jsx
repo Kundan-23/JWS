@@ -47,8 +47,6 @@ const CoachFormDrawer = ({ coach, onClose, onSave }) => {
   const [saving, setSaving]   = useState(false);
   const [photoPreview, setPhotoPreview] = useState(coach?.profile_photo_url || null);
   const [pincodeState, setPincodeState] = useState({ loading: false, stateName: '', error: '' });
-  const [birthCertFile, setBirthCertFile] = useState(null);
-  const [addressProofFile, setAddressProofFile] = useState(null);
   const [aadharFrontFile, setAadharFrontFile] = useState(null);
   const [aadharBackFile, setAadharBackFile] = useState(null);
 
@@ -148,7 +146,7 @@ const CoachFormDrawer = ({ coach, onClose, onSave }) => {
         profilePhotoUrl: form.profile_photo_url,
       };
       if (form.password) payload.password = form.password;
-      await onSave(payload, birthCertFile, addressProofFile, aadharFrontFile, aadharBackFile);
+      await onSave(payload, aadharFrontFile, aadharBackFile);
     } finally {
       setSaving(false);
     }
@@ -318,18 +316,6 @@ const CoachFormDrawer = ({ coach, onClose, onSave }) => {
           {/* Section: Documents */}
           <div style={sec}>
             <p style={secTitle}>📄 Documents</p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.875rem', marginBottom: '0.875rem' }}>
-              <div style={fgrp}>
-                <label style={lbl}>Birth Certificate (PDF/Image)</label>
-                <input type="file" accept="image/*,application/pdf" onChange={e => setBirthCertFile(e.target.files[0])} style={{ ...inp, padding: '0.4rem' }} />
-                {coach?.birth_cert_url && !birthCertFile && <span style={{ fontSize: '0.75rem', color: 'var(--success)', marginTop: '0.3rem' }}>✓ Uploaded</span>}
-              </div>
-              <div style={fgrp}>
-                <label style={lbl}>Address Proof (PDF/Image)</label>
-                <input type="file" accept="image/*,application/pdf" onChange={e => setAddressProofFile(e.target.files[0])} style={{ ...inp, padding: '0.4rem' }} />
-                {coach?.address_proof_url && !addressProofFile && <span style={{ fontSize: '0.75rem', color: 'var(--success)', marginTop: '0.3rem' }}>✓ Uploaded</span>}
-              </div>
-            </div>
             <div style={{ ...grid2 }}>
               <div style={fgrp}>
                 <label style={lbl}>Aadhaar Card Front (PDF/Image)</label>
@@ -383,7 +369,7 @@ const Coaches = () => {
 
   useEffect(() => { load(); }, []);
 
-  const handleSave = async (data, birthCertFile, addressProofFile, aadharFrontFile, aadharBackFile) => {
+  const handleSave = async (data, aadharFrontFile, aadharBackFile) => {
     try {
       let coachId;
       if (modal && modal !== 'add') {
@@ -396,12 +382,6 @@ const Coaches = () => {
         Swal.fire({ icon: 'success', title: 'Selector Added!', timer: 1400, showConfirmButton: false, background: 'var(--bg-surface)', color: 'var(--text-primary)' });
       }
 
-      if (birthCertFile) {
-        await adminAPI.uploadCoachDocument(coachId, 'birth_cert', birthCertFile);
-      }
-      if (addressProofFile) {
-        await adminAPI.uploadCoachDocument(coachId, 'address_proof', addressProofFile);
-      }
       if (aadharFrontFile) {
         await adminAPI.uploadCoachDocument(coachId, 'aadhar_front', aadharFrontFile);
       }
@@ -468,8 +448,6 @@ const Coaches = () => {
                   <th style={thStyle}>Whatsapp</th>
                   <th style={thStyle}>Location</th>
                   <th style={thStyle}>Pincode</th>
-                  <th style={thStyle}>Birth Certificate</th>
-                  <th style={thStyle}>Address Proof</th>
                   <th style={thStyle}>Aadhaar Front</th>
                   <th style={thStyle}>Aadhaar Back</th>
                   <th style={thStyle}>Status</th>
@@ -504,9 +482,7 @@ const Coaches = () => {
                       <td style={{ ...tdStyle, textAlign: 'center' }}>{age ?? '—'}</td>
                       <td style={tdStyle}>{c.whatsapp || '—'}</td>
                       <td style={tdStyle}>{c.city || '—'}</td>
-                      <td style={{ ...tdStyle, color: 'var(--text-secondary)' }}>{c.zip_code || '—'}</td>
-                       <td style={{ ...tdStyle, textAlign: 'center' }}>{docBadge(c.birth_cert_url)}</td>
-                      <td style={{ ...tdStyle, textAlign: 'center' }}>{docBadge(c.address_proof_url)}</td>
+                       <td style={{ ...tdStyle, color: 'var(--text-secondary)' }}>{c.zip_code || '—'}</td>
                       <td style={{ ...tdStyle, textAlign: 'center' }}>{(() => {
                         try {
                           const parsed = JSON.parse(c.aadhar_url || '{}');
