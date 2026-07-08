@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm, Controller } from 'react-hook-form';
@@ -75,12 +75,18 @@ const Step2_BasicRegistration = () => {
   }, [reset, updateBasicInfo, user?.email]);
 
   // Auto-save form inputs to local store on change (only after loading is complete)
-  const formValues = watch();
+  // Use watch subscription to avoid infinite re-render loop
+  const loadingProfileRef = useRef(loadingProfile);
+  useEffect(() => { loadingProfileRef.current = loadingProfile; }, [loadingProfile]);
   useEffect(() => {
-    if (!loadingProfile) {
-      updateBasicInfo(formValues);
-    }
-  }, [formValues, updateBasicInfo, loadingProfile]);
+    const subscription = watch((values) => {
+      if (!loadingProfileRef.current) {
+        updateBasicInfo(values);
+      }
+    });
+    return () => subscription.unsubscribe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch, updateBasicInfo]);
 
 
   // Calculate age when DOB changes

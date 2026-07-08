@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm, Controller } from 'react-hook-form';
@@ -129,12 +129,18 @@ const Step4_PlayerProfile = () => {
   }, [reset, updatePlayerProfile, user]);
 
   // Auto-save form inputs to local store on change (only after loading is complete)
-  const formValues = watch();
+  // Use watch subscription to avoid infinite re-render loop
+  const loadingProfileRef4 = useRef(loadingProfile);
+  useEffect(() => { loadingProfileRef4.current = loadingProfile; }, [loadingProfile]);
   useEffect(() => {
-    if (!loadingProfile) {
-      updatePlayerProfile(formValues);
-    }
-  }, [formValues, updatePlayerProfile, loadingProfile]);
+    const subscription = watch((values) => {
+      if (!loadingProfileRef4.current) {
+        updatePlayerProfile(values);
+      }
+    });
+    return () => subscription.unsubscribe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch, updatePlayerProfile]);
 
   const watchBallsSelected = watch('ballsSelected') || [];
   const watchClubAssociated = watch('clubAssociated');
