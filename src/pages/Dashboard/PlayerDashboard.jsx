@@ -31,6 +31,7 @@ const PlayerDashboard = () => {
     playerAPI.getProfile()
       .then((res) => {
         const p = res.data?.player || res.data;
+        console.log('[DEBUG] Fetched player profile:', p);
         if (!p) { setProfileLoaded(true); return; }
 
         // Calculate age from dob
@@ -439,7 +440,7 @@ const PlayerDashboard = () => {
       html: `
         <div style="text-align: left; width: 80%; margin: 0 auto;">
           <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">WhatsApp Number *</label>
-          <input type="text" id="swal-whatsapp" class="swal2-input" placeholder="+91..." value="${defaultVal}" oninput="this.value = this.value.replace(/[^\\d+]/g, '').substring(0, 13)" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+          <input type="text" id="swal-whatsapp" class="swal2-input" placeholder="+91..." value="${defaultVal}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
         </div>
       `,
       background: 'var(--bg-surface)',
@@ -448,6 +449,14 @@ const PlayerDashboard = () => {
       confirmButtonColor: '#cbf905',
       confirmButtonText: 'Save',
       focusConfirm: false,
+      didOpen: () => {
+        const input = document.getElementById('swal-whatsapp');
+        if (input) {
+          input.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^\d+]/g, '').substring(0, 13);
+          });
+        }
+      },
       preConfirm: () => {
         const val = document.getElementById('swal-whatsapp').value.trim();
         if (!/^\+91\d{10}$/.test(val)) {
@@ -559,7 +568,7 @@ const PlayerDashboard = () => {
       html: `
         <div style="text-align: left; width: 80%; margin: 0 auto;">
           <label style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Parent/Guardian Number *</label>
-          <input type="text" id="swal-parent-number" class="swal2-input" placeholder="+91..." value="${defaultVal}" oninput="this.value = this.value.replace(/[^\\d+]/g, '').substring(0, 13)" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
+          <input type="text" id="swal-parent-number" class="swal2-input" placeholder="+91..." value="${defaultVal}" style="margin: 0.25rem 0 0 0; width: 100%; height: 2.5rem; background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.5rem;">
         </div>
       `,
       background: 'var(--bg-surface)',
@@ -568,6 +577,14 @@ const PlayerDashboard = () => {
       confirmButtonColor: '#cbf905',
       confirmButtonText: 'Save',
       focusConfirm: false,
+      didOpen: () => {
+        const input = document.getElementById('swal-parent-number');
+        if (input) {
+          input.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^\d+]/g, '').substring(0, 13);
+          });
+        }
+      },
       preConfirm: () => {
         const val = document.getElementById('swal-parent-number').value.trim();
         if (!/^\+91\d{10}$/.test(val)) {
