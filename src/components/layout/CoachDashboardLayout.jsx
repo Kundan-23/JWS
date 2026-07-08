@@ -113,26 +113,51 @@ const CoachDashboardLayout = () => {
           ))}
         </nav>
 
-        <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+          
+          {/* Customer Support */}
+          <div style={{ textAlign: 'center', padding: '0.5rem', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <p style={{ fontSize: '0.72rem', color: '#fff', margin: 0, fontWeight: 500 }}>connect for customer support</p>
+            <p style={{ fontSize: '0.92rem', color: 'var(--brand-accent)', margin: '0.15rem 0 0 0', fontWeight: 700, letterSpacing: '0.03em' }}>08045253558</p>
+          </div>
+
           {/* Logo Placeholders (Sponsors) */}
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
-            {[1, 2].map(slot => (
-              <div key={slot} style={{ flex: 1, height: '60px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed rgba(255,255,255,0.1)', overflow: 'hidden' }}>
-                <img 
-                  src={`https://olppjpllvtwmzijskyeh.supabase.co/storage/v1/object/public/banners/sponsor-${slot}.png`} 
-                  alt={`Sponsor ${slot}`} 
-                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
-                  onLoad={(e) => { e.target.style.display = 'block'; if (e.target.nextSibling) e.target.nextSibling.style.display = 'none'; }}
-                />
-                <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', textAlign: 'center', display: 'none' }}>Sponsor {slot}</span>
-              </div>
-            ))}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              {[1, 2].map(slot => {
+                const link = slot === 1 
+                  ? "https://www.instagram.com/indianindoorcricketofficial/"
+                  : "https://www.instagram.com/giclsports/";
+                return (
+                  <a 
+                    key={slot} 
+                    href={link} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    style={{ flex: 1, height: '52px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed rgba(255,255,255,0.1)', overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.2s' }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  >
+                    <img 
+                      src={`https://olppjpllvtwmzijskyeh.supabase.co/storage/v1/object/public/banners/sponsor-${slot}.png`} 
+                      alt={`Sponsor ${slot}`} 
+                      style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                      onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
+                      onLoad={(e) => { e.target.style.display = 'block'; if (e.target.nextSibling) e.target.nextSibling.style.display = 'none'; }}
+                    />
+                    <span style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)', textAlign: 'center', display: 'none' }}>Sponsor {slot}</span>
+                  </a>
+                );
+              })}
+            </div>
+            <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', textAlign: 'center', margin: '0.15rem 0 0 0' }}>
+              click the logos to follow us on instagram
+            </p>
           </div>
 
           <button 
             onClick={handleLogout}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', color: 'var(--error)', background: 'none', fontWeight: 500 }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 1rem', color: 'var(--error)', background: 'none', fontWeight: 500 }}
           >
             <LogOut size={20} />
             Logout
