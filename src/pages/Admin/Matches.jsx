@@ -237,8 +237,8 @@ const MatchModal = ({ match, onClose, onSave }) => {
                   <label style={labelStyle}>Price per Slot (₹)</label>
                   <input
                     type="number" min="0"
-                    value={form.price_per_slot}
-                    onChange={e => set('price_per_slot', Number(e.target.value))}
+                    value={form.price_per_slot || ''}
+                    onChange={e => set('price_per_slot', e.target.value === '' ? 0 : Number(e.target.value))}
                     disabled={form.match_type === 'Practice' || form.match_type === 'Intro Match'}
                     style={{ ...inputStyle, opacity: (form.match_type === 'Practice' || form.match_type === 'Intro Match') ? 0.5 : 1 }}
                     placeholder="0 for free"
@@ -246,7 +246,13 @@ const MatchModal = ({ match, onClose, onSave }) => {
                 </div>
                 <div>
                   <label style={labelStyle}>Total Slots</label>
-                  <input type="number" min="0" value={form.total_slots} onChange={e => set('total_slots', Number(e.target.value))} style={inputStyle} placeholder="0 for unlimited" />
+                  <input 
+                    type="number" min="0" 
+                    value={form.total_slots || ''} 
+                    onChange={e => set('total_slots', e.target.value === '' ? 0 : Number(e.target.value))} 
+                    style={inputStyle} 
+                    placeholder="0 for unlimited" 
+                  />
                 </div>
               </div>
               <div>
