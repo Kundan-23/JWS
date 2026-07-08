@@ -11,7 +11,21 @@ const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [currentBanner, setCurrentBanner] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const getBannerUrl = (item) => {
+    if (!item) return '';
+    if (typeof item === 'string') return item;
+    const isMobile = windowWidth <= 768;
+    return isMobile ? (item.mobile || item.desktop) : (item.desktop || item.mobile);
+  };
   const [user, setUser] = useState(null);
   const { unreadCount } = useNotificationStore();
 
@@ -276,7 +290,7 @@ const DashboardLayout = () => {
                   style={{
                     position: 'absolute',
                     inset: 0,
-                    backgroundImage: `url(${banners[currentBanner]})`,
+                    backgroundImage: `url(${getBannerUrl(banners[currentBanner])})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
@@ -318,7 +332,7 @@ const DashboardLayout = () => {
                   style={{
                     position: 'absolute',
                     inset: 0,
-                    backgroundImage: `url(${adBanners[currentAdBanner]})`,
+                    backgroundImage: `url(${getBannerUrl(adBanners[currentAdBanner])})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',

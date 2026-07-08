@@ -442,20 +442,36 @@ const Config = () => {
   };
 
   // ─── Dashboard banner upload ──────────────────────────────────────────────
-  const handleBannerUpload = async (e) => {
+  const handleAddEmptyBannerSlot = async () => {
+    const updated = [...banners, { desktop: '', mobile: '' }];
+    setBanners(updated);
+    await adminAPI.updateConfig({ banners: updated });
+    if (refetch) refetch();
+  };
+
+  const handleBannerVersionUpload = async (e, idx, type) => {
     const file = e.target.files[0];
     if (!file) return;
     setUploadingBanner(true);
     try {
       const url = await uploadFile(file, '/admin/config/banner/upload');
       if (!url) return;
-      const updated = [...banners, url];
+      
+      const updated = banners.map((item, i) => {
+        if (i !== idx) return item;
+        const currentItem = (item && typeof item === 'object') ? item : { desktop: item || '', mobile: '' };
+        return { ...currentItem, [type]: url };
+      });
+      
       setBanners(updated);
       await adminAPI.updateConfig({ banners: updated });
-      Swal.fire({ icon: 'success', title: 'Banner added!', timer: 1200, showConfirmButton: false, background: 'var(--bg-surface)', color: 'var(--text-primary)' });
+      Swal.fire({ icon: 'success', title: 'Banner uploaded!', timer: 1200, showConfirmButton: false, background: 'var(--bg-surface)', color: 'var(--text-primary)' });
     } catch (err) {
       Swal.fire({ icon: 'error', title: 'Upload failed', text: err.message, background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: 'var(--brand-primary)' });
-    } finally { setUploadingBanner(false); if (bannerFileRef.current) bannerFileRef.current.value = ''; }
+    } finally {
+      setUploadingBanner(false);
+      e.target.value = '';
+    }
   };
 
   const handleRemoveBanner = async (idx) => {
@@ -466,20 +482,36 @@ const Config = () => {
   };
 
   // ─── Ad banner upload ─────────────────────────────────────────────────────
-  const handleAdBannerUpload = async (e) => {
+  const handleAddEmptyAdBannerSlot = async () => {
+    const updated = [...adBanners, { desktop: '', mobile: '' }];
+    setAdBanners(updated);
+    await adminAPI.updateConfig({ ad_banners: updated });
+    if (refetch) refetch();
+  };
+
+  const handleAdBannerVersionUpload = async (e, idx, type) => {
     const file = e.target.files[0];
     if (!file) return;
     setUploadingAdBanner(true);
     try {
       const url = await uploadFile(file, '/admin/config/ad-banner/upload');
       if (!url) return;
-      const updated = [...adBanners, url];
+      
+      const updated = adBanners.map((item, i) => {
+        if (i !== idx) return item;
+        const currentItem = (item && typeof item === 'object') ? item : { desktop: item || '', mobile: '' };
+        return { ...currentItem, [type]: url };
+      });
+      
       setAdBanners(updated);
       await adminAPI.updateConfig({ ad_banners: updated });
-      Swal.fire({ icon: 'success', title: 'Ad banner added!', timer: 1200, showConfirmButton: false, background: 'var(--bg-surface)', color: 'var(--text-primary)' });
+      Swal.fire({ icon: 'success', title: 'Ad banner uploaded!', timer: 1200, showConfirmButton: false, background: 'var(--bg-surface)', color: 'var(--text-primary)' });
     } catch (err) {
       Swal.fire({ icon: 'error', title: 'Upload failed', text: err.message, background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: 'var(--brand-primary)' });
-    } finally { setUploadingAdBanner(false); if (adBannerFileRef.current) adBannerFileRef.current.value = ''; }
+    } finally {
+      setUploadingAdBanner(false);
+      e.target.value = '';
+    }
   };
 
   const handleRemoveAdBanner = async (idx) => {
@@ -856,54 +888,134 @@ const Config = () => {
           </Section>
 
           {/* D. Banners */}
-          <Section title="Dashboard Banners" description="Images shown in the player dashboard banner carousel.">
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
-              {banners.map((url, idx) => (
-                <div key={idx} style={{ position: 'relative', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border-subtle)' }}>
-                  <img src={url} alt={`Banner ${idx + 1}`} style={{ width: 'auto', height: '120px', display: 'block', objectFit: 'cover' }} />
-                  <button
-                    onClick={() => handleRemoveBanner(idx)}
-                    style={{ position: 'absolute', top: 4, right: 4, background: 'rgba(239,68,68,0.85)', color: '#fff', border: 'none', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}
-                  >
-                    <X size={12} />
-                  </button>
-                </div>
-              ))}
+          <Section title="Dashboard Banners" description="Upload banner versions for both desktop and mobile viewports. If only one version is uploaded, it will be used for both.">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '1.5rem' }}>
+              {banners.map((item, idx) => {
+                const isObj = item && typeof item === 'object';
+                const desktopUrl = isObj ? item.desktop : item;
+                const mobileUrl = isObj ? item.mobile : '';
+                return (
+                  <div key={idx} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', padding: '1rem', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-subtle)', position: 'relative' }}>
+                    <button
+                      onClick={() => handleRemoveBanner(idx)}
+                      style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(239,68,68,0.85)', color: '#fff', border: 'none', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, zIndex: 10 }}
+                    >
+                      <X size={14} />
+                    </button>
+                    
+                    {/* Desktop View Column */}
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>💻 Desktop Version (1920x320)</span>
+                      {desktopUrl ? (
+                        <div style={{ position: 'relative', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+                          <img src={desktopUrl} alt={`Web Banner ${idx + 1}`} style={{ width: '100%', height: '80px', objectFit: 'cover' }} />
+                        </div>
+                      ) : (
+                        <div style={{ height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed var(--border-subtle)', borderRadius: 'var(--radius-md)', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Missing Desktop Image</div>
+                      )}
+                      <input type="file" accept="image/*" id={`banner-d-${idx}`} style={{ display: 'none' }} onChange={(e) => handleBannerVersionUpload(e, idx, 'desktop')} />
+                      <button
+                        onClick={() => document.getElementById(`banner-d-${idx}`).click()}
+                        style={{ alignSelf: 'flex-start', padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderRadius: 'var(--radius-md)', background: 'rgba(203,249,5,0.1)', color: 'var(--brand-primary)', border: '1px solid rgba(203,249,5,0.25)', fontWeight: 600, cursor: uploadingBanner ? 'wait' : 'pointer' }}
+                      >
+                        {desktopUrl ? 'Replace Web Image' : 'Upload Web Image'}
+                      </button>
+                    </div>
+
+                    {/* Mobile View Column */}
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>📱 Mobile Version (640x320)</span>
+                      {mobileUrl ? (
+                        <div style={{ position: 'relative', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+                          <img src={mobileUrl} alt={`Mobile Banner ${idx + 1}`} style={{ width: '100%', height: '80px', objectFit: 'cover' }} />
+                        </div>
+                      ) : (
+                        <div style={{ height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed var(--border-subtle)', borderRadius: 'var(--radius-md)', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Using Desktop Version (Scale fallback)</div>
+                      )}
+                      <input type="file" accept="image/*" id={`banner-m-${idx}`} style={{ display: 'none' }} onChange={(e) => handleBannerVersionUpload(e, idx, 'mobile')} />
+                      <button
+                        onClick={() => document.getElementById(`banner-m-${idx}`).click()}
+                        style={{ alignSelf: 'flex-start', padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderRadius: 'var(--radius-md)', background: 'rgba(203,249,5,0.1)', color: 'var(--brand-primary)', border: '1px solid rgba(203,249,5,0.25)', fontWeight: 600, cursor: uploadingBanner ? 'wait' : 'pointer' }}
+                      >
+                        {mobileUrl ? 'Replace Mobile Image' : 'Upload Mobile Image'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
               {banners.length === 0 && <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>No banners yet.</p>}
             </div>
-            <input ref={bannerFileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleBannerUpload} />
             <button
-              onClick={() => bannerFileRef.current?.click()}
-              disabled={uploadingBanner}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1.1rem', borderRadius: 'var(--radius-md)', background: 'rgba(203,249,5,0.1)', color: 'var(--brand-primary)', border: '1px solid rgba(203,249,5,0.25)', fontWeight: 600, fontSize: '0.85rem', cursor: uploadingBanner ? 'wait' : 'pointer' }}
+              onClick={handleAddEmptyBannerSlot}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1.1rem', borderRadius: 'var(--radius-md)', background: 'var(--brand-primary)', color: '#121A3F', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', border: 'none' }}
             >
-              <Plus size={15} /> {uploadingBanner ? 'Uploading…' : 'Upload Banner'}
+              <Plus size={15} /> Add New Banner Slot
             </button>
           </Section>
 
           {/* C. Ad Banners */}
-          <Section title="Ad Banners" description="Advertising banners shown below announcements.">
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
-              {adBanners.map((url, idx) => (
-                <div key={idx} style={{ position: 'relative', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border-subtle)' }}>
-                  <img src={url} alt={`Ad Banner ${idx + 1}`} style={{ width: 'auto', height: '120px', display: 'block', objectFit: 'cover' }} />
-                  <button
-                    onClick={() => handleRemoveAdBanner(idx)}
-                    style={{ position: 'absolute', top: 4, right: 4, background: 'rgba(239,68,68,0.85)', color: '#fff', border: 'none', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}
-                  >
-                    <X size={12} />
-                  </button>
-                </div>
-              ))}
+          <Section title="Ad Banners" description="Upload banner versions for advertising slots below announcements. If only one version is uploaded, it will be used for both.">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '1.5rem' }}>
+              {adBanners.map((item, idx) => {
+                const isObj = item && typeof item === 'object';
+                const desktopUrl = isObj ? item.desktop : item;
+                const mobileUrl = isObj ? item.mobile : '';
+                return (
+                  <div key={idx} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', padding: '1rem', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-subtle)', position: 'relative' }}>
+                    <button
+                      onClick={() => handleRemoveAdBanner(idx)}
+                      style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(239,68,68,0.85)', color: '#fff', border: 'none', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, zIndex: 10 }}
+                    >
+                      <X size={14} />
+                    </button>
+                    
+                    {/* Desktop View Column */}
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>💻 Desktop Version (1200x300)</span>
+                      {desktopUrl ? (
+                        <div style={{ position: 'relative', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+                          <img src={desktopUrl} alt={`Web Ad Banner ${idx + 1}`} style={{ width: '100%', height: '80px', objectFit: 'cover' }} />
+                        </div>
+                      ) : (
+                        <div style={{ height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed var(--border-subtle)', borderRadius: 'var(--radius-md)', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Missing Desktop Image</div>
+                      )}
+                      <input type="file" accept="image/*" id={`ad-d-${idx}`} style={{ display: 'none' }} onChange={(e) => handleAdBannerVersionUpload(e, idx, 'desktop')} />
+                      <button
+                        onClick={() => document.getElementById(`ad-d-${idx}`).click()}
+                        style={{ alignSelf: 'flex-start', padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderRadius: 'var(--radius-md)', background: 'rgba(203,249,5,0.1)', color: 'var(--brand-primary)', border: '1px solid rgba(203,249,5,0.25)', fontWeight: 600, cursor: uploadingAdBanner ? 'wait' : 'pointer' }}
+                      >
+                        {desktopUrl ? 'Replace Web Image' : 'Upload Web Image'}
+                      </button>
+                    </div>
+
+                    {/* Mobile View Column */}
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>📱 Mobile Version (640x360)</span>
+                      {mobileUrl ? (
+                        <div style={{ position: 'relative', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+                          <img src={mobileUrl} alt={`Mobile Ad Banner ${idx + 1}`} style={{ width: '100%', height: '80px', objectFit: 'cover' }} />
+                        </div>
+                      ) : (
+                        <div style={{ height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed var(--border-subtle)', borderRadius: 'var(--radius-md)', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Using Desktop Version (Scale fallback)</div>
+                      )}
+                      <input type="file" accept="image/*" id={`ad-m-${idx}`} style={{ display: 'none' }} onChange={(e) => handleAdBannerVersionUpload(e, idx, 'mobile')} />
+                      <button
+                        onClick={() => document.getElementById(`ad-m-${idx}`).click()}
+                        style={{ alignSelf: 'flex-start', padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderRadius: 'var(--radius-md)', background: 'rgba(203,249,5,0.1)', color: 'var(--brand-primary)', border: '1px solid rgba(203,249,5,0.25)', fontWeight: 600, cursor: uploadingAdBanner ? 'wait' : 'pointer' }}
+                      >
+                        {mobileUrl ? 'Replace Mobile Image' : 'Upload Mobile Image'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
               {adBanners.length === 0 && <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>No ad banners yet.</p>}
             </div>
-            <input ref={adBannerFileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAdBannerUpload} />
             <button
-              onClick={() => adBannerFileRef.current?.click()}
-              disabled={uploadingAdBanner}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1.1rem', borderRadius: 'var(--radius-md)', background: 'rgba(203,249,5,0.1)', color: 'var(--brand-primary)', border: '1px solid rgba(203,249,5,0.25)', fontWeight: 600, fontSize: '0.85rem', cursor: uploadingAdBanner ? 'wait' : 'pointer' }}
+              onClick={handleAddEmptyAdBannerSlot}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1.1rem', borderRadius: 'var(--radius-md)', background: 'var(--brand-primary)', color: '#121A3F', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', border: 'none' }}
             >
-              <Plus size={15} /> {uploadingAdBanner ? 'Uploading…' : 'Upload Ad Banner'}
+              <Plus size={15} /> Add New Ad Banner Slot
             </button>
           </Section>
 
