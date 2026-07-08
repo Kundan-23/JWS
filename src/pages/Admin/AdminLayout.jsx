@@ -146,9 +146,15 @@ const AdminLayout = () => {
         <div style={{ padding: '1rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           
           {/* Customer Support */}
-          <div style={{ width: '100%', boxSizing: 'border-box', textAlign: 'center', padding: '0.65rem 0.5rem', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <p style={{ fontSize: '0.72rem', color: '#fff', margin: 0, fontWeight: 600, letterSpacing: '0.02em' }}>Connect For Customer Support</p>
-            <p style={{ fontSize: '1rem', color: 'var(--brand-accent)', margin: '0.2rem 0 0 0', fontWeight: 800, letterSpacing: '0.05em' }}>08045253558</p>
+          <div style={{ width: '100%', boxSizing: 'border-box', display: 'flex', justifyContent: 'center', padding: '0.65rem 0.5rem', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', width: 'fit-content', alignItems: 'stretch' }}>
+              <p style={{ fontSize: '0.72rem', color: '#fff', margin: 0, fontWeight: 600, letterSpacing: '0.02em', textAlign: 'center', whiteSpace: 'nowrap' }}>Connect For Customer Support</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', color: 'var(--brand-accent)', margin: '0.2rem 0 0 0', fontWeight: 800, fontSize: '1rem' }}>
+                {"08045253558".split("").map((digit, idx) => (
+                  <span key={idx}>{digit}</span>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Logo Placeholders (Sponsors) */}
