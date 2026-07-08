@@ -116,14 +116,14 @@ const CoachDashboardLayout = () => {
         <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
           
           {/* Customer Support */}
-          <div style={{ textAlign: 'center', padding: '0.5rem', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <p style={{ fontSize: '0.72rem', color: '#fff', margin: 0, fontWeight: 500 }}>connect for customer support</p>
-            <p style={{ fontSize: '0.92rem', color: 'var(--brand-accent)', margin: '0.15rem 0 0 0', fontWeight: 700, letterSpacing: '0.03em' }}>08045253558</p>
+          <div style={{ width: '100%', boxSizing: 'border-box', textAlign: 'center', padding: '0.65rem 0.5rem', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <p style={{ fontSize: '0.72rem', color: '#fff', margin: 0, fontWeight: 600, letterSpacing: '0.02em' }}>Connect For Customer Support</p>
+            <p style={{ fontSize: '1rem', color: 'var(--brand-accent)', margin: '0.2rem 0 0 0', fontWeight: 800, letterSpacing: '0.05em' }}>08045253558</p>
           </div>
 
           {/* Logo Placeholders (Sponsors) */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', width: '100%' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
               {[1, 2].map(slot => {
                 const link = slot === 1 
                   ? "https://www.instagram.com/indianindoorcricketofficial/"
@@ -150,8 +150,8 @@ const CoachDashboardLayout = () => {
                 );
               })}
             </div>
-            <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', textAlign: 'center', margin: '0.15rem 0 0 0' }}>
-              click the logos to follow us on instagram
+            <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', textAlign: 'center', margin: '0.15rem 0 0 0', fontWeight: 500 }}>
+              Click The Logos To Follow Us On Instagram
             </p>
           </div>
 
