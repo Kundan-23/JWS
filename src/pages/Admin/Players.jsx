@@ -196,27 +196,6 @@ const Players = () => {
             <Download size={15} /> Export Excel
           </button>
 
-          {/* Import Button — hidden for viewer admin */}
-          {!isViewerAdmin && (
-            <>
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                style={{ ...btnBase, backgroundColor: 'rgba(96,165,250,0.1)', color: 'var(--brand-accent)', borderColor: 'rgba(96,165,250,0.3)' }}
-                onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(96,165,250,0.2)'}
-                onMouseOut={e => e.currentTarget.style.backgroundColor = 'rgba(96,165,250,0.1)'}
-              >
-                <FileUp size={15} /> Import Excel
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".xlsx,.xls"
-                style={{ display: 'none' }}
-                onChange={handleImport}
-              />
-            </>
-          )}
-
           <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{total} players</span>
         </div>
 
