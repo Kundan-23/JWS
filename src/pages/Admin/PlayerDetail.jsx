@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useConfig } from '../../context/ConfigContext';
+import { compressImage, compressPDF } from '../../utils/imageCompressor';
 
 const Section = ({ title, icon: Icon, children }) => (
   <div style={{ backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-subtle)', marginBottom: '1.5rem', overflow: 'hidden' }}>
@@ -234,15 +235,23 @@ const PlayerDetail = () => {
   const [uploadingIdCard, setUploadingIdCard] = useState(false);
 
   const handleUploadIdCard = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
-    if (!['application/pdf', 'image/jpeg', 'image/png'].includes(file.type)) {
+    if (!['application/pdf', 'image/jpeg', 'image/png'].includes(rawFile.type)) {
       return Swal.fire({ icon: 'error', title: 'Invalid File', text: 'Please upload a PDF, JPG, or PNG.', background: 'var(--bg-surface)', color: 'var(--text-primary)' });
     }
 
     setUploadingIdCard(true);
     try {
+      // Compress before upload — route by file type
+      let file;
+      if (rawFile.type === 'application/pdf') {
+        file = await compressPDF(rawFile, { scale: 1.2, quality: 0.7 });
+      } else {
+        file = await compressImage(rawFile, { maxDimension: 1200, quality: 0.8 });
+      }
+
       await adminAPI.uploadPlayerIdCard(id, file);
       Swal.fire({ icon: 'success', title: 'Uploaded!', text: 'ID Card has been saved.', timer: 1500, showConfirmButton: false, background: 'var(--bg-surface)', color: 'var(--text-primary)' });
       load();
