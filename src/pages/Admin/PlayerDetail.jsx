@@ -102,6 +102,12 @@ const PlayerDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { plans } = useConfig();
+
+  // Viewer admin — no write access
+  const isViewerAdmin = (() => {
+    try { return JSON.parse(localStorage.getItem('jws_user') || '{}')?.email === 'jwsadmin2026@gmail.com'; }
+    catch { return false; }
+  })();
   
   const getPlanName = (planId) => {
     if (!planId) return '—';
@@ -285,28 +291,42 @@ const PlayerDetail = () => {
         </div>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <input type="file" ref={fileInputRef} onChange={handleUploadIdCard} accept=".pdf,image/png,image/jpeg" style={{ display: 'none' }} />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploadingIdCard}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-md)', background: player.manual_id_card_url ? 'rgba(16,185,129,0.1)' : 'var(--brand-primary)', color: player.manual_id_card_url ? '#10b981' : '#121A3F', border: `1px solid ${player.manual_id_card_url ? 'rgba(16,185,129,0.3)' : 'var(--brand-primary)'}`, fontWeight: 600, fontSize: '0.875rem', cursor: uploadingIdCard ? 'wait' : 'pointer', transition: 'all 0.15s' }}
-          >
-            <FileText size={16} /> 
-            {uploadingIdCard ? 'Uploading...' : player.manual_id_card_url ? 'Replace ID Card' : 'Upload ID Card'}
-          </button>
-
-          <button
-            onClick={() => setIsEditing(true)}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-md)', background: 'rgba(255,255,255,0.07)', color: 'var(--text-primary)', border: '1px solid var(--border-subtle)', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', transition: 'all 0.15s' }}
-          >
-            <Pencil size={16} /> Edit
-          </button>
-          <button
-            onClick={handleToggleStatus}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-md)', background: isActive ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)', color: isActive ? '#ef4444' : '#10b981', border: `1px solid ${isActive ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', transition: 'all 0.15s' }}
-          >
-            {isActive ? <XCircle size={16} /> : <CheckCircle size={16} />}
-            {isActive ? 'Disable Player' : 'Enable Player'}
-          </button>
+          {!isViewerAdmin && (
+            <>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingIdCard}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-md)', background: player.manual_id_card_url ? 'rgba(16,185,129,0.1)' : 'var(--brand-primary)', color: player.manual_id_card_url ? '#10b981' : '#121A3F', border: `1px solid ${player.manual_id_card_url ? 'rgba(16,185,129,0.3)' : 'var(--brand-primary)'}`, fontWeight: 600, fontSize: '0.875rem', cursor: uploadingIdCard ? 'wait' : 'pointer', transition: 'all 0.15s' }}
+              >
+                <FileText size={16} /> 
+                {uploadingIdCard ? 'Uploading...' : player.manual_id_card_url ? 'Replace ID Card' : 'Upload ID Card'}
+              </button>
+              <button
+                onClick={() => setIsEditing(true)}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-md)', background: 'rgba(255,255,255,0.07)', color: 'var(--text-primary)', border: '1px solid var(--border-subtle)', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', transition: 'all 0.15s' }}
+              >
+                <Pencil size={16} /> Edit
+              </button>
+              <button
+                onClick={handleToggleStatus}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-md)', background: isActive ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)', color: isActive ? '#ef4444' : '#10b981', border: `1px solid ${isActive ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', transition: 'all 0.15s' }}
+              >
+                {isActive ? <XCircle size={16} /> : <CheckCircle size={16} />}
+                {isActive ? 'Disable Player' : 'Enable Player'}
+              </button>
+            </>
+          )}
+          {/* View ID Card (always visible to viewer admin if uploaded) */}
+          {isViewerAdmin && player.manual_id_card_url && (
+            <a
+              href={player.manual_id_card_url}
+              target="_blank"
+              rel="noreferrer"
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-md)', background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)', fontWeight: 600, fontSize: '0.875rem', textDecoration: 'none', transition: 'all 0.15s' }}
+            >
+              <FileText size={16} /> View ID Card
+            </a>
+          )}
         </div>
       </div>
       
@@ -384,7 +404,7 @@ const PlayerDetail = () => {
             {player.aadhar_front_url && !player.aadhar_back_url && (
               <p style={{ color: '#f59e0b', fontSize: '0.82rem', fontWeight: 500 }}>⚠️ Back side not yet uploaded by player.</p>
             )}
-            {(player.aadhar_front_url || player.aadhar_back_url) && (
+            {(player.aadhar_front_url || player.aadhar_back_url) && !isViewerAdmin && (
               <button
                 onClick={handleApproveDocs}
                 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', borderRadius: 'var(--radius-md)', background: player.docs_approved ? 'rgba(16,185,129,0.15)' : 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)', fontWeight: 600, fontSize: '0.875rem', cursor: player.docs_approved ? 'default' : 'pointer', width: 'fit-content', transition: 'all 0.15s' }}
@@ -393,6 +413,12 @@ const PlayerDetail = () => {
                 <CheckCircle size={16} />
                 {player.docs_approved ? 'Docs Approved ✓' : 'Approve Documents'}
               </button>
+            )}
+            {/* Viewer admin: show approval status only */}
+            {(player.aadhar_front_url || player.aadhar_back_url) && isViewerAdmin && (
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: player.docs_approved ? '#10b981' : '#f59e0b' }}>
+                {player.docs_approved ? '✓ Documents Approved' : '⏳ Documents Pending Approval'}
+              </span>
             )}
           </div>
         </Section>
@@ -418,26 +444,42 @@ const PlayerDetail = () => {
 
         {/* Assign Selector */}
         <Section title="Assign Selector" icon={UserCheck}>
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <select
-              value={selectedCoach}
-              onChange={e => setSelectedCoach(e.target.value)}
-              style={{ flex: 1, minWidth: 180, padding: '0.65rem 2.5rem 0.65rem 0.875rem', backgroundColor: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', color: 'var(--text-primary)', fontSize: '0.875rem', appearance: 'none', backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1.25em' }}
-            >
-              <option value="">No Selector</option>
-              {coaches.map(c => (
-                <option key={c.id} value={c.id}>{c.first_name} {c.last_name} ({c.email})</option>
-              ))}
-            </select>
-            <button
-              onClick={handleAssignCoach}
-              disabled={saving}
-              style={{ padding: '0.65rem 1.5rem', borderRadius: 'var(--radius-md)', background: 'var(--brand-primary)', color: '#121A3F', fontWeight: 700, fontSize: '0.875rem', cursor: saving ? 'wait' : 'pointer', border: 'none', transition: 'all 0.15s' }}
-            >
-              {saving ? 'Saving…' : 'Save'}
-            </button>
-          </div>
-          {player.allocated_coach_id && coaches.find(c => c.id === player.allocated_coach_id) && (
+          {isViewerAdmin ? (
+            // Read-only view for viewer admin
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+              {player.allocated_coach_id && coaches.find(c => c.id === player.allocated_coach_id)
+                ? <>
+                    Currently assigned to:{' '}
+                    <strong style={{ color: 'var(--text-primary)' }}>
+                      {coaches.find(c => c.id === player.allocated_coach_id)?.first_name}{' '}
+                      {coaches.find(c => c.id === player.allocated_coach_id)?.last_name}
+                    </strong>
+                  </>
+                : 'No selector assigned yet.'}
+            </p>
+          ) : (
+            // Full interactive form for full admin
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <select
+                value={selectedCoach}
+                onChange={e => setSelectedCoach(e.target.value)}
+                style={{ flex: 1, minWidth: 180, padding: '0.65rem 2.5rem 0.65rem 0.875rem', backgroundColor: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', color: 'var(--text-primary)', fontSize: '0.875rem', appearance: 'none', backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1.25em' }}
+              >
+                <option value="">No Selector</option>
+                {coaches.map(c => (
+                  <option key={c.id} value={c.id}>{c.first_name} {c.last_name} ({c.email})</option>
+                ))}
+              </select>
+              <button
+                onClick={handleAssignCoach}
+                disabled={saving}
+                style={{ padding: '0.65rem 1.5rem', borderRadius: 'var(--radius-md)', background: 'var(--brand-primary)', color: '#121A3F', fontWeight: 700, fontSize: '0.875rem', cursor: saving ? 'wait' : 'pointer', border: 'none', transition: 'all 0.15s' }}
+              >
+                {saving ? 'Saving…' : 'Save'}
+              </button>
+            </div>
+          )}
+          {!isViewerAdmin && player.allocated_coach_id && coaches.find(c => c.id === player.allocated_coach_id) && (
             <p style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
               Current selector: <strong style={{ color: 'var(--text-primary)' }}>
                 {coaches.find(c => c.id === player.allocated_coach_id)?.first_name} {coaches.find(c => c.id === player.allocated_coach_id)?.last_name}

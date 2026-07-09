@@ -35,6 +35,12 @@ const Players = () => {
   const navigate = useNavigate();
   const { plans } = useConfig();
 
+  // Viewer admin restriction
+  const isViewerAdmin = (() => {
+    try { return JSON.parse(localStorage.getItem('jws_user') || '{}')?.email === 'jwsadmin2026@gmail.com'; }
+    catch { return false; }
+  })();
+
   const getPlanName = (planId) => {
     if (!planId) return '—';
     const id = planId.trim();
@@ -190,22 +196,26 @@ const Players = () => {
             <Download size={15} /> Export Excel
           </button>
 
-          {/* Import Button */}
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            style={{ ...btnBase, backgroundColor: 'rgba(96,165,250,0.1)', color: 'var(--brand-accent)', borderColor: 'rgba(96,165,250,0.3)' }}
-            onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(96,165,250,0.2)'}
-            onMouseOut={e => e.currentTarget.style.backgroundColor = 'rgba(96,165,250,0.1)'}
-          >
-            <FileUp size={15} /> Import Excel
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".xlsx,.xls"
-            style={{ display: 'none' }}
-            onChange={handleImport}
-          />
+          {/* Import Button — hidden for viewer admin */}
+          {!isViewerAdmin && (
+            <>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                style={{ ...btnBase, backgroundColor: 'rgba(96,165,250,0.1)', color: 'var(--brand-accent)', borderColor: 'rgba(96,165,250,0.3)' }}
+                onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(96,165,250,0.2)'}
+                onMouseOut={e => e.currentTarget.style.backgroundColor = 'rgba(96,165,250,0.1)'}
+              >
+                <FileUp size={15} /> Import Excel
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".xlsx,.xls"
+                style={{ display: 'none' }}
+                onChange={handleImport}
+              />
+            </>
+          )}
 
           <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{total} players</span>
         </div>

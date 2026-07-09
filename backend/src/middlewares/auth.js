@@ -113,4 +113,34 @@ function restrictTo(...roles) {
   };
 }
 
-module.exports = { authenticate, authorize, protect, restrictTo };
+// ─── Viewer-only admin paths (whitelist of allowed path prefixes) ─────────────
+const READ_ONLY_ADMIN_EMAIL     = 'jwsadmin2026@gmail.com';
+const READ_ONLY_FORBIDDEN_PATHS = ['/config', '/coach-uploads', '/squads', '/training-slots', '/allotment', '/cashouts'];
+
+/**
+ * Blocks modifying requests and sensitive sections for the read-only viewer admin account.
+ * Must be applied AFTER authenticate + restrictTo('admin').
+ */
+function checkReadOnlyAdmin(req, res, next) {
+  if (!req.user || req.user.email !== READ_ONLY_ADMIN_EMAIL) return next();
+
+  // Block any write action
+  if (req.method !== 'GET') {
+    return res.status(403).json({
+      success: false,
+      message: 'Access Denied: Viewer admin accounts cannot perform write operations.',
+    });
+  }
+
+  // Block access to forbidden sections even on GET
+  if (READ_ONLY_FORBIDDEN_PATHS.some(p => req.path.startsWith(p))) {
+    return res.status(403).json({
+      success: false,
+      message: 'Access Denied: Viewer admin does not have access to this section.',
+    });
+  }
+
+  next();
+}
+
+module.exports = { authenticate, authorize, protect, restrictTo, checkReadOnlyAdmin };

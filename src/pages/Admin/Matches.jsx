@@ -336,6 +336,12 @@ const Matches = () => {
   const [bookings, setBookings] = useState([]);
   const [bookingsLoading, setBookingsLoading] = useState(false);
 
+  // Viewer admin restriction
+  const isViewerAdmin = (() => {
+    try { return JSON.parse(localStorage.getItem('jws_user') || '{}')?.email === 'jwsadmin2026@gmail.com'; }
+    catch { return false; }
+  })();
+
   const load = async () => {
     setLoading(true);
     try {
@@ -433,12 +439,14 @@ const Matches = () => {
           <h1 className="heading-1">Selection Trials</h1>
           <p className="text-secondary" style={{ marginTop: '0.35rem' }}>Schedule and manage JWS selection trials.</p>
         </div>
-        <button
-          onClick={() => setModal('add')}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.7rem 1.4rem', borderRadius: 'var(--radius-md)', background: 'var(--brand-primary)', color: '#121A3F', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', border: 'none', boxShadow: '0 4px 12px rgba(203,249,5,0.25)', transition: 'all 0.15s' }}
-        >
-          <Plus size={18} /> Schedule Trial
-        </button>
+        {!isViewerAdmin && (
+          <button
+            onClick={() => setModal('add')}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.7rem 1.4rem', borderRadius: 'var(--radius-md)', background: 'var(--brand-primary)', color: '#121A3F', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', border: 'none', boxShadow: '0 4px 12px rgba(203,249,5,0.25)', transition: 'all 0.15s' }}
+          >
+            <Plus size={18} /> Schedule Trial
+          </button>
+        )}
       </div>
 
       <div style={{ backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
@@ -498,12 +506,19 @@ const Matches = () => {
                         </td>
                         <td style={{ ...tdStyle, color: 'var(--text-secondary)', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.description || '—'}</td>
                         <td style={{ ...tdStyle, display: 'flex', gap: '0.5rem' }}>
-                          <button onClick={() => setModal(m)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)', background: 'rgba(96,165,250,0.1)', color: 'var(--brand-accent)', border: '1px solid rgba(96,165,250,0.25)', fontWeight: 600, fontSize: '0.78rem', cursor: 'pointer' }}>
-                            <Pencil size={13} /> Edit
-                          </button>
-                          <button onClick={() => handleDelete(m)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)', background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', fontWeight: 600, fontSize: '0.78rem', cursor: 'pointer' }}>
-                            <Trash2 size={13} /> Delete
-                          </button>
+                          {!isViewerAdmin && (
+                            <>
+                              <button onClick={() => setModal(m)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)', background: 'rgba(96,165,250,0.1)', color: 'var(--brand-accent)', border: '1px solid rgba(96,165,250,0.25)', fontWeight: 600, fontSize: '0.78rem', cursor: 'pointer' }}>
+                                <Pencil size={13} /> Edit
+                              </button>
+                              <button onClick={() => handleDelete(m)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)', background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', fontWeight: 600, fontSize: '0.78rem', cursor: 'pointer' }}>
+                                <Trash2 size={13} /> Delete
+                              </button>
+                            </>
+                          )}
+                          {isViewerAdmin && (
+                            <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>View only</span>
+                          )}
                         </td>
                       </tr>
 
@@ -544,7 +559,7 @@ const Matches = () => {
                                               {sq.players?.length > 0 ? sq.players.map(p => `${p.first_name} ${p.last_name} (${p.gicl_id})`).join(', ') : 'No players listed'}
                                             </div>
                                           </div>
-                                          {sq.status === 'pending' && (
+                                          {sq.status === 'pending' && !isViewerAdmin && (
                                             <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem', flexShrink: 0 }}>
                                               <button onClick={() => handleApproveSquad(sq.id, m.id)} disabled={isFull}
                                                 style={{ padding: '0.4rem 0.9rem', borderRadius: 'var(--radius-md)', background: isFull ? 'rgba(100,100,100,0.2)' : 'rgba(16,185,129,0.15)', color: isFull ? '#666' : '#10b981', border: `1px solid ${isFull ? '#333' : 'rgba(16,185,129,0.4)'}`, fontWeight: 700, fontSize: '0.78rem', cursor: isFull ? 'not-allowed' : 'pointer' }}>

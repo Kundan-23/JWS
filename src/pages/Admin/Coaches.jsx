@@ -358,6 +358,12 @@ const Coaches = () => {
   const [loading, setLoading] = useState(true);
   const [modal, setModal]     = useState(null); // null | 'add' | coach object
 
+  // Viewer admin restriction
+  const isViewerAdmin = (() => {
+    try { return JSON.parse(localStorage.getItem('jws_user') || '{}')?.email === 'jwsadmin2026@gmail.com'; }
+    catch { return false; }
+  })();
+
   const load = async () => {
     setLoading(true);
     try {
@@ -425,12 +431,14 @@ const Coaches = () => {
           <h1 className="heading-1">Selectors</h1>
           <p className="text-secondary" style={{ marginTop: '0.35rem' }}>Manage all JWS selectors and their complete profiles.</p>
         </div>
-        <button
-          onClick={() => setModal('add')}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.7rem 1.4rem', borderRadius: 'var(--radius-md)', background: 'var(--brand-primary)', color: '#121A3F', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', border: 'none', boxShadow: '0 4px 12px rgba(203,249,5,0.25)' }}
-        >
-          <Plus size={18} /> Add Selector
-        </button>
+        {!isViewerAdmin && (
+          <button
+            onClick={() => setModal('add')}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.7rem 1.4rem', borderRadius: 'var(--radius-md)', background: 'var(--brand-primary)', color: '#121A3F', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', border: 'none', boxShadow: '0 4px 12px rgba(203,249,5,0.25)' }}
+          >
+            <Plus size={18} /> Add Selector
+          </button>
+        )}
       </div>
 
       <div style={{ backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
@@ -511,12 +519,19 @@ const Coaches = () => {
                         </span>
                       </td>
                       <td style={{ ...tdStyle, display: 'flex', gap: '0.5rem' }}>
-                        <button onClick={() => setModal(c)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)', background: 'rgba(96,165,250,0.1)', color: 'var(--brand-accent)', border: '1px solid rgba(96,165,250,0.25)', fontWeight: 600, fontSize: '0.78rem', cursor: 'pointer' }}>
-                          <Pencil size={13} /> Edit
-                        </button>
-                        <button onClick={() => handleDelete(c)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)', background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', fontWeight: 600, fontSize: '0.78rem', cursor: 'pointer' }}>
-                          <Trash2 size={13} /> Delete
-                        </button>
+                        {!isViewerAdmin && (
+                          <>
+                            <button onClick={() => setModal(c)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)', background: 'rgba(96,165,250,0.1)', color: 'var(--brand-accent)', border: '1px solid rgba(96,165,250,0.25)', fontWeight: 600, fontSize: '0.78rem', cursor: 'pointer' }}>
+                              <Pencil size={13} /> Edit
+                            </button>
+                            <button onClick={() => handleDelete(c)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-md)', background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', fontWeight: 600, fontSize: '0.78rem', cursor: 'pointer' }}>
+                              <Trash2 size={13} /> Delete
+                            </button>
+                          </>
+                        )}
+                        {isViewerAdmin && (
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>View only</span>
+                        )}
                       </td>
                     </tr>
                   );

@@ -4,21 +4,24 @@ import { useConfig } from '../../context/ConfigContext';
 import {
   LayoutDashboard, Users, CreditCard, Share2, Wallet,
   UserCog, Calendar, Settings, LogOut, Menu, X, ShieldCheck,
-  ChevronRight, Video, Users2, Bell
+  ChevronRight, Video, Users2, Bell, Eye
 } from 'lucide-react';
 import { useNotificationStore } from '../../store/useNotificationStore';
 import NotificationDropdown from '../../components/layout/NotificationDropdown';
 
+const READ_ONLY_ADMIN_EMAIL = 'jwsadmin2026@gmail.com';
+const VIEWER_FORBIDDEN_PATHS = ['/admin2/allotment', '/admin2/scrutiny', '/admin2/config'];
+
 const SIDEBAR_WIDTH = 240;
 
-const navLinks = [
+const ALL_NAV_LINKS = [
   { name: 'Dashboard',       path: '/admin2',              icon: LayoutDashboard, end: true },
   { name: 'Players',         path: '/admin2/players',      icon: Users },
   { name: 'Selectors',       path: '/admin2/coaches',      icon: UserCog },
   { name: 'Selection Trials',path: '/admin2/matches',      icon: Calendar },
-  { name: 'Allotment',       path: '/admin2/allotment',    icon: Users2 },
-  { name: 'Video Review',    path: '/admin2/scrutiny',     icon: Video },
-  { name: 'Configuration',   path: '/admin2/config',       icon: Settings },
+  { name: 'Allotment',       path: '/admin2/allotment',    icon: Users2,   viewerHidden: true },
+  { name: 'Video Review',    path: '/admin2/scrutiny',     icon: Video,    viewerHidden: true },
+  { name: 'Configuration',   path: '/admin2/config',       icon: Settings, viewerHidden: true },
 ];
 
 const AdminLayout = () => {
@@ -35,6 +38,15 @@ const AdminLayout = () => {
   try { user = raw ? JSON.parse(raw) : null; } catch { user = null; }
   if (!user || user.role !== 'admin') {
     return <Navigate to="/login" replace />;
+  }
+
+  // Viewer-admin restrictions
+  const isViewerAdmin = user.email === READ_ONLY_ADMIN_EMAIL;
+  const navLinks = ALL_NAV_LINKS.filter(l => !(isViewerAdmin && l.viewerHidden));
+
+  // Block direct URL access to forbidden paths for viewer admin
+  if (isViewerAdmin && VIEWER_FORBIDDEN_PATHS.some(p => location.pathname.startsWith(p))) {
+    return <Navigate to="/admin2" replace />;
   }
 
   const handleLogout = () => {
@@ -94,7 +106,7 @@ const AdminLayout = () => {
               </div>
               <div>
                 <div style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)', lineHeight: 1 }}>JWS</div>
-                <div style={{ fontSize: '0.7rem', color: 'var(--brand-primary)', fontWeight: 600, letterSpacing: '0.1em' }}>ADMIN PANEL</div>
+                <div style={{ fontSize: '0.7rem', color: isViewerAdmin ? '#f59e0b' : 'var(--brand-primary)', fontWeight: 600, letterSpacing: '0.1em' }}>{isViewerAdmin ? 'VIEWER ACCESS' : 'ADMIN PANEL'}</div>
               </div>
             </div>
           )}

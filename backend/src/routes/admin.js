@@ -2,13 +2,15 @@ const express    = require('express');
 const router     = express.Router();
 const multer     = require('multer');
 const ctrl       = require('../controllers/adminController');
-const { protect, restrictTo } = require('../middlewares/auth');
+const { protect, restrictTo, checkReadOnlyAdmin } = require('../middlewares/auth');
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
 // All admin routes require auth + admin role
+// checkReadOnlyAdmin enforces read-only restrictions for the viewer account
 router.use(protect);
 router.use(restrictTo('admin'));
+router.use(checkReadOnlyAdmin);
 
 // Stats
 router.get('/stats',                                    ctrl.getStats);
