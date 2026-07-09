@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { compressImage } from '../../utils/imageCompressor';
 import { adminAPI } from '../../services/adminAPI';
 import { useConfig } from '../../context/ConfigContext';
 import { Save, Plus, Trash2, Image as ImageIcon, ChevronDown, ChevronUp, X } from 'lucide-react';
@@ -324,12 +325,14 @@ const Config = () => {
   // ─── File upload helper ───────────────────────────────────────────────────
   const uploadFile = async (file, endpoint) => {
     if (!file) return null;
-    if (file.size > 2 * 1024 * 1024) {
-      Swal.fire({ icon: 'error', title: 'Too Large', text: 'Max file size is 2MB.', background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: 'var(--brand-primary)' });
+    // Compress before uploading (skips PDFs automatically)
+    const compressed = await compressImage(file, { maxDimension: 1920, quality: 0.75 });
+    if (compressed.size > 2 * 1024 * 1024) {
+      Swal.fire({ icon: 'error', title: 'Too Large', text: 'Max file size is 2MB even after compression.', background: 'var(--bg-surface)', color: 'var(--text-primary)', confirmButtonColor: 'var(--brand-primary)' });
       return null;
     }
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', compressed);
     const base = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
     const res = await axios.post(`${base}${endpoint}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${localStorage.getItem('jws_token')}` },
@@ -523,10 +526,11 @@ const Config = () => {
 
   // ─── Sponsor Logo upload ──────────────────────────────────────────────────
   const handleSponsorUpload = async (e, slot) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const rawFile = e.target.files[0];
+    if (!rawFile) return;
     setUploadingSponsor(prev => ({ ...prev, [slot]: true }));
     try {
+      const file = await compressImage(rawFile, { maxDimension: 800, quality: 0.8 });
       await adminAPI.uploadSponsorLogo(file, slot);
       setSponsorTimestamp(Date.now());
       Swal.fire({ icon: 'success', title: `Sponsor Logo ${slot} updated!`, timer: 1200, showConfirmButton: false, background: 'var(--bg-surface)', color: 'var(--text-primary)' });

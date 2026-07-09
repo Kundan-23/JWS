@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { useFormStore } from '../../store/useFormStore';
 import { useConfig } from '../../context/ConfigContext';
 import { playerAPI } from '../../services/api';
+import { compressImage } from '../../utils/imageCompressor';
 import { useAuth } from '../../context/AuthContext';
 import 'react-phone-number-input/style.css';
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input';
@@ -270,8 +271,11 @@ const Step2_BasicRegistration = () => {
         city: data.city, country: data.country, zipCode: data.zipCode,
         jerseySize: data.jerseySize, instagramLink: data.instagramLink || '',
       });
-      // Upload photo if selected
-      if (photoFile) await playerAPI.uploadPhoto(photoFile);
+      // Upload photo if selected (compress first)
+      if (photoFile) {
+        const compressedPhoto = await compressImage(photoFile, { maxDimension: 800, quality: 0.8 });
+        await playerAPI.uploadPhoto(compressedPhoto);
+      }
       navigate('/onboarding/payment');
     } catch (err) {
       Swal.fire({ icon: 'error', title: 'Error',

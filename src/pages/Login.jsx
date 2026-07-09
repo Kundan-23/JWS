@@ -35,7 +35,7 @@ const Login = () => {
   }, []); // run once on mount only
 
   // ── State ───────────────────────────────────────────────
-  const [mode,   setMode]   = useState('login');    // 'login' | 'register' | 'forgot'
+  const [mode,   setMode]   = useState('register'); // 'login' | 'register' | 'forgot'
   const [step,   setStep]   = useState('email');    // 'email' | 'otp' | 'password' | 'set-password'
   const [loading, setLoading] = useState(false);
 
@@ -220,7 +220,7 @@ const Login = () => {
         {targetRole !== 'coach' && (
           <div style={{ display: 'flex', backgroundColor: '#160e2b', padding: '0.25rem',
             borderRadius: 'var(--radius-lg)', marginBottom: '2rem' }}>
-            {['login', 'register'].map((m) => (
+            {['register', 'login'].map((m) => (
               <button key={m} onClick={() => switchMode(m)}
                 style={{ flex: 1, padding: '0.5rem', borderRadius: 'var(--radius-md)', fontWeight: 600, transition: 'all 0.2s',
                   backgroundColor: mode === m ? '#20163b' : 'transparent',

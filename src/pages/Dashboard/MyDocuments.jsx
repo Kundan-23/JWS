@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
 import { playerAPI } from '../../services/api';
 import { FileText, Upload, CheckCircle2, Clock } from 'lucide-react';
+import { compressImage } from '../../utils/imageCompressor';
 
 const MyDocuments = () => {
   const [aadharFrontUrl, setAadharFrontUrl] = useState('');
@@ -25,10 +26,11 @@ const MyDocuments = () => {
   }, []);
 
   const handleFrontUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const rawFile = e.target.files[0];
+    if (!rawFile) return;
     setUploadingFront(true);
     try {
+      const file = await compressImage(rawFile, { maxDimension: 1200, quality: 0.8 });
       const res = await playerAPI.uploadAadharFront(file);
       const url = res.data?.url;
       if (url) setAadharFrontUrl(url);
@@ -49,10 +51,11 @@ const MyDocuments = () => {
   };
 
   const handleBackUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const rawFile = e.target.files[0];
+    if (!rawFile) return;
     setUploadingBack(true);
     try {
+      const file = await compressImage(rawFile, { maxDimension: 1200, quality: 0.8 });
       const res = await playerAPI.uploadAadharBack(file);
       const url = res.data?.url;
       if (url) setAadharBackUrl(url);

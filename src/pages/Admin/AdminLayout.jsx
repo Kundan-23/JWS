@@ -150,7 +150,7 @@ const AdminLayout = () => {
             <div style={{ display: 'flex', flexDirection: 'column', width: 'fit-content', alignItems: 'stretch' }}>
               <p style={{ fontSize: '0.72rem', color: '#fff', margin: 0, fontWeight: 600, letterSpacing: '0.02em', textAlign: 'center', whiteSpace: 'nowrap' }}>Connect For Customer Support</p>
               <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', color: 'var(--brand-accent)', margin: '0.2rem 0 0 0', fontWeight: 800, fontSize: '1rem' }}>
-                {"08045253558".split("").map((digit, idx) => (
+                {"08067335522".split("").map((digit, idx) => (
                   <span key={idx}>{digit}</span>
                 ))}
               </div>

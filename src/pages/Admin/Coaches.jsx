@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { adminAPI } from '../../services/adminAPI';
 import { Plus, Pencil, Trash2, X, Camera, ChevronDown } from 'lucide-react';
 import Swal from 'sweetalert2';
+import { compressImage } from '../../utils/imageCompressor';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 
@@ -383,10 +384,12 @@ const Coaches = () => {
       }
 
       if (aadharFrontFile) {
-        await adminAPI.uploadCoachDocument(coachId, 'aadhar_front', aadharFrontFile);
+        const compressed = await compressImage(aadharFrontFile, { maxDimension: 1200, quality: 0.8 });
+        await adminAPI.uploadCoachDocument(coachId, 'aadhar_front', compressed);
       }
       if (aadharBackFile) {
-        await adminAPI.uploadCoachDocument(coachId, 'aadhar_back', aadharBackFile);
+        const compressed = await compressImage(aadharBackFile, { maxDimension: 1200, quality: 0.8 });
+        await adminAPI.uploadCoachDocument(coachId, 'aadhar_back', compressed);
       }
 
       setModal(null);

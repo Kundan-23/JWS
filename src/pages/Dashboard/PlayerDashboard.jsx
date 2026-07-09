@@ -7,6 +7,7 @@ import { playerAPI } from '../../services/api';
 import Swal from 'sweetalert2';
 import { User, Award, Activity, Star, Info, Shirt, Users, Video, X, Edit, Calendar, MapPin } from 'lucide-react';
 import { useConfig } from '../../context/ConfigContext';
+import { compressImage } from '../../utils/imageCompressor';
 
 const PlayerDashboard = () => {
   const navigate = useNavigate();
@@ -119,15 +120,16 @@ const PlayerDashboard = () => {
   const [photoUploading, setPhotoUploading] = useState(false);
 
   const handlePhotoUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const rawFile = e.target.files[0];
+    if (!rawFile) return;
     // Show preview immediately
     const reader = new FileReader();
     reader.onloadend = () => updateDashboard({ profilePhotoUrl: reader.result });
-    reader.readAsDataURL(file);
-    // Upload to backend
+    reader.readAsDataURL(rawFile);
+    // Compress then upload to backend
     setPhotoUploading(true);
     try {
+      const file = await compressImage(rawFile, { maxDimension: 800, quality: 0.8 });
       const res = await playerAPI.uploadPhoto(file);
       const url = res.data?.url;
       if (url) {
