@@ -61,14 +61,23 @@ function ProtectedRoute({ children, requiredRole }) {
   }
 
   // ── Player onboarding guard ─────────────────────────────
-  // If a player hasn't paid, send them to payment (or step2 if basic profile is incomplete).
+  // A player must complete all onboarding steps and unlock their dashboard before entering `/dashboard`.
   if (requiredRole === 'player' && user) {
-    const paymentDone = user.payment_status === 'paid' || user.is_dashboard_unlocked || user.isDashboardUnlocked;
-    if (!paymentDone) {
-      if (!user.first_name) {
+    const isUnlocked = user.is_dashboard_unlocked || user.isDashboardUnlocked;
+    if (!isUnlocked) {
+      if (!user.first_name && !user.firstName) {
         return <Navigate to="/onboarding/step2" replace />;
       }
-      return <Navigate to="/onboarding/payment" replace />;
+      if (user.payment_status !== 'paid') {
+        return <Navigate to="/onboarding/payment" replace />;
+      }
+      
+      // If paid but dashboard not unlocked, redirect them to the step they need to complete:
+      const hasProfileDetails = user.batting_style || user.battingStyle || user.height || user.weight;
+      if (!hasProfileDetails) {
+        return <Navigate to="/onboarding/step4" replace />;
+      }
+      return <Navigate to="/onboarding/step5" replace />;
     }
   }
 
