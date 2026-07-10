@@ -316,7 +316,6 @@ const Step2_BasicRegistration = () => {
           <Controller
             name="profilePhotoUrl"
             control={control}
-            rules={{ required: 'Profile photo is required' }}
             render={({ field }) => (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
                 <div style={{ width: '100px', height: '100px', borderRadius: '50%', backgroundColor: 'var(--bg-surface-elevated)', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '2px dashed var(--brand-primary)' }}>
