@@ -148,7 +148,7 @@ const Players = () => {
     <div>
       <div style={{ marginBottom: '2rem' }}>
         <h1 className="heading-1">Players</h1>
-        <p className="text-secondary" style={{ marginTop: '0.35rem' }}>Manage all registered GICL players.</p>
+        <p className="text-secondary" style={{ marginTop: '0.35rem' }}>Manage all registered JWS players.</p>
       </div>
 
       <div style={{ backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
@@ -158,7 +158,7 @@ const Players = () => {
             <Search size={16} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
             <input
               type="text"
-              placeholder="Search name, email, GICL ID…"
+              placeholder="Search name, email, JWS ID…"
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(1); }}
               style={{ width: '100%', padding: '0.65rem 1rem 0.65rem 2.5rem', backgroundColor: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', color: 'var(--text-primary)', fontSize: '0.875rem' }}
@@ -210,7 +210,7 @@ const Players = () => {
               <thead>
                 <tr style={{ backgroundColor: 'rgba(0,0,0,0.2)', borderBottom: '1px solid var(--border-subtle)' }}>
                   <th style={thStyle}>#</th>
-                  <th style={thStyle}>GICL ID</th>
+                  <th style={thStyle}>JWS ID</th>
                   <th style={thStyle}>Name</th>
                   <th style={thStyle}>Email</th>
                   <th style={thStyle}>Plan</th>

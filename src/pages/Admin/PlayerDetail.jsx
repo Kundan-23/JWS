@@ -176,7 +176,7 @@ const PlayerDetail = () => {
         title: 'Disable Player',
         input: 'textarea',
         inputLabel: 'Reason for disabling this player',
-        inputPlaceholder: 'e.g., Violation of GICL terms...',
+        inputPlaceholder: 'e.g., Violation of JWS terms...',
         inputAttributes: { required: true },
         showCancelButton: true,
         confirmButtonText: 'Disable',
@@ -349,7 +349,7 @@ const PlayerDetail = () => {
               </span>
             </div>
           </div>
-          <InfoRow label="GICL ID" value={player.gicl_id} />
+          <InfoRow label="JWS ID" value={player.gicl_id} />
           <InfoRow label="Phone / WhatsApp" value={player.whatsapp || player.phone} />
           <InfoRow label="Gender" value={player.gender} />
           <InfoRow 

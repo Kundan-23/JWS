@@ -587,7 +587,7 @@ const Matches = () => {
                                 ) : (
                                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto auto', gap: '0.5rem 1rem', padding: '0.5rem 0.75rem', fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                      <span>Player</span><span>GICL ID</span><span>Amount Paid</span><span>Payment ID</span>
+                                      <span>Player</span><span>JWS ID</span><span>Amount Paid</span><span>Payment ID</span>
                                     </div>
                                     {bookings.map((bk, bi) => (
                                       <div key={bk.id} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto auto', gap: '0.5rem 1rem', padding: '0.65rem 0.75rem', borderRadius: 'var(--radius-md)', background: bi % 2 === 0 ? 'rgba(255,255,255,0.03)' : 'transparent', alignItems: 'center' }}>
