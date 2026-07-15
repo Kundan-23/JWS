@@ -305,7 +305,7 @@ exports.rejectCashout = asyncHandler(async (req, res) => {
 // ─── Coaches CRUD ─────────────────────────────────────────────────
 exports.getCoaches = asyncHandler(async (req, res) => {
   const { data } = await supabase.from('coaches')
-    .select('id, first_name, middle_name, last_name, email, whatsapp, gicl_id, status, created_at, aadhar_url, docs_approved, experience, cricket_history, coaching_history, zip_code, location, max_squad_size')
+    .select('id, first_name, middle_name, last_name, email, whatsapp, gicl_id, status, created_at, aadhar_url, docs_approved, experience, cricket_history, coaching_history, zip_code, location, max_squad_size, dob, gender, blood_group, emergency_contact, emergency_contact_name, address_line1, address_line2, city, country, batting_style, bowling_style, jersey_size, instagram_link, profile_photo_url')
     .order('created_at', { ascending: false });
   res.json({ success: true, coaches: data || [] });
 });
@@ -336,7 +336,8 @@ exports.createCoach = asyncHandler(async (req, res) => {
     gicl_id,
   };
 
-  if (dob)                    insertData.dob                    = dob;
+  // Convert empty strings to null for date fields to avoid PostgreSQL errors
+  if (dob)                    insertData.dob                    = dob || null;
   if (gender)                 insertData.gender                 = gender;
   if (bloodGroup)             insertData.blood_group            = bloodGroup;
   if (emergencyContact)       insertData.emergency_contact      = emergencyContact;
@@ -376,9 +377,10 @@ exports.updateCoach = asyncHandler(async (req, res) => {
   if (lastName  !== undefined)           updateData.last_name              = lastName;
   if (whatsapp  !== undefined)           updateData.whatsapp               = whatsapp;
   if (status    !== undefined)           updateData.status                 = status;
-  if (dob       !== undefined)           updateData.dob                    = dob;
-  if (gender    !== undefined)           updateData.gender                 = gender;
-  if (bloodGroup !== undefined)          updateData.blood_group            = bloodGroup;
+  // Convert empty string dob to null to avoid PostgreSQL "invalid input syntax for type date" error
+  if (dob       !== undefined)           updateData.dob                    = dob || null;
+  if (gender    !== undefined)           updateData.gender                 = gender || null;
+  if (bloodGroup !== undefined)          updateData.blood_group            = bloodGroup || null;
   if (emergencyContact !== undefined)    updateData.emergency_contact      = emergencyContact;
   if (emergencyContactName !== undefined)updateData.emergency_contact_name = emergencyContactName;
   if (addressLine1 !== undefined)        updateData.address_line1          = addressLine1;
@@ -387,9 +389,9 @@ exports.updateCoach = asyncHandler(async (req, res) => {
   if (country !== undefined)             updateData.country                = country;
   if (zipCode !== undefined)             updateData.zip_code               = zipCode;
   if (stateCode !== undefined)           updateData.state_code             = stateCode;
-  if (battingStyle !== undefined)        updateData.batting_style          = battingStyle;
-  if (bowlingStyle !== undefined)        updateData.bowling_style          = bowlingStyle;
-  if (jerseySize !== undefined)          updateData.jersey_size            = jerseySize;
+  if (battingStyle !== undefined)        updateData.batting_style          = battingStyle || null;
+  if (bowlingStyle !== undefined)        updateData.bowling_style          = bowlingStyle || null;
+  if (jerseySize !== undefined)          updateData.jersey_size            = jerseySize || null;
   if (instagramLink !== undefined)       updateData.instagram_link         = instagramLink;
   if (cricketHistory !== undefined)      updateData.cricket_history        = cricketHistory;
   if (coachingHistory !== undefined)     updateData.coaching_history       = coachingHistory;

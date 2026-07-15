@@ -123,14 +123,16 @@ const CoachFormDrawer = ({ coach, onClose, onSave }) => {
     e.preventDefault();
     setSaving(true);
     try {
+      // Helper: convert empty string to null so PostgreSQL date/enum cols don't error
+      const orNull = (v) => (v === '' || v === undefined ? null : v);
       const payload = {
         firstName: form.first_name,
         lastName: form.last_name,
         email: form.email,
         whatsapp: form.whatsapp,
-        dob: form.dob,
-        gender: form.gender,
-        bloodGroup: form.blood_group,
+        dob: orNull(form.dob),                          // "" → null (fixes "invalid input syntax for type date")
+        gender: orNull(form.gender),
+        bloodGroup: orNull(form.blood_group),
         emergencyContact: form.emergency_contact,
         emergencyContactName: form.emergency_contact_name,
         addressLine1: form.address_line1,
@@ -138,9 +140,9 @@ const CoachFormDrawer = ({ coach, onClose, onSave }) => {
         city: form.city,
         country: form.country,
         zipCode: form.zip_code,
-        battingStyle: form.batting_style,
-        bowlingStyle: form.bowling_style,
-        jerseySize: form.jersey_size,
+        battingStyle: orNull(form.batting_style),
+        bowlingStyle: orNull(form.bowling_style),
+        jerseySize: orNull(form.jersey_size),
         instagramLink: form.instagram_link,
         cricketHistory: form.cricket_history,
         coachingHistory: form.coaching_history,
